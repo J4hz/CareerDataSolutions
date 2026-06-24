@@ -106,9 +106,6 @@ export default function Home() {
       {/* HERO */}
       <section className="hero" aria-labelledby="hero-heading">
         <div className="hero__inner">
-          <div className="hero__eyebrow">
-            Nairobi, Kenya · Available globally on Upwork
-          </div>
           <h1 id="hero-heading">
             Data that speaks. Careers that land.
           </h1>
