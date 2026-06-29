@@ -15,7 +15,6 @@ const ServiceCard = memo(function ServiceCard({ service }) {
         display: 'flex',
         flexDirection: 'column',
         border: '1px solid var(--gl)',
-        borderTop: `4px solid ${accent}`,
       }}
     >
       <div style={{ padding: '32px 32px 28px' }}>
