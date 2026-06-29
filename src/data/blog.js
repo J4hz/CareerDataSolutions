@@ -50,7 +50,7 @@ If your organization is sitting on operational data that isn't driving decisions
     slug: "/blog/cv-not-getting-responses",
     category: "Career strategy",
     categoryColor: "gold",
-    headerBg: "linear-gradient(135deg, #0B1F3A 0%, #1a3460 100%)",
+    headerBg: "linear-gradient(135deg, #3d2800 0%, #6b4100 100%)",
     title:
       "The 5 Reasons Your CV Isn't Getting Responses — And What to Do About Each One",
     excerpt:

@@ -1,7 +1,7 @@
 import { memo } from 'react';
 
 const avatarBg = {
-  teal: 'var(--green)',
+  teal: 'var(--teal)',
   gold: 'var(--navy2)',
   navy: 'var(--navy)',
 };

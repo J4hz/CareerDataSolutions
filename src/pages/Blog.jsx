@@ -21,14 +21,10 @@ export default function Blog() {
 
   return (
     <main>
-      <section className="blog-page__hero" aria-labelledby="blog-page-heading">
+      <section className="blog-page__header" aria-labelledby="blog-page-heading">
         <div className="container">
-          <span className="eyebrow" style={{ color: 'rgba(255,255,255,0.65)' }}>Insights from the field</span>
+          <span className="eyebrow">Insights from the field</span>
           <h1 id="blog-page-heading">Knowledge that moves you forward</h1>
-          <p>
-            Practical insights on data analytics, Power BI, career strategy, and what
-            it actually takes to get results.
-          </p>
         </div>
       </section>
 

@@ -6,6 +6,7 @@ import { packages } from '../data/packages';
 import { testimonials } from '../data/testimonials';
 import { posts } from '../data/blog';
 import { whyUs, dataProcess, careerProcess, dashboardStats } from '../data/process';
+import { useInView } from '../hooks/useInView';
 import ServiceCard from '../components/ui/ServiceCard';
 import PackageCard from '../components/ui/PackageCard';
 import TestimonialCard from '../components/ui/TestimonialCard';
@@ -24,9 +25,9 @@ const trustItems = [
 ];
 
 const statsBar = [
-  { num: '7', label: 'Departments dashboarded\nHR · Finance · Operations · Procurement · BD · Executive · PR' },
-  { num: '12', label: 'Years of operational data experience in EMS' },
-  { num: '2', label: 'Service specialisms, one trusted consultancy' },
+  { num: '7', label: 'Departments dashboarded\nHR · Finance · Operations · Procurement · BD · Executive · PR', color: 'var(--teal)' },
+  { num: '12', label: 'Years of operational data experience in EMS', color: 'var(--gold)' },
+  { num: '2', label: 'Service specialisms, one trusted consultancy', color: 'var(--white)' },
 ];
 
 const departments = [
@@ -62,7 +63,9 @@ const pillarIcons = {
 };
 
 const ProcessSection = memo(function ProcessSection() {
-  const [tab, setTab] = useState('data');
+  const [activeTab, setActiveTab] = useState('data-analytics');
+  const processAccent = activeTab === 'data-analytics' ? 'var(--teal)' : 'var(--gold)';
+
   return (
     <section className="section process" aria-labelledby="process-heading">
       <div className="container">
@@ -78,29 +81,43 @@ const ProcessSection = memo(function ProcessSection() {
         <div className="process__tabs" role="tablist">
           <button
             role="tab"
-            aria-selected={tab === 'data'}
-            className={`process__tab${tab === 'data' ? ' active' : ''}`}
-            onClick={() => setTab('data')}
+            aria-selected={activeTab === 'data-analytics'}
+            className={`process__tab${activeTab === 'data-analytics' ? ' active' : ''}`}
+            onClick={() => setActiveTab('data-analytics')}
           >
             Data analytics process
           </button>
           <button
             role="tab"
-            aria-selected={tab === 'career'}
-            className={`process__tab${tab === 'career' ? ' active' : ''}`}
-            onClick={() => setTab('career')}
+            aria-selected={activeTab === 'career-services'}
+            className={`process__tab${activeTab === 'career-services' ? ' active' : ''}`}
+            onClick={() => setActiveTab('career-services')}
           >
             Career services process
           </button>
         </div>
 
-        <ProcessSteps steps={tab === 'data' ? dataProcess : careerProcess} />
+        <ProcessSteps
+          steps={activeTab === 'data-analytics' ? dataProcess : careerProcess}
+          accentColor={processAccent}
+        />
       </div>
     </section>
   );
 });
 
 export default function Home() {
+  const [trustRef, trustInView] = useInView();
+  const [servicesRef, servicesInView] = useInView();
+  const [statsRef, statsInView] = useInView();
+  const [whyRef, whyInView] = useInView();
+  const [processRef, processInView] = useInView();
+  const [aboutRef, aboutInView] = useInView();
+  const [packagesRef, packagesInView] = useInView();
+  const [testimonialsRef, testimonialsInView] = useInView();
+  const [blogRef, blogInView] = useInView();
+  const [ctaRef, ctaInView] = useInView();
+
   return (
     <main>
       {/* HERO */}
@@ -119,7 +136,7 @@ export default function Home() {
               href={CALENDLY_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="btn btn--primary btn--lg"
+              className="btn btn--teal btn--lg"
             >
               Book a free discovery call
             </a>
@@ -145,7 +162,12 @@ export default function Home() {
       </section>
 
       {/* TRUST BAR */}
-      <div className="trust-bar" role="list" aria-label="Service highlights">
+      <div
+        ref={trustRef}
+        className={`trust-bar fade-up${trustInView ? ' is-visible' : ''}`}
+        role="list"
+        aria-label="Service highlights"
+      >
         <div className="trust-bar__inner">
           {trustItems.map((item) => (
             <div key={item} className="trust-bar__item" role="listitem">
@@ -157,7 +179,11 @@ export default function Home() {
       </div>
 
       {/* SERVICES OVERVIEW */}
-      <section className="section services-overview" aria-labelledby="services-heading">
+      <section
+        ref={servicesRef}
+        className={`section services-overview fade-up${servicesInView ? ' is-visible' : ''}`}
+        aria-labelledby="services-heading"
+      >
         <div className="container">
           <div className="services-overview__header">
             <span className="eyebrow">What we do</span>
@@ -176,11 +202,16 @@ export default function Home() {
       </section>
 
       {/* STATS BAR */}
-      <div className="stats-bar" role="list" aria-label="Key statistics">
+      <div
+        ref={statsRef}
+        className={`stats-bar fade-up${statsInView ? ' is-visible' : ''}`}
+        role="list"
+        aria-label="Key statistics"
+      >
         <div className="stats-bar__inner">
           {statsBar.map((s) => (
             <div key={s.num} className="stats-bar__item" role="listitem">
-              <span className="stats-bar__num">{s.num}</span>
+              <span className="stats-bar__num" style={{ color: s.color }}>{s.num}</span>
               <span className="stats-bar__label" style={{ whiteSpace: 'pre-line' }}>{s.label}</span>
             </div>
           ))}
@@ -188,7 +219,11 @@ export default function Home() {
       </div>
 
       {/* WHY US */}
-      <section className="section why-us" aria-labelledby="why-heading">
+      <section
+        ref={whyRef}
+        className={`section why-us fade-up${whyInView ? ' is-visible' : ''}`}
+        aria-labelledby="why-heading"
+      >
         <div className="container">
           <div className="why-us__header">
             <span className="eyebrow">Why CareerDataSolutions</span>
@@ -232,7 +267,7 @@ export default function Home() {
                     <div className="why-us__bar-track">
                       <div
                         className="why-us__bar-fill"
-                        style={{ width: `${bar.value}%` }}
+                        style={{ width: `${bar.value}%`, background: bar.color || 'var(--teal)' }}
                       />
                     </div>
                     <span className="why-us__bar-pct">{bar.value}%</span>
@@ -245,10 +280,19 @@ export default function Home() {
       </section>
 
       {/* PROCESS */}
-      <ProcessSection />
+      <div
+        ref={processRef}
+        className={`fade-up${processInView ? ' is-visible' : ''}`}
+      >
+        <ProcessSection />
+      </div>
 
       {/* ABOUT SNIPPET */}
-      <section className="section about-snippet" aria-labelledby="about-snippet-heading">
+      <section
+        ref={aboutRef}
+        className={`section about-snippet fade-up${aboutInView ? ' is-visible' : ''}`}
+        aria-labelledby="about-snippet-heading"
+      >
         <div className="container">
           <div className="about-snippet__layout">
             <div className="about-snippet__left">
@@ -296,7 +340,11 @@ export default function Home() {
       </section>
 
       {/* HOME PACKAGES */}
-      <section className="section home-packages" aria-labelledby="packages-heading">
+      <section
+        ref={packagesRef}
+        className={`section home-packages fade-up${packagesInView ? ' is-visible' : ''}`}
+        aria-labelledby="packages-heading"
+      >
         <div className="container">
           <div className="home-packages__header">
             <span className="eyebrow">Pricing</span>
@@ -320,7 +368,12 @@ export default function Home() {
       </section>
 
       {/* TESTIMONIALS */}
-      <section className="section testimonials" id="testimonials" aria-labelledby="testimonials-heading">
+      <section
+        ref={testimonialsRef}
+        className={`section testimonials fade-up${testimonialsInView ? ' is-visible' : ''}`}
+        id="testimonials"
+        aria-labelledby="testimonials-heading"
+      >
         <div className="container">
           <div className="testimonials__header">
             <span className="eyebrow">Client results</span>
@@ -339,7 +392,11 @@ export default function Home() {
       </section>
 
       {/* BLOG PREVIEW */}
-      <section className="section blog-preview" aria-labelledby="blog-preview-heading">
+      <section
+        ref={blogRef}
+        className={`section blog-preview fade-up${blogInView ? ' is-visible' : ''}`}
+        aria-labelledby="blog-preview-heading"
+      >
         <div className="container">
           <div className="blog-preview__header">
             <span className="eyebrow">Insights from the field</span>
@@ -354,7 +411,12 @@ export default function Home() {
       </section>
 
       {/* CTA */}
-      <CTASection />
+      <div
+        ref={ctaRef}
+        className={`fade-up${ctaInView ? ' is-visible' : ''}`}
+      >
+        <CTASection />
+      </div>
     </main>
   );
 }

@@ -1,5 +1,5 @@
 import { CALENDLY_URL } from '../config';
-import { services, whoWeWorkWith } from '../data/services';
+import { services } from '../data/services';
 import { dataProcess, careerProcess } from '../data/process';
 import CTASection from '../components/CTASection';
 import '../styles/services.css';
@@ -79,19 +79,6 @@ export default function Services() {
                 </article>
               );
             })}
-          </div>
-        </div>
-      </section>
-
-      {/* Who we work with */}
-      <section className="section services-page__who" aria-labelledby="who-heading">
-        <div className="container">
-          <span className="eyebrow">Our clients</span>
-          <h2 id="who-heading">Who we work with</h2>
-          <div className="services-page__who-grid">
-            {whoWeWorkWith.map((w) => (
-              <div key={w} className="services-page__who-item">{w}</div>
-            ))}
           </div>
         </div>
       </section>

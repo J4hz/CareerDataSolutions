@@ -78,7 +78,7 @@ export const whyUs = [
 export const dashboardStats = [
   { label: "HR", value: 88 },
   { label: "Finance", value: 95 },
-  { label: "Operations", value: 76 },
+  { label: "Operations", value: 76, color: 'var(--gold)' },
   { label: "Executive", value: 100 },
   { label: "Procurement", value: 82 },
 ];

@@ -1,18 +1,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Inter:wght@400;500;600&display=swap');
 
 :root {
-  --navy:        #0B1F3A;
-  --navy2:       #122848;
-  --green:       #1A7A4C;
-  --green-hover: #156039;
-  --white:       #FFFFFF;
-  --off:         #F7F8FA;
-  --gl:          #E8EAED;
-  --gm:          #6B7280;
-  --gd:          #374151;
-  --dark:        #0F172A;
-  --footer-bg:   #060F1E;
-  --whatsapp:    #25D366;
+  --navy:      #0B1F3A;
+  --navy2:     #122848;
+  --teal:      #1D9E75;
+  --teal2:     #24C28F;
+  --gold:      #F4A833;
+  --gold2:     #F7B94D;
+  --white:     #FFFFFF;
+  --off:       #F7F8FA;
+  --gl:        #E8EAED;
+  --gm:        #6B7280;
+  --gd:        #374151;
+  --dark:      #0F172A;
+  --footer-bg: #060F1E;
+  --whatsapp:  #25D366;
 
   --font-display: 'Plus Jakarta Sans', sans-serif;
   --font-body:    'Inter', sans-serif;
@@ -33,7 +35,7 @@
 
 /* Keyboard focus — visible ring on all interactive elements */
 :focus-visible {
-  outline: 2px solid var(--green);
+  outline: 2px solid var(--teal);
   outline-offset: 3px;
   border-radius: 3px;
 }
@@ -51,7 +53,7 @@ html {
 
 body {
   font-family: var(--font-body);
-  color: var(--dark);
+  color: var(--gd);
   background: var(--white);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
@@ -109,7 +111,7 @@ input, textarea, select {
   font-size: 0.75rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--green);
+  color: var(--teal);
   margin-bottom: 12px;
 }
 
@@ -143,4 +145,14 @@ input, textarea, select {
   .section--sm {
     padding: 48px 0;
   }
+}
+
+.fade-up {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+.fade-up.is-visible {
+  opacity: 1;
+  transform: translateY(0);
 }

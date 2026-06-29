@@ -1,39 +1,36 @@
-.about-page__hero {
-  background: linear-gradient(155deg, var(--navy) 0%, var(--navy2) 100%);
+.about-page__opening {
+  background: var(--white);
   padding: 140px 0 80px;
 }
 
-.about-page__hero-inner {
-  max-width: var(--container);
-  margin: 0 auto;
-  padding: 0 24px;
+.about-page__opening-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 64px;
+  align-items: start;
 }
 
-.about-page__hero h1 {
+.about-page__opening-left h1 {
   font-size: clamp(2rem, 4vw, 3rem);
   font-weight: 800;
-  color: var(--white);
+  color: var(--navy);
   letter-spacing: -0.025em;
   margin-bottom: 18px;
-  max-width: 640px;
+  margin-top: 12px;
 }
 
-.about-page__hero p {
-  color: rgba(255,255,255,0.65);
-  font-size: 1.05rem;
-  max-width: 600px;
-  line-height: 1.7;
+.about-page__opening-left p {
+  font-size: 1rem;
+  color: var(--gm);
+  line-height: 1.75;
 }
 
 .about-page__story {
-  background: var(--white);
+  background: var(--off);
 }
 
-.about-page__layout {
-  display: grid;
-  grid-template-columns: 1.2fr 1fr;
-  gap: 64px;
-  align-items: start;
+.about-page__story-text {
+  max-width: 760px;
 }
 
 .about-page__story-text h2 {
@@ -105,7 +102,7 @@
   gap: 6px;
   font-size: 0.75rem;
   font-weight: 600;
-  color: var(--green);
+  color: var(--teal);
 }
 
 .about-page__dept-status::before {
@@ -113,7 +110,7 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--green);
+  background: var(--teal);
 }
 
 .about-page__mid-cta {
@@ -155,7 +152,7 @@
 }
 
 @media (max-width: 900px) {
-  .about-page__layout {
+  .about-page__opening-grid {
     grid-template-columns: 1fr;
     gap: 40px;
   }

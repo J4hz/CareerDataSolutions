@@ -1,4 +1,5 @@
 import { memo } from 'react';
+import { Link } from 'react-router-dom';
 
 const Button = memo(function Button({
   children,
@@ -26,11 +27,10 @@ const Button = memo(function Button({
   }
 
   if (to) {
-    // Use regular anchor for internal nav (works with react-router Link via parent)
     return (
-      <a href={to} className={base} style={style}>
+      <Link to={to} className={base} style={style}>
         {children}
-      </a>
+      </Link>
     );
   }
 

@@ -31,14 +31,6 @@ export const services = [
   },
 ];
 
-export const whoWeWorkWith = [
-  "Healthcare organizations",
-  "NGOs",
-  "Finance firms",
-  "Tech companies",
-  "Individual professionals",
-];
-
 export const credentials = [
   "Microsoft Power BI",
   "Advanced Excel",

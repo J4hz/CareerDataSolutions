@@ -6,7 +6,7 @@ const CTASection = memo(function CTASection() {
     <section className="cta-section" aria-labelledby="cta-heading">
       <div className="cta-section__inner">
         <h2 id="cta-heading">
-          Need clarity on your data, or your career?
+          Ready to get <span style={{ color: 'var(--teal)' }}>clear</span> on your data — or your career?
         </h2>
         <p className="cta-section__sub">
           Book a free 20-minute discovery call. No commitment. We'll map out exactly
@@ -17,11 +17,10 @@ const CTASection = memo(function CTASection() {
             href={CALENDLY_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="btn btn--primary btn--lg"
+            className="btn btn--teal btn--lg"
           >
             Book a discovery call
           </a>
-          {/* Replace with https://wa.me/2547XXXXXXXX */}
           <a
             href={WHATSAPP_URL}
             target="_blank"

@@ -12,6 +12,7 @@ export const packages = [
       "Summary insights report",
     ],
     popular: false,
+    featured: false,
     cta: "Book a call to get started",
   },
   {
@@ -28,6 +29,7 @@ export const packages = [
       "1 revision round included",
     ],
     popular: true,
+    featured: true,
     cta: "Book a call to get started",
   },
   {
@@ -44,6 +46,7 @@ export const packages = [
       "2 revision rounds",
     ],
     popular: false,
+    featured: false,
     cta: "Book a call to get started",
   },
   {
@@ -60,6 +63,7 @@ export const packages = [
       "Unlimited revisions",
     ],
     popular: false,
+    featured: false,
     cta: "Book a call to get started",
   },
 ];
