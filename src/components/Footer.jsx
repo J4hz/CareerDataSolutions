@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import { Link } from 'react-router-dom';
 import { CALENDLY_URL, WHATSAPP_URL } from '../config';
-import Logo from './Logo';
+import logoStacked from '../assets/logo-stacked.jpg';
 import '../styles/footer.css';
 
 const Footer = memo(function Footer() {
@@ -10,7 +10,18 @@ const Footer = memo(function Footer() {
       <div className="footer__main">
         <div className="footer__brand">
           <div className="footer__brand-logo">
-            <Logo dark={true} size="1.1rem" />
+            <img
+              src={logoStacked}
+              alt="CareerDataSolutions"
+              style={{
+                height: '88px',
+                width: 'auto',
+                display: 'block',
+                background: 'var(--white)',
+                borderRadius: '10px',
+                padding: '6px 10px',
+              }}
+            />
           </div>
           <p className="footer__tagline">
             Data-Driven Insights. Career-Defining Results. Based in Nairobi, Kenya.
