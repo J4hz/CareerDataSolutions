@@ -2,6 +2,9 @@ import { memo } from 'react';
 import { CALENDLY_URL } from '../../config';
 
 const ServiceCard = memo(function ServiceCard({ service }) {
+  const isTeal = service.id === 'data-analytics';
+  const accent = isTeal ? 'var(--teal)' : 'var(--gold)';
+
   return (
     <article
       style={{
@@ -12,6 +15,7 @@ const ServiceCard = memo(function ServiceCard({ service }) {
         display: 'flex',
         flexDirection: 'column',
         border: '1px solid var(--gl)',
+        borderTop: `4px solid ${accent}`,
       }}
     >
       <div style={{ padding: '32px 32px 28px' }}>
@@ -22,7 +26,7 @@ const ServiceCard = memo(function ServiceCard({ service }) {
             fontWeight: 700,
             letterSpacing: '0.1em',
             textTransform: 'uppercase',
-            color: 'var(--gm)',
+            color: accent,
             marginBottom: '14px',
           }}
         >
@@ -64,7 +68,7 @@ const ServiceCard = memo(function ServiceCard({ service }) {
                 borderBottom: '1px solid var(--gl)',
               }}
             >
-              <span style={{ color: 'var(--green)', fontWeight: 700, fontSize: '0.85rem', flexShrink: 0, marginTop: '1px' }}>✓</span>
+              <span style={{ color: accent, fontWeight: 700, fontSize: '0.85rem', flexShrink: 0, marginTop: '1px' }}>✓</span>
               {f}
             </li>
           ))}
@@ -74,7 +78,7 @@ const ServiceCard = memo(function ServiceCard({ service }) {
           style={{
             fontSize: '0.875rem',
             fontWeight: 700,
-            color: 'var(--dark)',
+            color: accent,
             marginBottom: '20px',
           }}
         >
@@ -85,7 +89,7 @@ const ServiceCard = memo(function ServiceCard({ service }) {
           href={CALENDLY_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="btn btn--primary"
+          className={isTeal ? 'btn btn--teal' : 'btn btn--gold'}
           style={{ width: '100%', justifyContent: 'center' }}
         >
           {service.cta}

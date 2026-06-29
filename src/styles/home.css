@@ -236,9 +236,9 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  background: rgba(26,122,76,0.08);
-  color: var(--green);
-  border: 1px solid rgba(26,122,76,0.15);
+  background: rgba(29,158,117,0.08);
+  color: var(--teal);
+  border: 1px solid rgba(29,158,117,0.15);
 }
 
 .why-us__pillar h3 {
@@ -317,7 +317,7 @@
 .why-us__bar-fill {
   height: 100%;
   border-radius: 3px;
-  background: var(--green);
+  background: var(--teal);
 }
 
 .why-us__bar-pct {

@@ -1,4 +1,5 @@
-import { useParams, Link, Navigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useParams, Navigate } from 'react-router-dom';
 import { CALENDLY_URL } from '../config';
 import { posts } from '../data/blog';
 import CTASection from '../components/CTASection';
@@ -8,7 +9,7 @@ import '../styles/button.css';
 function renderBody(body) {
   return body.split('\n\n').map((block, i) => {
     if (block.startsWith('**') && block.endsWith('**')) {
-      return <h3 key={i} style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--dark)', margin: '32px 0 12px' }}>{block.slice(2, -2)}</h3>;
+      return <h3 key={i}>{block.slice(2, -2)}</h3>;
     }
 
     const parts = block.split(/(\*\*[^*]+\*\*)/g);
@@ -26,11 +27,33 @@ function renderBody(body) {
 export default function BlogPost() {
   const { slug } = useParams();
   const post = posts.find((p) => p.id === slug);
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const article = document.querySelector('.blog-post__body');
+      if (!article) return;
+      const { top, height } = article.getBoundingClientRect();
+      const windowH = window.innerHeight;
+      const scrolled = Math.max(0, -top);
+      const total = height - windowH;
+      const pct = total > 0 ? Math.min(100, (scrolled / total) * 100) : 0;
+      setProgress(pct);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   if (!post) return <Navigate to="/blog" replace />;
 
   return (
     <main>
+      <div
+        className="blog-post__progress"
+        style={{ width: `${progress}%` }}
+        aria-hidden="true"
+      />
+
       <section
         className="blog-post__hero"
         style={{ background: post.headerBg }}

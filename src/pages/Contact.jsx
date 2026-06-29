@@ -58,19 +58,13 @@ export default function Contact() {
 
   return (
     <main>
-      <section className="contact-page__hero" aria-labelledby="contact-heading">
+      <section className="section contact-page__main" aria-label="Contact options and form" style={{ paddingTop: '140px' }}>
         <div className="container">
-          <span className="eyebrow" style={{ color: 'rgba(255,255,255,0.65)' }}>Get in touch</span>
-          <h1 id="contact-heading">Get in touch</h1>
-          <p>
-            Whether you have a project in mind or just want to understand what's
-            possible, start here.
+          <h1 className="contact-page__heading">Get in touch</h1>
+          <p className="contact-page__subtext">
+            Whether you have a project in mind or just want to understand what's possible — start here.
           </p>
-        </div>
-      </section>
 
-      <section className="section contact-page__main" aria-label="Contact options and form">
-        <div className="container">
           <div className="contact-page__methods">
             <div className="contact-method-card contact-method-card--navy2">
               <h3>Book a Discovery Call</h3>
@@ -93,7 +87,6 @@ export default function Contact() {
               <p>
                 Message directly for quick questions or to get started immediately.
               </p>
-              {/* Replace with https://wa.me/2547XXXXXXXX */}
               <a
                 href={WHATSAPP_URL}
                 target="_blank"
@@ -150,7 +143,7 @@ export default function Contact() {
                       required
                       value={form.email}
                       onChange={handleChange}
-                      placeholder="you@example.com"
+                      placeholder="your@email.com"
                       autoComplete="email"
                     />
                   </div>
@@ -180,7 +173,7 @@ export default function Contact() {
                     required
                     value={form.message}
                     onChange={handleChange}
-                    placeholder="Tell us about your project or what you're looking to achieve"
+                    placeholder="What are you trying to fix or build?"
                   />
                 </div>
 
@@ -197,8 +190,11 @@ export default function Contact() {
                     className="btn btn--primary btn--lg"
                     disabled={status === 'submitting'}
                   >
-                    {status === 'submitting' ? 'Sending…' : 'Send message'}
+                    {status === 'submitting' ? 'Sending…' : 'Send it'}
                   </button>
+                  <p className="contact-form__note">
+                    Usually responds within a few hours during business days.
+                  </p>
                 </div>
               </form>
             )}

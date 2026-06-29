@@ -1,6 +1,7 @@
 import { memo, useState, useEffect, useCallback } from 'react';
 import { NavLink } from 'react-router-dom';
 import { CALENDLY_URL } from '../config';
+import Logo from './Logo';
 import '../styles/navbar.css';
 
 const Navbar = memo(function Navbar() {
@@ -22,9 +23,9 @@ const Navbar = memo(function Navbar() {
   return (
     <header className={`navbar${scrolled ? ' navbar--scrolled' : ''}`}>
       <div className="navbar__inner">
-        <NavLink to="/" className="navbar__logo" onClick={close} aria-label="CareerDataSolutions home">
-          CareerDataSolutions
-        </NavLink>
+        <div className="navbar__logo" onClick={close} aria-label="CareerDataSolutions home">
+          <Logo dark={false} size="1.1rem" />
+        </div>
 
         <nav className="navbar__nav" aria-label="Main navigation">
           <NavLink to="/services" className={({ isActive }) => `navbar__link${isActive ? ' navbar__link--active' : ''}`}>

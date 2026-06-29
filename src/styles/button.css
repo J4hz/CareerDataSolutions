@@ -68,6 +68,26 @@
   transform: translateY(-1px);
 }
 
+.btn--teal {
+  background: var(--teal);
+  color: var(--white);
+}
+.btn--teal:hover {
+  background: var(--teal2);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(29,158,117,0.35);
+}
+
+.btn--gold {
+  background: var(--gold);
+  color: var(--navy);
+  font-weight: 700;
+}
+.btn--gold:hover {
+  background: var(--gold2);
+  transform: translateY(-1px);
+}
+
 .btn--sm {
   padding: 9px 18px;
   font-size: 0.85rem;

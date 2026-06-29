@@ -1,8 +1,8 @@
 import { memo } from 'react';
 
-const ProcessSteps = memo(function ProcessSteps({ steps }) {
-  const accent = 'var(--green)';
-  const accentBg = 'rgba(26,122,76,0.08)';
+const ProcessSteps = memo(function ProcessSteps({ steps, accentColor = 'var(--teal)' }) {
+  const isTeal = accentColor === 'var(--teal)';
+  const connectorBg = isTeal ? 'rgba(29,158,117,0.15)' : 'rgba(244,168,51,0.15)';
 
   return (
     <ol
@@ -34,7 +34,7 @@ const ProcessSteps = memo(function ProcessSteps({ steps }) {
                 top: 40,
                 bottom: 0,
                 width: 2,
-                background: accentBg,
+                background: connectorBg,
               }}
             />
           )}
@@ -43,7 +43,7 @@ const ProcessSteps = memo(function ProcessSteps({ steps }) {
               width: 40,
               height: 40,
               borderRadius: '50%',
-              background: accent,
+              background: accentColor,
               color: 'var(--white)',
               display: 'flex',
               alignItems: 'center',
