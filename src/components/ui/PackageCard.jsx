@@ -97,10 +97,6 @@ export default function PackageCard({ pkg, variant = 'card' }) {
         {pkg.name}
       </h3>
 
-      <div style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: '2px', color: accent }}>
-        {pkg.trackLabel}
-      </div>
-
       <div style={{ fontSize: '10px', fontWeight: 600, color: 'var(--gm)', textTransform: 'uppercase', letterSpacing: '1.2px', marginBottom: '4px' }}>
         {pkg.tier}
       </div>
