@@ -62,7 +62,7 @@ export default function Contact() {
         <div className="container">
           <h1 className="contact-page__heading">Get in touch</h1>
           <p className="contact-page__subtext">
-            Whether you have a project in mind or just want to understand what's possible — start here.
+            Whether you have a project in mind or just want to understand what's possible, start here.
           </p>
 
           <div className="contact-page__methods">
@@ -78,7 +78,7 @@ export default function Contact() {
                 rel="noopener noreferrer"
                 className="contact-method-card__btn"
               >
-                Open Calendly
+                Book on cal.com
               </a>
             </div>
 

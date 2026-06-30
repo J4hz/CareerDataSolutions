@@ -383,6 +383,144 @@
   border-color: var(--navy);
 }
 
+.process__track-block {
+  margin-bottom: 56px;
+}
+
+.process__track-block:last-child {
+  margin-bottom: 0;
+}
+
+.process__track-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.process__track-label--data  { color: var(--teal); }
+.process__track-label--career { color: var(--gold); }
+
+/* ── PROCESS STEPS (horizontal) ── */
+.process-steps {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  margin: 0 auto;
+}
+
+.process-steps__item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0 12px;
+  position: relative;
+}
+
+.process-steps__visual {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.process-steps__label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+.process-steps__circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+}
+
+.process-steps__connector {
+  position: absolute;
+  top: 40px; /* step label (~14px line + 8px margin) + half circle (20px) ≈ 42px, visual centre */
+  left: 50%;
+  right: -50%;
+  height: 2px;
+  z-index: 0;
+}
+
+.process-steps__content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.process-steps__title {
+  display: block;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--dark);
+  line-height: 1.3;
+}
+
+.process-steps__desc {
+  font-size: 0.85rem;
+  color: var(--gm);
+  line-height: 1.6;
+}
+
+@media (max-width: 640px) {
+  .process-steps {
+    flex-direction: column;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  .process-steps__item {
+    flex: none;
+    width: 100%;
+    flex-direction: row;
+    text-align: left;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 0 0 32px;
+  }
+
+  .process-steps__item:last-child {
+    padding-bottom: 0;
+  }
+
+  .process-steps__visual {
+    flex-shrink: 0;
+    margin-bottom: 0;
+  }
+
+  .process-steps__connector {
+    left: 20px; /* centre of 40px circle */
+    top: 62px;  /* label (14px + 8px margin) + full circle (40px) */
+    right: auto;
+    width: 2px;
+    height: auto;
+    bottom: 0;
+  }
+
+  .process-steps__content {
+    padding-top: 22px; /* align content alongside circle */
+  }
+}
+
 /* ── ABOUT SNIPPET ── */
 .about-snippet {
   background: var(--navy);
@@ -514,6 +652,179 @@
 
 .home-packages__cta {
   text-align: center;
+}
+
+/* ── PACKAGE CARD ── */
+.pkg-card {
+  border-radius: 14px;
+  border: 1.5px solid var(--gl);
+  background: var(--white);
+  padding: 28px 24px 24px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  transition: border-color 0.22s, box-shadow 0.22s, transform 0.22s;
+}
+
+.pkg-card--data:not(.pkg-card--featured):hover {
+  border-color: var(--teal);
+  box-shadow: 0 8px 32px rgba(29,158,117,0.12);
+  transform: translateY(-2px);
+}
+
+.pkg-card--career:not(.pkg-card--featured):hover {
+  border-color: var(--gold);
+  box-shadow: 0 8px 32px rgba(244,168,51,0.12);
+  transform: translateY(-2px);
+}
+
+.pkg-card__features {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--gd);
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.pkg-card__feature {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  line-height: 1.5;
+}
+
+.pkg-card__check {
+  color: var(--teal);
+  font-weight: 700;
+  flex-shrink: 0;
+  font-size: 13px;
+}
+
+.pkg-card__divider {
+  border: none;
+  border-top: 1px solid var(--gl);
+  margin: 0 0 16px;
+}
+
+.pkg-card__cta {
+  width: 100%;
+  padding: 11px 18px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 13px;
+  text-align: center;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+  transition: all 0.2s;
+  border: none;
+  cursor: pointer;
+}
+
+.pkg-card__cta--data:hover {
+  background: var(--teal2) !important;
+  transform: translateY(-1px);
+}
+
+.pkg-card__cta--career:hover {
+  background: var(--gold2) !important;
+  transform: translateY(-1px);
+}
+
+/* ── PACKAGES CAROUSEL ── */
+.packages-carousel {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  padding: 8px 0;
+}
+
+.packages-carousel__track-wrap {
+  overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  padding: 16px 0;
+}
+
+.packages-carousel__track {
+  display: flex;
+  width: 100%;
+  gap: 24px;
+  transition: transform 0.4s ease;
+}
+
+.packages-carousel__arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--white);
+  border: 1.5px solid var(--gl);
+  color: var(--navy);
+  box-shadow: var(--shadow-sm);
+  font-size: 1.4rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background var(--transition), color var(--transition);
+  z-index: 2;
+}
+
+.packages-carousel__arrow:hover {
+  background: var(--navy);
+  color: var(--white);
+}
+
+.packages-carousel__arrow--prev {
+  left: 4px;
+}
+
+.packages-carousel__arrow--next {
+  right: 4px;
+}
+
+.packages-carousel__dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 28px;
+}
+
+.packages-carousel__dot {
+  height: 8px;
+  width: 8px;
+  border-radius: 100px;
+  background: var(--gl);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: width 0.3s ease, background 0.3s ease;
+}
+
+.packages-carousel__dot--active {
+  background: var(--teal);
+  width: 24px;
+}
+
+@media (max-width: 768px) {
+  .packages-carousel__arrow--prev {
+    left: 2px;
+  }
+  .packages-carousel__arrow--next {
+    right: 2px;
+  }
 }
 
 /* ── TESTIMONIALS ── */

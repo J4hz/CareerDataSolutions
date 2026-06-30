@@ -1,8 +1,7 @@
-import { packages } from '../data/packages';
+import { dataPackages, careerPackages } from '../data/packages';
 import PackageCard from '../components/ui/PackageCard';
 import CTASection from '../components/CTASection';
 import '../styles/packages.css';
-import '../styles/button.css';
 
 export default function Packages() {
   return (
@@ -20,14 +19,28 @@ export default function Packages() {
 
       <section className="section packages-page__main" aria-label="Package options">
         <div className="container">
-          <div className="packages-page__grid">
-            {packages.map((pkg) => (
-              <PackageCard key={pkg.id} pkg={pkg} />
-            ))}
+
+          <div className="pkg-list-block">
+            <p className="pkg-list-block__label pkg-list-block__label--data">Data Analytics</p>
+            <div className="pkg-list">
+              {dataPackages.map((pkg) => (
+                <PackageCard key={pkg.id} pkg={pkg} variant="list" />
+              ))}
+            </div>
           </div>
+
+          <div className="pkg-list-block">
+            <p className="pkg-list-block__label pkg-list-block__label--career">Career Services</p>
+            <div className="pkg-list">
+              {careerPackages.map((pkg) => (
+                <PackageCard key={pkg.id} pkg={pkg} variant="list" />
+              ))}
+            </div>
+          </div>
+
           <p className="packages-page__note">
             All packages include clear timelines, defined revision rounds, and delivery
-            via email. Payment accepted via M-Pesa, PayPal, and bank transfer.
+            via email. Payment accepted via M-Pesa, Payoneer, and bank transfer.
           </p>
         </div>
       </section>

@@ -7,7 +7,7 @@ import '../styles/button.css';
 export default function About() {
   return (
     <main>
-      {/* Opening — two-column, white background */}
+      {/* Opening: two-column, white background */}
       <section className="about-page__opening" aria-labelledby="about-page-heading">
         <div className="container">
           <div className="about-page__opening-grid">

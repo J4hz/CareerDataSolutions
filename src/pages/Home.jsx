@@ -1,4 +1,4 @@
-import { useState, memo } from 'react';
+import { memo } from 'react';
 import { Link } from 'react-router-dom';
 import { CALENDLY_URL } from '../config';
 import { services } from '../data/services';
@@ -8,7 +8,7 @@ import { posts } from '../data/blog';
 import { whyUs, dataProcess, careerProcess, dashboardStats } from '../data/process';
 import { useInView } from '../hooks/useInView';
 import ServiceCard from '../components/ui/ServiceCard';
-import PackageCard from '../components/ui/PackageCard';
+import PackagesCarousel from '../components/ui/PackagesCarousel';
 import TestimonialCard from '../components/ui/TestimonialCard';
 import BlogCard from '../components/ui/BlogCard';
 import ProcessSteps from '../components/ui/ProcessSteps';
@@ -17,11 +17,11 @@ import '../styles/home.css';
 import '../styles/button.css';
 
 const trustItems = [
-  'Power BI dashboard expert',
+  'Excel and Power BI visualization expert',
   'ATS-optimized CV writing',
   'LinkedIn profile optimization',
   'Local KES & international USD pricing',
-  'M-Pesa · PayPal · Bank transfer',
+  'M-Pesa · Payoneer · Bank transfer',
 ];
 
 const statsBar = [
@@ -63,9 +63,6 @@ const pillarIcons = {
 };
 
 const ProcessSection = memo(function ProcessSection() {
-  const [activeTab, setActiveTab] = useState('data-analytics');
-  const processAccent = activeTab === 'data-analytics' ? 'var(--teal)' : 'var(--gold)';
-
   return (
     <section className="section process" aria-labelledby="process-heading">
       <div className="container">
@@ -78,29 +75,15 @@ const ProcessSection = memo(function ProcessSection() {
           </p>
         </div>
 
-        <div className="process__tabs" role="tablist">
-          <button
-            role="tab"
-            aria-selected={activeTab === 'data-analytics'}
-            className={`process__tab${activeTab === 'data-analytics' ? ' active' : ''}`}
-            onClick={() => setActiveTab('data-analytics')}
-          >
-            Data analytics process
-          </button>
-          <button
-            role="tab"
-            aria-selected={activeTab === 'career-services'}
-            className={`process__tab${activeTab === 'career-services' ? ' active' : ''}`}
-            onClick={() => setActiveTab('career-services')}
-          >
-            Career services process
-          </button>
+        <div className="process__track-block">
+          <p className="process__track-label process__track-label--data">Data analytics process</p>
+          <ProcessSteps steps={dataProcess} accentColor="var(--teal)" />
         </div>
 
-        <ProcessSteps
-          steps={activeTab === 'data-analytics' ? dataProcess : careerProcess}
-          accentColor={processAccent}
-        />
+        <div className="process__track-block">
+          <p className="process__track-label process__track-label--career">Career services process</p>
+          <ProcessSteps steps={careerProcess} accentColor="var(--gold)" />
+        </div>
       </div>
     </section>
   );
@@ -124,7 +107,9 @@ export default function Home() {
       <section className="hero" aria-labelledby="hero-heading">
         <div className="hero__inner">
           <h1 id="hero-heading">
-            Data that speaks. Careers that land.
+            Data driven <span style={{ color: 'var(--teal)' }}>impact.</span>
+            <br />
+            Career defining <span style={{ color: 'var(--gold)' }}>results.</span>
           </h1>
           <p className="hero__sub">
             CareerDataSolutions bridges two worlds: turning raw organizational data into
@@ -253,13 +238,13 @@ export default function Home() {
             <aside className="why-us__panel" aria-label="Founder quote and dashboard stats">
               <blockquote className="why-us__quote">
                 "I didn't start as a data analyst behind a desk. I built my career in
-                the field — where every data point represented a real decision."
+                the field, where every data point represented a real decision."
               </blockquote>
               <p className="why-us__attr">
                 Kabiru Nyabwengi | Founder · CareerDataSolutions · 12 Yrs EMS
               </p>
 
-              <p className="why-us__chart-label">Power BI — 7-dept dashboard coverage</p>
+              <p className="why-us__chart-label">Power BI: 7-dept dashboard coverage</p>
               <div className="why-us__bars">
                 {dashboardStats.map((bar) => (
                   <div key={bar.label} className="why-us__bar-row">
@@ -286,6 +271,26 @@ export default function Home() {
       >
         <ProcessSection />
       </div>
+
+      {/* HOME PACKAGES */}
+      <section
+        ref={packagesRef}
+        className={`section home-packages fade-up${packagesInView ? ' is-visible' : ''}`}
+        aria-labelledby="packages-heading"
+        style={{ overflow: 'hidden' }}
+      >
+        <div className="container">
+          <div className="home-packages__header">
+            <span className="eyebrow">Pricing</span>
+            <h2 id="packages-heading">Packages built for every stage</h2>
+            <p className="home-packages__sub">
+              Local KES pricing for Kenya. USD rates for international and Upwork
+              projects. All packages include clear timelines and revision rounds.
+            </p>
+          </div>
+          <PackagesCarousel packages={packages} />
+        </div>
+      </section>
 
       {/* ABOUT SNIPPET */}
       <section
@@ -335,34 +340,6 @@ export default function Home() {
                 ))}
               </ul>
             </aside>
-          </div>
-        </div>
-      </section>
-
-      {/* HOME PACKAGES */}
-      <section
-        ref={packagesRef}
-        className={`section home-packages fade-up${packagesInView ? ' is-visible' : ''}`}
-        aria-labelledby="packages-heading"
-      >
-        <div className="container">
-          <div className="home-packages__header">
-            <span className="eyebrow">Pricing</span>
-            <h2 id="packages-heading">Packages built for every stage</h2>
-            <p className="home-packages__sub">
-              Local KES pricing for Kenya. USD rates for international and Upwork
-              projects. All packages include clear timelines and revision rounds.
-            </p>
-          </div>
-          <div className="home-packages__grid">
-            {packages.map((pkg) => (
-              <PackageCard key={pkg.id} pkg={pkg} compact />
-            ))}
-          </div>
-          <div className="home-packages__cta">
-            <Link to="/packages" className="btn btn--ghost-dark btn--lg">
-              View all packages &amp; book a call →
-            </Link>
           </div>
         </div>
       </section>
