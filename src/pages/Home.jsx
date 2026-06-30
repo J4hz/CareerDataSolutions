@@ -25,9 +25,9 @@ const trustItems = [
 ];
 
 const statsBar = [
+  { num: '12', label: 'Years of operational data experience in EMS', color: 'var(--teal)' },
   { num: '7', label: 'Departments dashboarded\nHR · Finance · Operations · Procurement · BD · Executive · PR', color: 'var(--teal)' },
-  { num: '12', label: 'Years of operational data experience in EMS', color: 'var(--gold)' },
-  { num: '2', label: 'Service specialisms, one trusted consultancy', color: 'var(--white)' },
+  { num: '2', label: 'Service specialisms, one trusted consultancy', color: 'var(--gold)' },
 ];
 
 const departments = [
