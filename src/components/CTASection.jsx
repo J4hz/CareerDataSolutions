@@ -6,7 +6,7 @@ const CTASection = memo(function CTASection() {
     <section className="cta-section" aria-labelledby="cta-heading">
       <div className="cta-section__inner">
         <h2 id="cta-heading">
-          Ready to get <span style={{ color: 'var(--teal)' }}>clear</span> on your data — or your career?
+          Ready to get <span style={{ color: 'var(--teal)' }}>clear</span> on your data. Or your career?
         </h2>
         <p className="cta-section__sub">
           Book a free 20-minute discovery call. No commitment. We'll map out exactly

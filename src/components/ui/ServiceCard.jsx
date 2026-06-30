@@ -73,17 +73,6 @@ const ServiceCard = memo(function ServiceCard({ service }) {
           ))}
         </ul>
 
-        <p
-          style={{
-            fontSize: '0.875rem',
-            fontWeight: 700,
-            color: accent,
-            marginBottom: '20px',
-          }}
-        >
-          {service.price}
-        </p>
-
         <a
           href={CALENDLY_URL}
           target="_blank"

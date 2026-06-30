@@ -33,7 +33,7 @@
   --container: 1160px;
 }
 
-/* Keyboard focus — visible ring on all interactive elements */
+/* Keyboard focus: visible ring on all interactive elements */
 :focus-visible {
   outline: 2px solid var(--teal);
   outline-offset: 3px;
@@ -49,12 +49,16 @@
 html {
   scroll-behavior: smooth;
   font-size: 16px;
+  overflow-x: hidden;
+  max-width: 100%;
 }
 
 body {
   font-family: var(--font-body);
   color: var(--gd);
   background: var(--white);
+  overflow-x: hidden;
+  max-width: 100%;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
 }

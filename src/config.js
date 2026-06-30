@@ -1,7 +1,7 @@
-// Replace with your real Calendly link from calendly.com/your-username
+// Replace with your real cal.com link from cal.com/your-username
 // This link appears on: Navbar, Hero, CTA section, Contact page,
 // Services page, Packages page, About page, Footer contact column
-export const CALENDLY_URL = "https://calendly.com/careerdatasolutions/discovery-call";
+export const CALENDLY_URL = "https://cal.com/careerdatasolutions/discovery-call";
 
 // Replace with https://wa.me/2547XXXXXXXX
 export const WHATSAPP_URL = "https://wa.me/2547XXXXXXXX";

@@ -1,7 +1,7 @@
 import { memo, useState, useEffect, useCallback } from 'react';
 import { NavLink } from 'react-router-dom';
 import { CALENDLY_URL } from '../config';
-import logoHorizontal from '../assets/logo-horizontal.png';
+import logoPng from '../assets/logo.png';
 import '../styles/navbar.css';
 
 const Navbar = memo(function Navbar() {
@@ -23,8 +23,8 @@ const Navbar = memo(function Navbar() {
   return (
     <header className={`navbar${scrolled ? ' navbar--scrolled' : ''}`}>
       <div className="navbar__inner">
-        <NavLink to="/" className="navbar__logo" onClick={close} aria-label="CareerDataSolutions home" style={{ display: 'flex', alignItems: 'center', height: '68px', overflow: 'hidden' }}>
-          <img src={logoHorizontal} alt="CareerDataSolutions" style={{ height: '128px', width: 'auto', display: 'block', flexShrink: 0 }} />
+        <NavLink to="/" className="navbar__logo" onClick={close} aria-label="CareerDataSolutions home">
+          <img src={logoPng} alt="CareerDataSolutions" className="navbar__logo-img" />
         </NavLink>
 
         <nav className="navbar__nav" aria-label="Main navigation">

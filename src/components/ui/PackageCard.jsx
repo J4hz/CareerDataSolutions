@@ -1,163 +1,146 @@
-import { memo } from 'react';
 import { CALENDLY_URL } from '../../config';
 
-const PackageCard = memo(function PackageCard({ pkg, compact = false }) {
-  const trackLabel = pkg.track === 'data' ? 'Data analytics' : 'Career services';
-  const isFeatured = pkg.featured === true;
+export default function PackageCard({ pkg, variant = 'card' }) {
+  const isData = pkg.track === 'data';
+  const accent = isData ? 'var(--teal)' : 'var(--gold)';
+  const badgeBg = isData ? 'var(--teal)' : 'var(--gold)';
+  const badgeColor = isData ? 'var(--white)' : 'var(--navy)';
 
-  return (
-    <article
-      style={{
-        background: isFeatured ? 'var(--navy)' : 'var(--white)',
-        borderRadius: 'var(--radius-xl)',
-        overflow: 'hidden',
-        boxShadow: isFeatured
-          ? '0 20px 60px rgba(11,31,58,0.35)'
-          : pkg.popular ? 'var(--shadow-lg)' : 'var(--shadow-sm)',
-        border: isFeatured ? 'none' : pkg.popular ? '2px solid var(--navy)' : '1px solid var(--gl)',
-        display: 'flex',
-        flexDirection: 'column',
-        position: 'relative',
-        transform: isFeatured ? 'scale(1.03)' : 'none',
-        zIndex: isFeatured ? 1 : 'auto',
-      }}
-    >
-      {isFeatured && (
-        <div
-          style={{
-            position: 'absolute',
-            top: '-14px',
-            right: '24px',
-            background: 'var(--teal)',
-            color: 'var(--white)',
-            fontSize: '0.72rem',
-            fontWeight: 700,
-            letterSpacing: '0.08em',
-            textTransform: 'uppercase',
-            padding: '5px 14px',
-            borderRadius: '100px',
-          }}
-        >
-          Most Popular
-        </div>
-      )}
+  if (variant === 'list') {
+    const trackPillBg = isData ? 'rgba(29,158,117,0.10)' : 'rgba(244,168,51,0.12)';
+    const trackPillColor = isData ? 'var(--teal)' : '#9A6200';
 
-      {!isFeatured && pkg.popular && (
-        <div
-          style={{
-            position: 'absolute',
-            top: 16,
-            right: 16,
-            background: 'var(--gold)',
-            color: 'var(--navy)',
-            fontSize: '0.7rem',
-            fontWeight: 700,
-            letterSpacing: '0.08em',
-            textTransform: 'uppercase',
-            padding: '4px 10px',
-            borderRadius: 'var(--radius-sm)',
-          }}
-        >
-          Most popular
-        </div>
-      )}
-
-      <div style={{ padding: compact ? '24px' : '32px', flex: 1, display: 'flex', flexDirection: 'column' }}>
-        <span
-          style={{
-            fontSize: '0.72rem',
-            fontWeight: 700,
-            letterSpacing: '0.1em',
-            textTransform: 'uppercase',
-            color: isFeatured ? 'var(--teal)' : 'var(--gm)',
-            display: 'block',
-            marginBottom: '8px',
-          }}
-        >
-          {trackLabel}
-        </span>
-
-        <h3
-          style={{
-            fontSize: compact ? '1.15rem' : '1.35rem',
-            fontWeight: 800,
-            color: isFeatured ? 'var(--white)' : 'var(--navy)',
-            marginBottom: '6px',
-            letterSpacing: '-0.02em',
-          }}
-        >
-          {pkg.name}
-        </h3>
-
-        <div style={{ marginBottom: '20px' }}>
-          <span
-            style={{
-              fontSize: compact ? '1.4rem' : '1.7rem',
-              fontWeight: 800,
-              color: isFeatured ? 'var(--teal)' : 'var(--dark)',
-              fontFamily: 'var(--font-display)',
-            }}
-          >
-            {pkg.kes}
-          </span>
-          <span
-            style={{
-              fontSize: '0.85rem',
-              color: isFeatured ? 'var(--teal)' : 'var(--gm)',
-              marginLeft: '8px',
-            }}
-          >
-            {pkg.usd}
-          </span>
-          <div
-            style={{
-              fontSize: '0.8rem',
-              color: isFeatured ? 'rgba(255,255,255,0.6)' : 'var(--gm)',
-              marginTop: '2px',
-            }}
-          >
-            {pkg.delivery}
+    return (
+      <article
+        className={`pkg-row${pkg.featured ? ' pkg-row--featured' : ''}`}
+        style={{ borderLeftColor: accent }}
+      >
+        {/* Name + meta */}
+        <div className="pkg-row__main">
+          <h3 className="pkg-row__name">{pkg.name}</h3>
+          <div className="pkg-row__pills">
+            <span className="pkg-row__track-pill" style={{ background: trackPillBg, color: trackPillColor }}>
+              {pkg.trackLabel}
+            </span>
+            {pkg.badge && (
+              <span className="pkg-row__badge" style={{ background: badgeBg, color: badgeColor }}>
+                {pkg.badge}
+              </span>
+            )}
           </div>
+          <p className="pkg-row__audience">{pkg.audience}</p>
         </div>
 
-        <ul
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '8px',
-            marginBottom: '24px',
-            flex: 1,
-          }}
-        >
+        {/* Features */}
+        <ul className="pkg-row__features">
           {pkg.features.map((f) => (
-            <li
-              key={f}
-              style={{
-                display: 'flex',
-                alignItems: 'flex-start',
-                gap: '9px',
-                fontSize: '0.875rem',
-                color: isFeatured ? 'rgba(255,255,255,0.85)' : 'var(--gd)',
-              }}
-            >
-              <span style={{ color: 'var(--teal)', fontWeight: 700, flexShrink: 0 }}>✓</span>
+            <li key={f} className="pkg-row__feature">
+              <span className="pkg-row__check" style={{ color: accent }}>✓</span>
               {f}
             </li>
           ))}
         </ul>
 
-        <a
-          href={CALENDLY_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={isFeatured ? 'btn btn--teal btn--lg' : 'btn btn--primary'}
-          style={{ width: '100%', justifyContent: 'center' }}
+        {/* Price + CTA */}
+        <div className="pkg-row__side">
+          <div className="pkg-row__kes" style={{ color: accent }}>{pkg.priceKES}</div>
+          <div className="pkg-row__usd">{pkg.priceUSD} · {pkg.timeline}</div>
+          <a
+            href={CALENDLY_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="pkg-row__cta"
+            style={{ background: isData ? 'var(--teal)' : 'var(--gold)', color: isData ? '#fff' : 'var(--navy)' }}
+          >
+            Get started
+          </a>
+        </div>
+      </article>
+    );
+  }
+
+  const featuredStyle = pkg.featured ? {
+    borderColor: isData ? 'var(--teal)' : 'var(--gold)',
+    background: isData ? 'rgba(29,158,117,0.04)' : 'rgba(244,168,51,0.04)',
+    boxShadow: isData
+      ? '0 12px 40px rgba(29,158,117,0.14)'
+      : '0 8px 32px rgba(244,168,51,0.10)',
+  } : {};
+
+  return (
+    <article
+      className={`pkg-card pkg-card--${pkg.track}${pkg.featured ? ' pkg-card--featured' : ''}`}
+      style={featuredStyle}
+    >
+      {pkg.badge && (
+        <div
+          style={{
+            position: 'absolute',
+            top: '-13px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            background: badgeBg,
+            color: badgeColor,
+            fontSize: '11px',
+            fontWeight: 700,
+            letterSpacing: '0.5px',
+            padding: '4px 14px',
+            borderRadius: '100px',
+            whiteSpace: 'nowrap',
+          }}
         >
-          {pkg.cta}
-        </a>
+          {pkg.badge}
+        </div>
+      )}
+
+      <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '20px', color: 'var(--dark)', letterSpacing: '-0.4px', marginBottom: '4px' }}>
+        {pkg.name}
+      </h3>
+
+      <div style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: '2px', color: accent }}>
+        {pkg.trackLabel}
       </div>
+
+      <div style={{ fontSize: '10px', fontWeight: 600, color: 'var(--gm)', textTransform: 'uppercase', letterSpacing: '1.2px', marginBottom: '4px' }}>
+        {pkg.tier}
+      </div>
+
+      <p style={{ fontSize: '11px', color: 'var(--gm)', fontStyle: 'italic', lineHeight: 1.4, marginBottom: '14px' }}>
+        {pkg.audience}
+      </p>
+
+      <div style={{ marginBottom: '18px' }}>
+        <div style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '28px', letterSpacing: '-1px', color: accent, marginBottom: '2px' }}>
+          {pkg.priceKES}
+        </div>
+        <div style={{ fontSize: '12px', color: 'var(--gm)' }}>
+          {pkg.priceUSD} · {pkg.timeline}
+        </div>
+      </div>
+
+      <hr className="pkg-card__divider" />
+
+      <ul className="pkg-card__features">
+        {pkg.features.map((f) => (
+          <li key={f} className="pkg-card__feature">
+            <span className="pkg-card__check">✓</span>
+            {f}
+          </li>
+        ))}
+      </ul>
+
+      <a
+        href={CALENDLY_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={`pkg-card__cta pkg-card__cta--${pkg.track}`}
+        style={{
+          background: isData ? 'var(--teal)' : 'var(--gold)',
+          color: isData ? '#fff' : 'var(--navy)',
+        }}
+      >
+        Get started
+      </a>
     </article>
   );
-});
-
-export default PackageCard;
+}
