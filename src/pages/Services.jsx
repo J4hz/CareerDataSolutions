@@ -1,4 +1,4 @@
-import { CALENDLY_URL } from '../config';
+import { Link } from 'react-router-dom';
 import { services } from '../data/services';
 import { dataProcess, careerProcess } from '../data/process';
 import CTASection from '../components/CTASection';
@@ -16,7 +16,7 @@ export default function Services() {
       <section className="services-page__hero" aria-labelledby="services-page-heading">
         <div className="container">
           <span className="eyebrow" style={{ color: 'rgba(255,255,255,0.65)' }}>What we do</span>
-          <h1 id="services-page-heading">Two specialisms. One clear goal.</h1>
+          <h1 id="services-page-heading">Two specialties. One clear goal.</h1>
           <p>
             Every service is built on 12 years of real operational experience,
             not theory, not templates.
@@ -51,14 +51,9 @@ export default function Services() {
 
                       <p className="services-page__price">{s.price}</p>
 
-                      <a
-                        href={CALENDLY_URL}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="btn btn--primary"
-                      >
+                      <Link to="/contact" className="btn btn--primary">
                         {s.cta}
-                      </a>
+                      </Link>
                     </div>
 
                     <aside className="services-page__right-panel" aria-label={`${s.track} process`}>

@@ -2,7 +2,7 @@ export const dataProcess = [
   {
     step: 1,
     title: "Discovery call",
-    description: "Free 20-min call to map data sources and decision needs",
+    description: "Free 30-min call to map data sources and decision needs",
   },
   {
     step: 2,

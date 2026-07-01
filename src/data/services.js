@@ -2,14 +2,14 @@ export const services = [
   {
     id: "data-analytics",
     track: "Data analytics",
-    title: "Power BI Dashboards & Analytics",
+    title: "Data Analytics & Dashboard Designs (Excel & Power BI)",
     body: "Built by someone who has operated inside complex organizations, not just coded for them. Your dashboards will be adopted, because they speak your team's language from day one.",
     features: [
       "Multi-department Power BI dashboard design",
       "Excel workflow automation & data digitization",
       "Healthcare & operations data reporting",
       "KPI tracking & executive dashboards",
-      "Claims processing analytics",
+      "Claims and payment process analytics",
     ],
     price: "From KES 25,000 / project",
     cta: "Start with a free discovery call →",

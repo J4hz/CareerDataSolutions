@@ -1,5 +1,5 @@
 import { dataPackages, careerPackages } from '../data/packages';
-import PackageCard from '../components/ui/PackageCard';
+import PackageCardHorizontal from '../components/ui/PackageCardHorizontal';
 import CTASection from '../components/CTASection';
 import '../styles/packages.css';
 
@@ -20,22 +20,20 @@ export default function Packages() {
       <section className="section packages-page__main" aria-label="Package options">
         <div className="container">
 
-          <div className="pkg-list-block">
-            <p className="pkg-list-block__label pkg-list-block__label--data">Data Analytics</p>
-            <div className="pkg-list">
-              {dataPackages.map((pkg) => (
-                <PackageCard key={pkg.id} pkg={pkg} variant="list" />
-              ))}
-            </div>
+          <div className="packages-page__group">
+            <p className="packages-page__track-label" style={{ color: 'var(--teal)' }}>Data Analytics</p>
+            <h3 className="packages-page__section-title">Dashboard and automation packages</h3>
+            {dataPackages.map((pkg) => (
+              <PackageCardHorizontal key={pkg.id} pkg={pkg} />
+            ))}
           </div>
 
-          <div className="pkg-list-block">
-            <p className="pkg-list-block__label pkg-list-block__label--career">Career Services</p>
-            <div className="pkg-list">
-              {careerPackages.map((pkg) => (
-                <PackageCard key={pkg.id} pkg={pkg} variant="list" />
-              ))}
-            </div>
+          <div className="packages-page__group">
+            <p className="packages-page__track-label" style={{ color: 'var(--gold)' }}>Career Services</p>
+            <h3 className="packages-page__section-title">CV, LinkedIn, and coaching packages</h3>
+            {careerPackages.map((pkg) => (
+              <PackageCardHorizontal key={pkg.id} pkg={pkg} />
+            ))}
           </div>
 
           <p className="packages-page__note">

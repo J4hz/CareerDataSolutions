@@ -1,6 +1,5 @@
 import { memo } from 'react';
 import { Link } from 'react-router-dom';
-import { CALENDLY_URL } from '../config';
 import { services } from '../data/services';
 import { packages } from '../data/packages';
 import { testimonials } from '../data/testimonials';
@@ -27,7 +26,7 @@ const trustItems = [
 const statsBar = [
   { num: '12', label: 'Years of operational data experience in EMS', color: 'var(--teal)' },
   { num: '7', label: 'Departments dashboarded\nHR · Finance · Operations · Procurement · BD · Executive · PR', color: 'var(--teal)' },
-  { num: '2', label: 'Service specialisms, one trusted consultancy', color: 'var(--gold)' },
+  { num: '2', label: 'Service specialties, one trusted consultancy', color: 'var(--gold)' },
 ];
 
 const departments = [
@@ -107,24 +106,19 @@ export default function Home() {
       <section className="hero" aria-labelledby="hero-heading">
         <div className="hero__inner">
           <h1 id="hero-heading">
-            Data driven <span style={{ color: 'var(--teal)' }}>impact.</span>
+            Data Driven <span style={{ color: 'var(--teal)' }}>Impact.</span>
             <br />
-            Career defining <span style={{ color: 'var(--gold)' }}>results.</span>
+            Career Defining <span style={{ color: 'var(--gold)' }}>Results.</span>
           </h1>
           <p className="hero__sub">
-            CareerDataSolutions bridges two worlds: turning raw organizational data into
-            actionable Power BI dashboards, and professionals into interview-ready
-            candidates. Built on 12 years of real operational experience.
+            CareerDataSolutions bridges two worlds; transforming raw organizational data
+            into actionable insights and propelling professionals towards thriving careers.
+            Built on 12 years of real operational experience.
           </p>
           <div className="hero__actions">
-            <a
-              href={CALENDLY_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn--teal btn--lg"
-            >
+            <Link to="/contact" className="btn btn--teal btn--lg">
               Book a free discovery call
-            </a>
+            </Link>
             <Link to="/services" className="btn btn--ghost btn--lg">
               Explore services →
             </Link>
@@ -139,7 +133,7 @@ export default function Home() {
               <span className="hero__stat-label">Departments dashboarded</span>
             </div>
             <div className="hero__stat">
-              <span className="hero__stat-num">2</span>
+              <span className="hero__stat-num" style={{ color: 'var(--gold)' }}>2</span>
               <span className="hero__stat-label">Expert service tracks</span>
             </div>
           </div>
@@ -172,9 +166,9 @@ export default function Home() {
         <div className="container">
           <div className="services-overview__header">
             <span className="eyebrow">What we do</span>
-            <h2 id="services-heading">Two specialisms. One clear goal.</h2>
+            <h2 id="services-heading">Two specialties. One clear goal.</h2>
             <p className="services-overview__subtext">
-              Whether you need your data to work harder or your career to move faster,
+              Whether you need your data to work for you or your career to thrive,
               CareerDataSolutions delivers measurable results, not just documents.
             </p>
           </div>
@@ -377,7 +371,7 @@ export default function Home() {
         <div className="container">
           <div className="blog-preview__header">
             <span className="eyebrow">Insights from the field</span>
-            <h2 id="blog-preview-heading">Field notes and practical guides</h2>
+            <h2 id="blog-preview-heading">Knowledge that moves you forward</h2>
           </div>
           <div className="blog-preview__grid">
             {posts.map((post) => (

@@ -1,5 +1,6 @@
 import { memo } from 'react';
-import { CALENDLY_URL, WHATSAPP_URL } from '../config';
+import { Link } from 'react-router-dom';
+import { WHATSAPP_URL } from '../config';
 
 const CTASection = memo(function CTASection() {
   return (
@@ -9,18 +10,13 @@ const CTASection = memo(function CTASection() {
           Ready to get <span style={{ color: 'var(--teal)' }}>clear</span> on your data. Or your career?
         </h2>
         <p className="cta-section__sub">
-          Book a free 20-minute discovery call. No commitment. We'll map out exactly
+          Book a free 30-minute discovery call. No commitment. We'll map out exactly
           what's possible and what it would cost.
         </p>
         <div className="cta-section__actions">
-          <a
-            href={CALENDLY_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn btn--teal btn--lg"
-          >
+          <Link to="/contact" className="btn btn--teal btn--lg">
             Book a discovery call
-          </a>
+          </Link>
           <a
             href={WHATSAPP_URL}
             target="_blank"

@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, Navigate } from 'react-router-dom';
-import { CALENDLY_URL } from '../config';
+import { useParams, Navigate, Link } from 'react-router-dom';
 import { posts } from '../data/blog';
 import CTASection from '../components/CTASection';
 import '../styles/blog.css';
@@ -78,14 +77,9 @@ export default function BlogPost() {
 
           <div className="blog-post__inline-cta">
             <p>{post.inlineCta}</p>
-            <a
-              href={CALENDLY_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn--primary"
-            >
+            <Link to="/contact" className="btn btn--primary">
               Book a free discovery call
-            </a>
+            </Link>
           </div>
         </div>
       </article>
