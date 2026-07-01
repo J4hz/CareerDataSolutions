@@ -1,4 +1,4 @@
-import { CALENDLY_URL } from '../../config';
+import { Link } from 'react-router-dom';
 
 export default function PackageCard({ pkg, variant = 'card' }) {
   const isData = pkg.track === 'data';
@@ -45,15 +45,13 @@ export default function PackageCard({ pkg, variant = 'card' }) {
         <div className="pkg-row__side">
           <div className="pkg-row__kes" style={{ color: accent }}>{pkg.priceKES}</div>
           <div className="pkg-row__usd">{pkg.priceUSD} · {pkg.timeline}</div>
-          <a
-            href={CALENDLY_URL}
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            to="/contact"
             className="pkg-row__cta"
             style={{ background: isData ? 'var(--teal)' : 'var(--gold)', color: isData ? '#fff' : 'var(--navy)' }}
           >
             Get started
-          </a>
+          </Link>
         </div>
       </article>
     );
@@ -125,10 +123,8 @@ export default function PackageCard({ pkg, variant = 'card' }) {
         ))}
       </ul>
 
-      <a
-        href={CALENDLY_URL}
-        target="_blank"
-        rel="noopener noreferrer"
+      <Link
+        to="/contact"
         className={`pkg-card__cta pkg-card__cta--${pkg.track}`}
         style={{
           background: isData ? 'var(--teal)' : 'var(--gold)',
@@ -136,7 +132,7 @@ export default function PackageCard({ pkg, variant = 'card' }) {
         }}
       >
         Get started
-      </a>
+      </Link>
     </article>
   );
 }

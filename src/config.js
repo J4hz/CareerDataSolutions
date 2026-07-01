@@ -15,3 +15,14 @@ export const WHATSAPP_URL = "https://wa.me/2547XXXXXXXX";
 export const EMAILJS_SERVICE_ID = "YOUR_SERVICE_ID";
 export const EMAILJS_TEMPLATE_ID = "YOUR_TEMPLATE_ID";
 export const EMAILJS_PUBLIC_KEY = "YOUR_PUBLIC_KEY";
+
+// Cal.com — update CAL_LINK with your real username/event-slug
+// Find it at cal.com/[username]/[event-slug]
+// Example: https://cal.com/kabiru-nyabwengi/discovery-call
+export const CAL_NAMESPACE = "mwangijahdai";
+export const CAL_LINK      = "mwangijahdai/30min";
+
+// Notification email — set these as environment variables in Vercel dashboard
+// Never import RESEND_API_KEY into any React component
+export const NOTIFY_EMAIL = "contact@careerdatasolutions.co.ke";
+export const NOTIFY_FROM  = "bookings@careerdatasolutions.co.ke";

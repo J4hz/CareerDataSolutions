@@ -401,7 +401,7 @@
 }
 
 .process__track-label--data  { color: var(--teal); }
-.process__track-label--career { color: var(--gold); }
+.process__track-label--career { color: var(--gold2); }
 
 /* ── PROCESS STEPS (horizontal) ── */
 .process-steps {

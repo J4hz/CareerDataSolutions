@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import { Link } from 'react-router-dom';
-import { CALENDLY_URL, WHATSAPP_URL } from '../config';
+import { WHATSAPP_URL } from '../config';
 import logoStacked from '../assets/logo-stacked.jpg';
 import '../styles/footer.css';
 
@@ -54,9 +54,7 @@ const Footer = memo(function Footer() {
           <h3 className="footer__col-title">Contact</h3>
           <ul>
             <li>
-              <a href={CALENDLY_URL} target="_blank" rel="noopener noreferrer">
-                Book a discovery call
-              </a>
+              <Link to="/contact">Book a discovery call</Link>
             </li>
             <li>
               {/* Replace with https://wa.me/2547XXXXXXXX */}

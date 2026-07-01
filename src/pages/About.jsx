@@ -1,4 +1,4 @@
-import { CALENDLY_URL } from '../config';
+import { Link } from 'react-router-dom';
 import { credentials, departments } from '../data/services';
 import CTASection from '../components/CTASection';
 import '../styles/about.css';
@@ -24,15 +24,13 @@ export default function About() {
                   <span key={c} className="about-page__tag">{c}</span>
                 ))}
               </div>
-              <a
-                href={CALENDLY_URL}
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                to="/contact"
                 className="btn btn--teal btn--lg"
                 style={{ marginTop: '28px', display: 'inline-flex' }}
               >
                 Book a free discovery call
-              </a>
+              </Link>
             </div>
 
             <aside className="about-page__card" aria-label="Dashboard departments">
@@ -80,14 +78,9 @@ export default function About() {
       <section className="about-page__mid-cta" aria-label="Work with Kabiru">
         <div className="container">
           <h2>Want to work with Kabiru?</h2>
-          <a
-            href={CALENDLY_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn btn--teal btn--lg"
-          >
+          <Link to="/contact" className="btn btn--teal btn--lg">
             Book a free discovery call
-          </a>
+          </Link>
         </div>
       </section>
 
@@ -105,7 +98,7 @@ export default function About() {
             </div>
             <div>
               <div className="about-page__stat-num" style={{ color: 'var(--white)' }}>2</div>
-              <div className="about-page__stat-label">Service specialisms, one trusted consultancy</div>
+              <div className="about-page__stat-label">Service specialties, one trusted consultancy</div>
             </div>
           </div>
         </div>

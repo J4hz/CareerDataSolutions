@@ -1,6 +1,5 @@
 import { memo, useState, useEffect, useCallback } from 'react';
-import { NavLink } from 'react-router-dom';
-import { CALENDLY_URL } from '../config';
+import { NavLink, Link } from 'react-router-dom';
 import logoPng from '../assets/logo.png';
 import '../styles/navbar.css';
 
@@ -43,14 +42,9 @@ const Navbar = memo(function Navbar() {
         </nav>
 
         <div className="navbar__end">
-          <a
-            href={CALENDLY_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="navbar__cta"
-          >
+          <Link to="/contact" className="navbar__cta">
             Book a call
-          </a>
+          </Link>
           <button
             className={`navbar__burger${open ? ' navbar__burger--open' : ''}`}
             onClick={toggle}
@@ -69,15 +63,9 @@ const Navbar = memo(function Navbar() {
         <NavLink to="/packages" className="navbar__link" onClick={close}>Packages</NavLink>
         <NavLink to="/about" className="navbar__link" onClick={close}>About</NavLink>
         <NavLink to="/blog" className="navbar__link" onClick={close}>Insights</NavLink>
-        <a
-          href={CALENDLY_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="navbar__cta"
-          onClick={close}
-        >
+        <Link to="/contact" className="navbar__cta" onClick={close}>
           Book a call
-        </a>
+        </Link>
       </nav>
     </header>
   );

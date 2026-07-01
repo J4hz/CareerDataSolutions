@@ -1,208 +1,253 @@
-import { useState, useCallback } from 'react';
-import emailjs from '@emailjs/browser';
-import { CALENDLY_URL, WHATSAPP_URL, EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, EMAILJS_PUBLIC_KEY } from '../config';
-import CTASection from '../components/CTASection';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import Cal, { getCalApi } from '@calcom/embed-react';
+import { CAL_NAMESPACE, CAL_LINK, WHATSAPP_URL } from '../config';
 import '../styles/contact.css';
-import '../styles/button.css';
 
-const serviceOptions = [
-  'Power BI Dashboard',
-  'Excel Automation',
-  'CV Writing',
-  'LinkedIn Optimization',
-  'Career Coaching',
-  'Other',
+const expectItems = [
+  'Tell us a little about yourself and what you\'re working on.',
+  'Pick a time that works for you.',
+  'We\'ll come prepared with ideas and an honest assessment.',
 ];
 
-const emptyForm = {
-  name: '',
-  email: '',
-  service: '',
-  message: '',
-};
-
 export default function Contact() {
-  const [form, setForm] = useState(emptyForm);
-  const [status, setStatus] = useState('idle'); // idle | submitting | success | error
+  const [showCal, setShowCal]         = useState(false);
+  const [formData, setFormData]       = useState({ name: '', email: '', phone: '', reason: '', discussion: '' });
+  const [submitting, setSubmitting]   = useState(false);
+  const [bookingDone, setBookingDone] = useState(false);
+  const [errors, setErrors]           = useState({});
+
+  const formDataRef = useRef(formData);
+  useEffect(() => { formDataRef.current = formData; }, [formData]);
 
   const handleChange = useCallback((e) => {
     const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: false }));
   }, []);
 
-  const handleSubmit = useCallback(
-    async (e) => {
-      e.preventDefault();
-      setStatus('submitting');
+  const handleSubmit = useCallback((e) => {
+    e.preventDefault();
+    const newErrors = {};
+    if (!formData.name.trim())  newErrors.name  = true;
+    if (!formData.email.trim()) newErrors.email = true;
+    if (Object.keys(newErrors).length) {
+      setErrors(newErrors);
+      return;
+    }
+    setSubmitting(true);
+    setShowCal(true);
+    setSubmitting(false);
+  }, [formData]);
 
-      try {
-        await emailjs.send(
-          EMAILJS_SERVICE_ID,
-          EMAILJS_TEMPLATE_ID,
-          {
-            from_name: form.name,
-            reply_to: form.email,
-            service_interest: form.service,
-            message: form.message,
-          },
-          EMAILJS_PUBLIC_KEY
-        );
-        setStatus('success');
-        setForm(emptyForm);
-      } catch {
-        setStatus('error');
-      }
-    },
-    [form]
-  );
+  const handleBookingSuccess = useCallback(async () => {
+    setBookingDone(true);
+    try {
+      await fetch('/api/notify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formDataRef.current),
+      });
+    } catch (err) {
+      console.error('Notify error:', err);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!showCal) return;
+    getCalApi({ namespace: CAL_NAMESPACE }).then((cal) => {
+      cal('ui', {
+        theme: 'light',
+        hideEventTypeDetails: false,
+        layout: 'month_view',
+      });
+      cal('on', {
+        action: 'bookingSuccessful',
+        callback: handleBookingSuccess,
+      });
+    });
+  }, [showCal, handleBookingSuccess]);
+
+  if (showCal) {
+    return (
+      <main className="contact-cal">
+        <div className="contact-cal__inner">
+          <button className="contact-cal__back" onClick={() => setShowCal(false)}>
+            ← Back
+          </button>
+
+          <div className="contact-cal__header">
+            <h2 style={{ fontSize: 'clamp(1.5rem, 3vw, 2rem)', fontWeight: 800, color: 'var(--dark)', marginBottom: '8px' }}>
+              Pick a time, {formData.name}.
+            </h2>
+            <p style={{ fontSize: '0.95rem', color: 'var(--gm)' }}>
+              A 30-minute call. Free. No pressure.
+            </p>
+          </div>
+
+          {bookingDone && (
+            <div className="contact-booking-success">
+              You're booked. Check your email for the confirmation and calendar link.
+            </div>
+          )}
+
+          <Cal
+            namespace={CAL_NAMESPACE}
+            calLink={CAL_LINK}
+            style={{ width: '100%', height: '100%', overflow: 'scroll' }}
+            config={{
+              layout: 'month_view',
+              name:   formData.name,
+              email:  formData.email,
+              notes:  formData.reason,
+            }}
+          />
+        </div>
+      </main>
+    );
+  }
 
   return (
-    <main>
-      <section className="section contact-page__main" aria-label="Contact options and form" style={{ paddingTop: '140px' }}>
-        <div className="container">
-          <h1 className="contact-page__heading">Get in touch</h1>
-          <p className="contact-page__subtext">
-            Whether you have a project in mind or just want to understand what's possible, start here.
+    <main className="contact-page">
+      <div className="contact-page__inner">
+
+        {/* LEFT — context */}
+        <div className="contact-page__left">
+          <span className="eyebrow" style={{ color: 'var(--teal)' }}>Book a discovery call</span>
+
+          <h1 className="contact-page__h1">Let's talk about what you need.</h1>
+
+          <p className="contact-page__sub">
+            Free. 30 minutes. No commitment. Walk away with clarity on exactly
+            what's possible and what it would cost.
           </p>
 
-          <div className="contact-page__methods">
-            <div className="contact-method-card contact-method-card--navy2">
-              <h3>Book a Discovery Call</h3>
-              <p>
-                Free 20-minute call. We'll map out exactly what you need and what
-                it would cost.
-              </p>
-              <a
-                href={CALENDLY_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="contact-method-card__btn"
-              >
-                Book on cal.com
-              </a>
-            </div>
-
-            <div className="contact-method-card contact-method-card--green">
-              <h3>Chat on WhatsApp</h3>
-              <p>
-                Message directly for quick questions or to get started immediately.
-              </p>
-              <a
-                href={WHATSAPP_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="contact-method-card__btn"
-              >
-                Open WhatsApp
-              </a>
-            </div>
-
-            <div className="contact-method-card contact-method-card--navy">
-              <h3>Send an Email</h3>
-              <p>Prefer email? Reach Kabiru directly.</p>
-              <a
-                href="mailto:contact@careerdatasolutions.co.ke"
-                className="contact-method-card__btn"
-              >
-                contact@careerdatasolutions.co.ke
-              </a>
-            </div>
+          <div className="contact-expect">
+            {expectItems.map((text, i) => (
+              <div key={i} className="contact-expect__item">
+                <div className="contact-expect__num">{i + 1}</div>
+                <p className="contact-expect__text">{text}</p>
+              </div>
+            ))}
           </div>
 
-          <div className="contact-page__form-wrap">
-            <h2>Send a message</h2>
-            <p>Fill in the form and we'll get back to you within one business day.</p>
-
-            {status === 'success' ? (
-              <div className="contact-form__success" role="alert">
-                <span aria-hidden="true">✓</span>
-                Message sent. We'll be in touch within one business day.
+          <div className="contact-alts">
+            {/* WhatsApp */}
+            <a
+              href={WHATSAPP_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="contact-alt-card contact-alt-card--wa"
+            >
+              <div className="contact-alt-icon" style={{ background: '#25D366' }}>W</div>
+              <div>
+                <div className="contact-alt-card__label">Chat on WhatsApp</div>
+                <div className="contact-alt-card__sub">Quick questions or get started now</div>
               </div>
-            ) : (
-              <form className="contact-form" onSubmit={handleSubmit} noValidate>
-                <div className="contact-form__row">
-                  <div className="form-field">
-                    <label htmlFor="name">Name</label>
-                    <input
-                      id="name"
-                      name="name"
-                      type="text"
-                      required
-                      value={form.name}
-                      onChange={handleChange}
-                      placeholder="Your full name"
-                      autoComplete="name"
-                    />
-                  </div>
-                  <div className="form-field">
-                    <label htmlFor="email">Email</label>
-                    <input
-                      id="email"
-                      name="email"
-                      type="email"
-                      required
-                      value={form.email}
-                      onChange={handleChange}
-                      placeholder="your@email.com"
-                      autoComplete="email"
-                    />
-                  </div>
-                </div>
+            </a>
 
-                <div className="form-field">
-                  <label htmlFor="service">Service interest</label>
-                  <select
-                    id="service"
-                    name="service"
-                    value={form.service}
-                    onChange={handleChange}
-                    required
-                  >
-                    <option value="" disabled>Select a service</option>
-                    {serviceOptions.map((opt) => (
-                      <option key={opt} value={opt}>{opt}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="form-field">
-                  <label htmlFor="message">Message</label>
-                  <textarea
-                    id="message"
-                    name="message"
-                    required
-                    value={form.message}
-                    onChange={handleChange}
-                    placeholder="What are you trying to fix or build?"
-                  />
-                </div>
-
-                {status === 'error' && (
-                  <div className="contact-form__error" role="alert">
-                    Something went wrong. Please try again or email us directly at
-                    contact@careerdatasolutions.co.ke
-                  </div>
-                )}
-
-                <div className="contact-form__submit">
-                  <button
-                    type="submit"
-                    className="btn btn--primary btn--lg"
-                    disabled={status === 'submitting'}
-                  >
-                    {status === 'submitting' ? 'Sending…' : 'Send it'}
-                  </button>
-                  <p className="contact-form__note">
-                    Usually responds within a few hours during business days.
-                  </p>
-                </div>
-              </form>
-            )}
+            {/* Email */}
+            <a
+              href="mailto:contact@careerdatasolutions.co.ke"
+              className="contact-alt-card"
+            >
+              <div className="contact-alt-icon" style={{ background: 'var(--navy)' }}>@</div>
+              <div>
+                <div className="contact-alt-card__label">contact@careerdatasolutions.co.ke</div>
+                <div className="contact-alt-card__sub">Usually responds within a few hours</div>
+              </div>
+            </a>
           </div>
         </div>
-      </section>
 
-      <CTASection />
+        {/* RIGHT — form */}
+        <div className="contact-form-card">
+          <p className="contact-form-card__title">A few details first</p>
+          <p className="contact-form-card__sub">So we can make the most of our 30 minutes.</p>
+
+          <form className="contact-form" onSubmit={handleSubmit} noValidate>
+
+            <div className="form-field">
+              <label htmlFor="name">Your name <span className="form-required">*</span></label>
+              <input
+                id="name"
+                name="name"
+                type="text"
+                placeholder="First and last name"
+                value={formData.name}
+                onChange={handleChange}
+                className={errors.name ? 'field-error' : ''}
+                autoComplete="name"
+              />
+            </div>
+
+            <div className="form-field">
+              <label htmlFor="email">Email address <span className="form-required">*</span></label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                placeholder="your@email.com"
+                value={formData.email}
+                onChange={handleChange}
+                className={errors.email ? 'field-error' : ''}
+                autoComplete="email"
+              />
+            </div>
+
+            <div className="form-field">
+              <label htmlFor="phone">Phone number</label>
+              <input
+                id="phone"
+                name="phone"
+                type="tel"
+                placeholder="+254 7XX XXX XXX"
+                value={formData.phone}
+                onChange={handleChange}
+                autoComplete="tel"
+              />
+            </div>
+
+            <div className="form-field">
+              <label htmlFor="reason">What are you looking for?</label>
+              <select
+                id="reason"
+                name="reason"
+                value={formData.reason}
+                onChange={handleChange}
+              >
+                <option value="">Select a service (optional)</option>
+                <option value="power-bi">Power BI Dashboard</option>
+                <option value="excel">Excel Automation</option>
+                <option value="cv">CV Writing</option>
+                <option value="linkedin">LinkedIn Optimization</option>
+                <option value="coaching">Career Coaching</option>
+                <option value="enterprise">Enterprise Data Suite</option>
+                <option value="other">Something else</option>
+              </select>
+            </div>
+
+            <div className="form-field">
+              <label htmlFor="discussion">What would you like to discuss?</label>
+              <textarea
+                id="discussion"
+                name="discussion"
+                placeholder="Tell us what's on your mind — what you're working on, what's not working, or what you'd like to achieve."
+                value={formData.discussion}
+                onChange={handleChange}
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="contact-form__submit-btn"
+              disabled={submitting}
+            >
+              {submitting ? 'One moment…' : 'Choose a time →'}
+            </button>
+          </form>
+        </div>
+
+      </div>
     </main>
   );
 }
