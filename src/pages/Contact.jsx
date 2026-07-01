@@ -34,6 +34,7 @@ export default function Contact() {
 
   useEffect(() => {
     getCalApi({ namespace: CAL_NAMESPACE }).then((cal) => {
+      cal('preload', { calLink: CAL_LINK });
       cal('ui', {
         theme: 'light',
         hideEventTypeDetails: false,
