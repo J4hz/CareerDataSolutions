@@ -104,6 +104,7 @@ export default function Home() {
     <main>
       {/* HERO */}
       <section className="hero" aria-labelledby="hero-heading">
+        <span className="hero__wm" aria-hidden="true">12</span>
         <div className="hero__inner">
           <h1 id="hero-heading">
             Data Driven <span style={{ color: 'var(--teal)' }}>Impact.</span>
@@ -230,6 +231,7 @@ export default function Home() {
             </div>
 
             <aside className="why-us__panel" aria-label="Founder quote and dashboard stats">
+              <span className="why-us__initials" aria-hidden="true">KN</span>
               <blockquote className="why-us__quote">
                 "I didn't start as a data analyst behind a desk. I built my career in
                 the field, where every data point represented a real decision."
