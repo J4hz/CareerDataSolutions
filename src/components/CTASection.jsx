@@ -5,6 +5,7 @@ import { WHATSAPP_URL } from '../config';
 const CTASection = memo(function CTASection() {
   return (
     <section className="cta-section" aria-labelledby="cta-heading">
+      <span className="cta-section__wm" aria-hidden="true">CDS</span>
       <div className="cta-section__inner">
         <h2 id="cta-heading">
           Ready to get <span style={{ color: 'var(--teal)' }}>clear</span> on your data. Or your career?
