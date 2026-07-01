@@ -42,7 +42,7 @@ const Navbar = memo(function Navbar() {
         </nav>
 
         <div className="navbar__end">
-          <Link to="/contact" className="navbar__cta">
+          <Link to="/contact" className="navbar__cta navbar__cta--pulse">
             Book a call
           </Link>
           <button
@@ -63,7 +63,7 @@ const Navbar = memo(function Navbar() {
         <NavLink to="/packages" className="navbar__link" onClick={close}>Packages</NavLink>
         <NavLink to="/about" className="navbar__link" onClick={close}>About</NavLink>
         <NavLink to="/blog" className="navbar__link" onClick={close}>Insights</NavLink>
-        <Link to="/contact" className="navbar__cta" onClick={close}>
+        <Link to="/contact" className="navbar__cta navbar__cta--pulse" onClick={close}>
           Book a call
         </Link>
       </nav>

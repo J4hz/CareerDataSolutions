@@ -11,7 +11,6 @@ export const services = [
       "KPI tracking & executive dashboards",
       "Claims and payment process analytics",
     ],
-    price: "From KES 25,000 / project",
     cta: "Start with a free discovery call →",
   },
   {
@@ -23,10 +22,8 @@ export const services = [
       "ATS-compliant, keyword-optimized CVs",
       "LinkedIn profiles built for recruiter visibility",
       "Cover letters tailored to specific roles",
-      "Executive-level career branding",
       "Interview preparation & job search strategy",
     ],
-    price: "From KES 4,500 / document",
     cta: "Get a free CV review →",
   },
 ];
@@ -45,8 +42,8 @@ export const departments = [
   { name: "HR & Workforce", status: "Live" },
   { name: "Finance", status: "Live" },
   { name: "Operations & Logistics", status: "Live" },
-  { name: "Procurement", status: "Live" },
-  { name: "Business Development", status: "Live" },
-  { name: "Executive Leadership", status: "Live" },
-  { name: "PR & Communications", status: "Live" },
+  { name: "Supply Chain", status: "Live" },
+  { name: "Sales & Marketing", status: "Live" },
+  { name: "Executive", status: "Live" },
+  { name: "Public Relations", status: "Live" },
 ];

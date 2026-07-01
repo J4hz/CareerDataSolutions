@@ -76,6 +76,12 @@
   margin-bottom: 24px;
 }
 
+@media (max-width: 480px) {
+  .hero h1 {
+    font-size: clamp(1rem, calc(8.3vw - 3.5px), 2.4rem);
+  }
+}
+
 .hero__sub {
   font-size: clamp(1rem, 2vw, 1.15rem);
   color: rgba(255,255,255,0.72);
@@ -987,6 +993,19 @@
   gap: 12px;
   justify-content: center;
   flex-wrap: wrap;
+}
+
+.cta-sec__career-link {
+  font-size: 13px;
+  color: rgba(255,255,255,0.45);
+  text-decoration: none;
+  margin-top: 16px;
+  display: inline-block;
+  transition: color 0.2s;
+}
+
+.cta-sec__career-link:hover {
+  color: rgba(255,255,255,0.75);
 }
 
 /* ── RESPONSIVE ── */

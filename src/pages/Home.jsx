@@ -5,6 +5,7 @@ import { packages } from '../data/packages';
 import { testimonials } from '../data/testimonials';
 import { posts } from '../data/blog';
 import { whyUs, dataProcess, careerProcess, dashboardStats } from '../data/process';
+import { CALENDLY_URL } from '../config';
 import { useInView } from '../hooks/useInView';
 import ServiceCard from '../components/ui/ServiceCard';
 import PackagesCarousel from '../components/ui/PackagesCarousel';
@@ -25,18 +26,18 @@ const trustItems = [
 
 const statsBar = [
   { num: '12', label: 'Years of operational data experience in EMS', color: 'var(--teal)' },
-  { num: '7', label: 'Departments dashboarded\nHR · Finance · Operations · Procurement · BD · Executive · PR', color: 'var(--teal)' },
-  { num: '2', label: 'Service specialties, one trusted consultancy', color: 'var(--gold)' },
+  { num: '7', label: 'Departments dashboarded\nHR & Workforce · Finance · Operations & Logistics · Supply Chain · Sales & Marketing · Public Relations · Executive', color: 'var(--teal)' },
+  { num: '2', label: 'Service specialities, one trusted consultancy', color: 'var(--gold)' },
 ];
 
 const departments = [
   { name: 'HR & Workforce', status: 'Live' },
   { name: 'Finance', status: 'Live' },
   { name: 'Operations & Logistics', status: 'Live' },
-  { name: 'Procurement', status: 'Live' },
-  { name: 'Business Development', status: 'Live' },
-  { name: 'Executive Leadership', status: 'Live' },
-  { name: 'PR & Communications', status: 'Live' },
+  { name: 'Supply Chain', status: 'Live' },
+  { name: 'Sales & Marketing', status: 'Live' },
+  { name: 'Executive', status: 'Live' },
+  { name: 'Public Relations', status: 'Live' },
 ];
 
 const pillarIcons = {
@@ -54,9 +55,9 @@ const pillarIcons = {
       <circle cx="9" cy="9" r="1.5" fill="currentColor"/>
     </svg>
   ),
-  check: (
+  pulse: (
     <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-      <path d="M3 9.5L7 13.5L15 5.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <polyline points="16.5 9 13.5 9 11.25 15.75 6.75 2.25 4.5 9 1.5 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
   ),
 };
@@ -117,9 +118,14 @@ export default function Home() {
             Built on 12 years of real operational experience.
           </p>
           <div className="hero__actions">
-            <Link to="/contact" className="btn btn--teal btn--lg">
+            <a
+              href={CALENDLY_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn--teal btn--lg btn--pulse"
+            >
               Book a free discovery call
-            </Link>
+            </a>
             <Link to="/services" className="btn btn--ghost btn--lg">
               Explore services →
             </Link>
@@ -167,7 +173,7 @@ export default function Home() {
         <div className="container">
           <div className="services-overview__header">
             <span className="eyebrow">What we do</span>
-            <h2 id="services-heading">Two specialties. One clear goal.</h2>
+            <h2 id="services-heading">Two specialities. One clear goal.</h2>
             <p className="services-overview__subtext">
               Whether you need your data to work for you or your career to thrive,
               CareerDataSolutions delivers measurable results, not just documents.
@@ -240,7 +246,7 @@ export default function Home() {
                 Kabiru Nyabwengi | Founder · CareerDataSolutions · 12 Yrs EMS
               </p>
 
-              <p className="why-us__chart-label">Power BI: 7-dept dashboard coverage</p>
+              <p className="why-us__chart-label">Data Analytics — 7-department dashboard coverage</p>
               <div className="why-us__bars">
                 {dashboardStats.map((bar) => (
                   <div key={bar.label} className="why-us__bar-row">
@@ -301,14 +307,20 @@ export default function Home() {
               <h2 id="about-snippet-heading">12 years in the field.</h2>
               <div className="about-snippet__story">
                 <p>
+                  CareerDataSolutions was built on a simple idea: the same discipline
+                  that keeps emergency operations running can make organizational data
+                  and professional careers perform better.
+                </p>
+                <p>
                   I spent over a decade coordinating emergency medical services, managing
                   operations, building teams, and turning messy field data into decisions
                   that mattered under pressure. Not once from behind a desk.
                 </p>
                 <p>
                   That background shapes everything I build. I designed Power BI dashboards
-                  across 7 departments: HR, Finance, Operations, Procurement, Business
-                  Development, Executive, and PR. I streamlined claims workflows using
+                  across 7 departments: HR & Workforce, Finance, Operations & Logistics,
+                  Supply Chain, Sales & Marketing, Executive, and Public Relations.
+                  I streamlined claims workflows using
                   Excel automation that gave teams back hours of manual processing time
                   every week.
                 </p>

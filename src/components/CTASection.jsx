@@ -1,6 +1,6 @@
 import { memo } from 'react';
-import { Link } from 'react-router-dom';
-import { WHATSAPP_URL } from '../config';
+import { NavLink } from 'react-router-dom';
+import { WHATSAPP_URL, CALENDLY_URL } from '../config';
 
 const CTASection = memo(function CTASection() {
   return (
@@ -15,9 +15,14 @@ const CTASection = memo(function CTASection() {
           what's possible and what it would cost.
         </p>
         <div className="cta-section__actions">
-          <Link to="/contact" className="btn btn--teal btn--lg">
+          <a
+            href={CALENDLY_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn btn--teal btn--lg btn--pulse"
+          >
             Book a discovery call
-          </Link>
+          </a>
           <a
             href={WHATSAPP_URL}
             target="_blank"
@@ -33,6 +38,9 @@ const CTASection = memo(function CTASection() {
             contact@careerdatasolutions.co.ke
           </a>
         </div>
+        <NavLink to="/contact/career" className="cta-sec__career-link">
+          Submitting a CV for career services? Start here →
+        </NavLink>
       </div>
     </section>
   );

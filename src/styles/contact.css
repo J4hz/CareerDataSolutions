@@ -146,3 +146,383 @@
     min-height: 500px;
   }
 }
+
+/* ── SWITCHER ────────────────────────────── */
+.contact-switcher {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+}
+
+.contact-switcher__label {
+  font-size: 13px;
+  color: var(--gm);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.contact-switcher__tabs {
+  display: flex;
+  gap: 8px;
+}
+
+.contact-switcher__tab {
+  padding: 8px 20px;
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  border: none;
+  transition: all 0.2s;
+  font-family: var(--font-body);
+}
+
+.contact-switcher__tab--teal {
+  background: rgba(29,158,117,0.10);
+  color: var(--teal);
+}
+
+.contact-switcher__tab--teal.contact-switcher__tab--active,
+.contact-switcher__tab--teal:not(a):not([href]) {
+  background: var(--teal);
+  color: var(--white);
+}
+
+.contact-switcher__tab--gold {
+  background: rgba(244,168,51,0.10);
+  color: #B8750A;
+}
+
+.contact-switcher__tab--gold.contact-switcher__tab--active,
+.contact-switcher__tab--gold:not(a):not([href]) {
+  background: var(--gold);
+  color: var(--navy);
+}
+
+/* ── EYEBROW VARIANTS ────────────────────── */
+.contact-eyebrow--gold {
+  color: var(--gold);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+/* ── NUMBERED STEPS GOLD VARIANT ─────────── */
+.contact-expect__num--gold {
+  background: rgba(244,168,51,0.12);
+  color: var(--gold);
+}
+
+/* ── WHAT HAPPENS NEXT CARD ──────────────── */
+.contact-next-card {
+  background: var(--white);
+  border: 1.5px solid var(--gl);
+  border-radius: 12px;
+  padding: 20px 22px;
+  margin-top: 28px;
+}
+
+.contact-next-card__title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--dark);
+  margin-bottom: 14px;
+}
+
+.contact-next-card__item {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 13px;
+  color: var(--gd);
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+
+.contact-next-card__item:last-child {
+  margin-bottom: 0;
+}
+
+.contact-next-card__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+  flex-shrink: 0;
+  margin-top: 6px;
+}
+
+/* ── FORM CARD (career) ─────────────────── */
+.contact-form-card {
+  background: var(--white);
+  border-radius: 16px;
+  padding: 36px 32px;
+  border: 1.5px solid var(--gl);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  align-self: start;
+}
+
+.contact-form-card__title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--dark);
+}
+
+.contact-form-card__subtitle {
+  font-size: 13px;
+  color: var(--gm);
+}
+
+.contact-form-card__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.contact-form-card__field label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--gd);
+  display: block;
+}
+
+.contact-form-card__field input,
+.contact-form-card__field select,
+.contact-form-card__field textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1.5px solid var(--gl);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  color: var(--dark);
+  background: var(--white);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  font-family: var(--font-body);
+  box-sizing: border-box;
+}
+
+.contact-form-card__field input:focus,
+.contact-form-card__field select:focus,
+.contact-form-card__field textarea:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(244,168,51,0.12);
+}
+
+.contact-form-card__field textarea {
+  resize: vertical;
+  min-height: 90px;
+}
+
+.field-error {
+  border-color: #dc2626 !important;
+  box-shadow: 0 0 0 3px rgba(220,38,38,0.10) !important;
+}
+
+.contact-form-card__submit {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+  font-family: var(--font-body);
+}
+
+.contact-form-card__note {
+  font-size: 12px;
+  color: var(--gm);
+  line-height: 1.6;
+  text-align: center;
+}
+
+/* ── CV DROPZONE ─────────────────────────── */
+.cv-dropzone {
+  border: 2px dashed var(--gl);
+  border-radius: 10px;
+  padding: 28px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  background: var(--off);
+}
+
+.cv-dropzone:hover {
+  border-color: var(--gold);
+  background: rgba(244,168,51,0.03);
+}
+
+.cv-dropzone--has-file {
+  border-style: solid;
+  border-color: var(--gold);
+  background: rgba(244,168,51,0.04);
+}
+
+.cv-dropzone--error {
+  border-color: #dc2626;
+}
+
+.cv-dropzone__prompt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.cv-dropzone__icon {
+  font-size: 24px;
+  color: var(--gold);
+  line-height: 1;
+}
+
+.cv-dropzone__text {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--dark);
+}
+
+.cv-dropzone__hint {
+  font-size: 12px;
+  color: var(--gm);
+}
+
+.cv-dropzone__file {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.cv-dropzone__filename {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--dark);
+  word-break: break-all;
+}
+
+.cv-dropzone__size {
+  font-size: 12px;
+  color: var(--gm);
+}
+
+.cv-dropzone__remove {
+  background: none;
+  border: none;
+  color: #dc2626;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  font-family: var(--font-body);
+  text-decoration: underline;
+}
+
+/* ── FORM FIELD ERRORS ───────────────────── */
+.field-error-msg {
+  font-size: 12px;
+  color: #dc2626;
+  margin-top: 4px;
+  display: block;
+}
+
+.field-optional {
+  font-weight: 400;
+  color: var(--gm);
+  font-size: 12px;
+}
+
+/* ── SUBMIT BUTTON GOLD VARIANT ──────────── */
+.contact-form-card__submit--gold {
+  background: var(--gold);
+  color: var(--navy);
+}
+
+.contact-form-card__submit--gold:hover:not(:disabled) {
+  background: var(--gold2);
+  transform: translateY(-1px);
+}
+
+.contact-form-card__submit--gold:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ── ERROR BANNER ────────────────────────── */
+.contact-form-card__error-banner {
+  background: rgba(220,38,38,0.08);
+  border: 1px solid rgba(220,38,38,0.25);
+  border-radius: 8px;
+  padding: 12px 16px;
+  color: #dc2626;
+  font-size: 13px;
+  margin-bottom: 20px;
+}
+
+/* ── SUCCESS STATE ───────────────────────── */
+.contact-career-success {
+  background: var(--white);
+  border: 1.5px solid var(--gl);
+  border-radius: 16px;
+  padding: 48px 36px;
+  text-align: center;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.05);
+}
+
+.contact-career-success__icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(244,168,51,0.12);
+  color: var(--gold);
+  font-size: 22px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+}
+
+.contact-career-success__title {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--dark);
+  letter-spacing: -0.03em;
+  margin-bottom: 12px;
+}
+
+.contact-career-success__body {
+  font-size: 0.95rem;
+  color: var(--gm);
+  line-height: 1.7;
+  margin-bottom: 16px;
+  max-width: 360px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.contact-career-success__email {
+  font-size: 13px;
+  color: var(--gm);
+  font-style: italic;
+}
+
+/* ── RESPONSIVE ──────────────────────────── */
+@media (max-width: 768px) {
+  .contact-switcher {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+}

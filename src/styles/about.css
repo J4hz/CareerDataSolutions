@@ -19,25 +19,8 @@
   margin-top: 12px;
 }
 
-.about-page__opening-left p {
-  font-size: 1rem;
-  color: var(--gm);
-  line-height: 1.75;
-}
-
-.about-page__story {
-  background: var(--off);
-}
-
 .about-page__story-text {
   max-width: 760px;
-}
-
-.about-page__story-text h2 {
-  font-size: clamp(1.7rem, 3vw, 2.25rem);
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  margin-bottom: 28px;
 }
 
 .about-page__story-text p {

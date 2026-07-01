@@ -36,7 +36,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    await resend.emails.send({
+    const { error } = await resend.emails.send({
       from: process.env.NOTIFY_FROM || 'onboarding@resend.dev',
       to:   process.env.NOTIFY_EMAIL || 'contact@careerdatasolutions.co.ke',
       subject: `New discovery call booked: ${name}`,
@@ -83,6 +83,11 @@ export default async function handler(req, res) {
         </div>
       `,
     });
+
+    if (error) {
+      console.error('Resend error:', error);
+      return res.status(502).json({ error: 'Failed to send notification' });
+    }
 
     return res.status(200).json({ ok: true });
   } catch (err) {

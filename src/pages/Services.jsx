@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { services } from '../data/services';
 import { dataProcess, careerProcess } from '../data/process';
+import { CALENDLY_URL } from '../config';
 import CTASection from '../components/CTASection';
 import '../styles/services.css';
 import '../styles/button.css';
@@ -16,7 +17,7 @@ export default function Services() {
       <section className="services-page__hero" aria-labelledby="services-page-heading">
         <div className="container">
           <span className="eyebrow" style={{ color: 'rgba(255,255,255,0.65)' }}>What we do</span>
-          <h1 id="services-page-heading">Two specialties. One clear goal.</h1>
+          <h1 id="services-page-heading">Two specialities. One clear goal.</h1>
           <p>
             Every service is built on 12 years of real operational experience,
             not theory, not templates.
@@ -29,10 +30,12 @@ export default function Services() {
           <div className="services-page__cards-grid">
             {services.map((s) => {
               const steps = processMap[s.id];
+              const isTeal = s.id === 'data-analytics';
+              const accent = isTeal ? 'var(--teal)' : 'var(--gold)';
 
               return (
                 <article key={s.id} className="services-page__card-expanded">
-                  <div className="services-page__card-header">
+                  <div className="services-page__card-header" style={{ color: accent }}>
                     {s.track}
                   </div>
                   <div className="services-page__card-body">
@@ -43,24 +46,33 @@ export default function Services() {
                       <div className="services-page__features">
                         {s.features.map((f) => (
                           <div key={f} className="services-page__feature">
-                            <span className="services-page__feature-check">✓</span>
+                            <span className="services-page__feature-check" style={{ color: accent }}>✓</span>
                             {f}
                           </div>
                         ))}
                       </div>
 
-                      <p className="services-page__price">{s.price}</p>
-
-                      <Link to="/contact" className="btn btn--primary">
-                        {s.cta}
-                      </Link>
+                      {isTeal ? (
+                        <a
+                          href={CALENDLY_URL}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="btn btn--teal"
+                        >
+                          {s.cta}
+                        </a>
+                      ) : (
+                        <Link to="/contact/career" className="btn btn--gold">
+                          {s.cta}
+                        </Link>
+                      )}
                     </div>
 
                     <aside className="services-page__right-panel" aria-label={`${s.track} process`}>
                       <h3>How it works</h3>
                       {steps.map((step) => (
                         <div key={step.step} className="services-page__process-step">
-                          <div className="services-page__step-num">
+                          <div className="services-page__step-num" style={{ background: accent }}>
                             {step.step}
                           </div>
                           <div className="services-page__step-content">

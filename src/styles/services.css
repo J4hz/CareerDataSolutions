@@ -43,7 +43,6 @@
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--gm);
   background: var(--off);
   border-bottom: 1px solid var(--gl);
 }
@@ -88,15 +87,6 @@
   font-size: 0.9rem;
   font-weight: 700;
   flex-shrink: 0;
-  color: var(--teal);
-}
-
-.services-page__price {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1.1rem;
-  color: var(--dark);
-  margin-bottom: 20px;
 }
 
 .services-page__right-panel {
@@ -127,7 +117,6 @@
   font-size: 0.8rem;
   font-weight: 700;
   flex-shrink: 0;
-  background: var(--navy);
   color: var(--white);
 }
 
