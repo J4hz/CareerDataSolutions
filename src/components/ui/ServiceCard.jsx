@@ -1,5 +1,6 @@
 import { memo } from 'react';
 import { Link } from 'react-router-dom';
+import { CALENDLY_URL } from '../../config';
 
 const ServiceCard = memo(function ServiceCard({ service }) {
   const isTeal = service.id === 'data-analytics';
@@ -73,13 +74,25 @@ const ServiceCard = memo(function ServiceCard({ service }) {
           ))}
         </ul>
 
-        <Link
-          to="/contact"
-          className={isTeal ? 'btn btn--teal' : 'btn btn--gold'}
-          style={{ width: '100%', justifyContent: 'center' }}
-        >
-          {service.cta}
-        </Link>
+        {isTeal ? (
+          <a
+            href={CALENDLY_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn btn--teal"
+            style={{ width: '100%', justifyContent: 'center' }}
+          >
+            {service.cta}
+          </a>
+        ) : (
+          <Link
+            to="/contact/career"
+            className="btn btn--gold"
+            style={{ width: '100%', justifyContent: 'center' }}
+          >
+            {service.cta}
+          </Link>
+        )}
       </div>
     </article>
   );

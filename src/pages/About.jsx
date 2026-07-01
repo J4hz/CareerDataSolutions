@@ -14,11 +14,31 @@ export default function About() {
             <div className="about-page__opening-left">
               <span className="eyebrow">About Kabiru</span>
               <h1 id="about-page-heading">12 years in the field. Now at your service.</h1>
-              <p>
-                CareerDataSolutions was built on a simple idea: the same discipline
-                that keeps emergency operations running can make organizational data and
-                professional careers perform better.
-              </p>
+              <div className="about-page__story-text">
+                <p>
+                  CareerDataSolutions was built on a simple idea: the same discipline
+                  that keeps emergency operations running can make organizational data and
+                  professional careers perform better.
+                </p>
+                <p>
+                  I spent over a decade coordinating emergency medical services, managing
+                  operations, building teams, and turning messy field data into decisions
+                  that mattered under pressure. Not once from behind a desk.
+                </p>
+                <p>
+                  That background shapes everything I build. I designed Power BI dashboards
+                  across 7 departments: HR & Workforce, Finance, Operations & Logistics,
+                  Supply Chain, Sales & Marketing, Executive, and Public Relations.
+                  I streamlined claims workflows using
+                  Excel automation that gave teams back hours of manual processing time
+                  every week.
+                </p>
+                <p>
+                  Now I channel that experience through CareerDataSolutions, helping
+                  organizations make their data work harder and professionals make their
+                  careers move faster.
+                </p>
+              </div>
               <div className="about-page__tags">
                 {credentials.map((c) => (
                   <span key={c} className="about-page__tag">{c}</span>
@@ -48,32 +68,6 @@ export default function About() {
         </div>
       </section>
 
-      {/* Story section */}
-      <section className="section about-page__story" aria-label="Kabiru's story">
-        <div className="container">
-          <div className="about-page__story-text">
-            <h2>From the field to your organization</h2>
-            <p>
-              I spent over a decade coordinating emergency medical services, managing
-              operations, building teams, and turning messy field data into decisions
-              that mattered under pressure. Not once from behind a desk.
-            </p>
-            <p>
-              That background shapes everything I build. I designed Power BI dashboards
-              across 7 departments: HR, Finance, Operations, Procurement, Business
-              Development, Executive, and PR. I streamlined claims workflows using
-              Excel automation that gave teams back hours of manual processing time
-              every week.
-            </p>
-            <p>
-              Now I channel that experience through CareerDataSolutions, helping
-              organizations make their data work harder and professionals make their
-              careers move faster.
-            </p>
-          </div>
-        </div>
-      </section>
-
       {/* Mid-page CTA */}
       <section className="about-page__mid-cta" aria-label="Work with Kabiru">
         <div className="container">
@@ -98,7 +92,7 @@ export default function About() {
             </div>
             <div>
               <div className="about-page__stat-num" style={{ color: 'var(--white)' }}>2</div>
-              <div className="about-page__stat-label">Service specialties, one trusted consultancy</div>
+              <div className="about-page__stat-label">Service specialities, one trusted consultancy</div>
             </div>
           </div>
         </div>

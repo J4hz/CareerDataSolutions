@@ -69,16 +69,18 @@ export const whyUs = [
   },
   {
     id: 3,
-    icon: "check",
+    icon: "pulse",
     title: "Results you can measure",
     body: "Every dashboard tracks a real KPI. Every CV targets a specific role and market. The deliverable is always something you can point to and say: it worked.",
   },
 ];
 
 export const dashboardStats = [
-  { label: "HR", value: 88 },
+  { label: "HR & WF", value: 88 },
   { label: "Finance", value: 95 },
-  { label: "Operations", value: 76, color: 'var(--gold)' },
+  { label: "Ops & Logi.", value: 82 },
+  { label: "Supply Chain", value: 78 },
+  { label: "Sales & Mktg", value: 72 },
+  { label: "Public Rel.", value: 68 },
   { label: "Executive", value: 100 },
-  { label: "Procurement", value: 82 },
 ];
