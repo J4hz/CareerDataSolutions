@@ -30,9 +30,9 @@
 
 .navbar__logo-img {
   display: block;
-  height: 100px;
+  height: 130px;
   width: auto;
-  max-width: 420px;
+  max-width: 460px;
   object-fit: contain;
   object-position: left center;
   mix-blend-mode: multiply;
@@ -40,15 +40,15 @@
 
 @media (max-width: 768px) {
   .navbar__logo-img {
-    height: 78px;
-    max-width: 320px;
+    height: 100px;
+    max-width: 360px;
   }
 }
 
 @media (max-width: 400px) {
   .navbar__logo-img {
-    height: 64px;
-    max-width: 250px;
+    height: 84px;
+    max-width: 280px;
   }
 }
 
@@ -208,6 +208,9 @@
 }
 
 @media (max-width: 768px) {
+  .navbar__inner {
+    height: 88px;
+  }
   .navbar__nav {
     display: none;
   }
