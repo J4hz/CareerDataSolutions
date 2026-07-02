@@ -5,7 +5,6 @@ import { packages } from '../data/packages';
 import { testimonials } from '../data/testimonials';
 import { posts } from '../data/blog';
 import { whyUs, dataProcess, careerProcess, dashboardStats } from '../data/process';
-import { CALENDLY_URL } from '../config';
 import { useInView } from '../hooks/useInView';
 import ServiceCard from '../components/ui/ServiceCard';
 import PackagesCarousel from '../components/ui/PackagesCarousel';
@@ -118,14 +117,9 @@ export default function Home() {
             Built on 12 years of real operational experience.
           </p>
           <div className="hero__actions">
-            <a
-              href={CALENDLY_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn--teal btn--lg btn--pulse"
-            >
+            <Link to="/contact/data" className="btn btn--teal btn--lg btn--pulse">
               Book a free discovery call
-            </a>
+            </Link>
             <Link to="/services" className="btn btn--ghost btn--lg">
               Explore services →
             </Link>
