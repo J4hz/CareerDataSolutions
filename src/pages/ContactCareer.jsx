@@ -10,6 +10,7 @@ export default function ContactCareer() {
     targetRole:      '',
     targetMarket:    '',
     experienceLevel: '',
+    careerGoals:     '',
     message:         '',
   });
   const [cvFile,     setCvFile]     = useState(null);
@@ -49,9 +50,12 @@ export default function ContactCareer() {
     const e = {};
     if (!formData.name.trim())            e.name = 'Name is required';
     if (!formData.email.trim())           e.email = 'Email is required';
+    if (!formData.phone.trim())           e.phone = 'Phone number is required';
     if (!formData.targetRole.trim())      e.targetRole = 'Target role is required';
     if (!formData.targetMarket)           e.targetMarket = 'Please select a market';
     if (!formData.experienceLevel)        e.experienceLevel = 'Please select your level';
+    if (!formData.careerGoals.trim())     e.careerGoals = 'Please tell us your career goals';
+    if (!formData.message.trim())         e.message = 'This field is required';
     if (!cvFile)                          e.cv = 'Please upload your CV';
     return e;
   };
@@ -245,16 +249,17 @@ export default function ContactCareer() {
 
                 {/* Phone */}
                 <div className="contact-form-card__field">
-                  <label>Phone number
-                    <span className="field-optional"> (optional)</span>
-                  </label>
+                  <label>Phone number</label>
                   <input
                     type="tel"
                     placeholder="+254 7XX XXX XXX"
                     value={formData.phone}
                     onChange={e => setFormData(p => ({
                       ...p, phone: e.target.value }))}
+                    className={errors.phone ? 'field-error' : ''}
                   />
+                  {errors.phone &&
+                    <span className="field-error-msg">{errors.phone}</span>}
                 </div>
 
                 {/* Target role */}
@@ -319,6 +324,24 @@ export default function ContactCareer() {
                     </span>}
                 </div>
 
+                {/* Career goals */}
+                <div className="contact-form-card__field">
+                  <label>What are your career goals?</label>
+                  <textarea
+                    rows={3}
+                    placeholder="Where do you want your career
+                                 to be in the next few years?"
+                    value={formData.careerGoals}
+                    onChange={e => setFormData(p => ({
+                      ...p, careerGoals: e.target.value }))}
+                    className={errors.careerGoals ? 'field-error' : ''}
+                  />
+                  {errors.careerGoals &&
+                    <span className="field-error-msg">
+                      {errors.careerGoals}
+                    </span>}
+                </div>
+
                 {/* CV Upload */}
                 <div className="contact-form-card__field">
                   <label>Upload your CV</label>
@@ -376,9 +399,7 @@ export default function ContactCareer() {
 
                 {/* Notes */}
                 <div className="contact-form-card__field">
-                  <label>Anything else we should know?
-                    <span className="field-optional"> (optional)</span>
-                  </label>
+                  <label>Anything else we should know?</label>
                   <textarea
                     rows={3}
                     placeholder="Current situation, urgency,
@@ -386,7 +407,10 @@ export default function ContactCareer() {
                     value={formData.message}
                     onChange={e => setFormData(p => ({
                       ...p, message: e.target.value }))}
+                    className={errors.message ? 'field-error' : ''}
                   />
+                  {errors.message &&
+                    <span className="field-error-msg">{errors.message}</span>}
                 </div>
 
                 <button
