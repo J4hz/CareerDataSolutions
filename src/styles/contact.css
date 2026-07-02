@@ -7,7 +7,7 @@
 
 .contact-page__inner {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 64px;
   max-width: 1000px;
   margin: 0 auto;
@@ -138,7 +138,6 @@
 /* ── Responsive ── */
 @media (max-width: 768px) {
   .contact-page__inner {
-    grid-template-columns: 1fr;
     gap: 40px;
   }
 

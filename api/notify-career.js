@@ -20,12 +20,13 @@ export default async function handler(req, res) {
   const {
     name, email, phone,
     targetRole, targetMarket, experienceLevel,
-    message, cvBase64, cvName, cvType,
+    careerGoals, message, cvBase64, cvName, cvType,
   } = req.body;
 
-  if (!name || !email || !cvBase64) {
+  if (!name || !email || !phone || !targetRole || !targetMarket
+      || !experienceLevel || !careerGoals || !message || !cvBase64) {
     return res.status(400).json({
-      error: 'Name, email and CV are required'
+      error: 'All fields and CV are required'
     });
   }
 
@@ -96,10 +97,18 @@ export default async function handler(req, res) {
             <tr>
               <td style="padding:10px 0;color:#6B7280;
                          font-size:14px;vertical-align:top;">
+                Career goals</td>
+              <td style="padding:10px 0;color:#0F172A;
+                         font-size:14px;">
+                ${careerGoals}</td>
+            </tr>
+            <tr>
+              <td style="padding:10px 0;color:#6B7280;
+                         font-size:14px;vertical-align:top;">
                 Notes</td>
               <td style="padding:10px 0;color:#0F172A;
                          font-size:14px;">
-                ${message || 'None'}</td>
+                ${message}</td>
             </tr>
           </table>
           <p style="margin-top:24px;font-size:13px;
