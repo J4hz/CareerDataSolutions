@@ -5,6 +5,7 @@ export default function PackageCard({ pkg, variant = 'card' }) {
   const accent = isData ? 'var(--teal)' : 'var(--gold)';
   const badgeBg = isData ? 'var(--teal)' : 'var(--gold)';
   const badgeColor = isData ? 'var(--white)' : 'var(--navy)';
+  const contactPath = isData ? '/contact/data' : '/contact/career';
 
   if (variant === 'list') {
     const trackPillBg = isData ? 'rgba(29,158,117,0.10)' : 'rgba(244,168,51,0.12)';
@@ -46,7 +47,7 @@ export default function PackageCard({ pkg, variant = 'card' }) {
           <div className="pkg-row__kes" style={{ color: accent }}>{pkg.priceKES}</div>
           <div className="pkg-row__usd">{pkg.priceUSD} · {pkg.timeline}</div>
           <Link
-            to="/contact"
+            to={contactPath}
             className="pkg-row__cta"
             style={{ background: isData ? 'var(--teal)' : 'var(--gold)', color: isData ? '#fff' : 'var(--navy)' }}
           >
@@ -124,7 +125,7 @@ export default function PackageCard({ pkg, variant = 'card' }) {
       </ul>
 
       <Link
-        to="/contact"
+        to={contactPath}
         className={`pkg-card__cta pkg-card__cta--${pkg.track}`}
         style={{
           background: isData ? 'var(--teal)' : 'var(--gold)',
