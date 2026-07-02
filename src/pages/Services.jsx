@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 import { services } from '../data/services';
 import { dataProcess, careerProcess } from '../data/process';
-import { CALENDLY_URL } from '../config';
 import CTASection from '../components/CTASection';
 import '../styles/services.css';
 import '../styles/button.css';
@@ -53,14 +52,9 @@ export default function Services() {
                       </div>
 
                       {isTeal ? (
-                        <a
-                          href={CALENDLY_URL}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="btn btn--teal"
-                        >
+                        <Link to="/contact/data" className="btn btn--teal">
                           {s.cta}
-                        </a>
+                        </Link>
                       ) : (
                         <Link to="/contact/career" className="btn btn--gold">
                           {s.cta}

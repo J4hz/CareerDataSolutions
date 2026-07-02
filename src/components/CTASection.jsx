@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import { NavLink } from 'react-router-dom';
-import { WHATSAPP_URL, CALENDLY_URL } from '../config';
+import { WHATSAPP_URL } from '../config';
 
 const CTASection = memo(function CTASection() {
   return (
@@ -15,14 +15,9 @@ const CTASection = memo(function CTASection() {
           what's possible and what it would cost.
         </p>
         <div className="cta-section__actions">
-          <a
-            href={CALENDLY_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn btn--teal btn--lg btn--pulse"
-          >
+          <NavLink to="/contact/data" className="btn btn--teal btn--lg btn--pulse">
             Book a discovery call
-          </a>
+          </NavLink>
           <a
             href={WHATSAPP_URL}
             target="_blank"
