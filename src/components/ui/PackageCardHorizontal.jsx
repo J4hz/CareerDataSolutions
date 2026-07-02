@@ -25,6 +25,7 @@ const ClockIcon = () => (
 
 export default function PackageCardHorizontal({ pkg }) {
   const isData     = pkg.track === 'data';
+  const contactPath = isData ? '/contact/data' : '/contact/career';
   const accent     = isData ? 'var(--teal)' : 'var(--gold)';
   const badgeBg    = isData ? 'var(--teal)' : 'var(--gold)';
   const badgeColor = isData ? 'var(--white)' : 'var(--navy)';
@@ -160,7 +161,7 @@ export default function PackageCardHorizontal({ pkg }) {
 
         {/* CTA button */}
         <Link
-          to="/contact"
+          to={contactPath}
           className={`pkg-h-cta pkg-h-cta--${pkg.track}`}
           style={{
             background: isData ? 'var(--teal)' : 'var(--gold)',
@@ -171,7 +172,7 @@ export default function PackageCardHorizontal({ pkg }) {
         </Link>
 
         {/* Discovery call note */}
-        <Link to="/contact" className="pkg-h-note">
+        <Link to={contactPath} className="pkg-h-note">
           <svg width="11" height="13" viewBox="0 0 11 13" aria-hidden="true">
             <polygon points="6,0 0,7 5,7 5,13 11,6 6,6" fill={isData ? 'var(--teal)' : 'var(--gold)'} />
           </svg>
