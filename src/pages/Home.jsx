@@ -1,5 +1,6 @@
 import { memo } from 'react';
 import { Link } from 'react-router-dom';
+import { CALENDLY_URL } from '../config';
 import { services } from '../data/services';
 import { packages } from '../data/packages';
 import { testimonials } from '../data/testimonials';
@@ -117,9 +118,14 @@ export default function Home() {
             Built on 12 years of real operational experience.
           </p>
           <div className="hero__actions">
-            <Link to="/contact/data" className="btn btn--teal btn--lg btn--pulse">
+            <a
+              href={CALENDLY_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn--teal btn--lg"
+            >
               Book a free discovery call
-            </Link>
+            </a>
             <Link to="/services" className="btn btn--ghost btn--lg">
               Explore services →
             </Link>
