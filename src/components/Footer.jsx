@@ -83,7 +83,6 @@ const Footer = memo(function Footer() {
         </p>
         <nav className="footer__platforms" aria-label="External platforms">
           <a href="#upwork" rel="noopener noreferrer">Upwork</a>
-          <a href="#fiverr" rel="noopener noreferrer">Fiverr</a>
           <a href="#linkedin" rel="noopener noreferrer">LinkedIn</a>
           <a href="#google" rel="noopener noreferrer">Google Business</a>
         </nav>
