@@ -31,7 +31,7 @@ export const packages = [
     name: 'Analytics Pro',
     audience: '11–50 staff',
     priceKES: 'KES 45,000',
-    priceUSD: '$348 USD',
+    priceUSD: '$350 USD',
     timeline: '2–3 weeks',
     features: [
       '2–3 department Power BI dashboards',
@@ -54,7 +54,7 @@ export const packages = [
     name: 'Enterprise Suite',
     audience: '51–250 staff',
     priceKES: 'KES 90,000',
-    priceUSD: '$696 USD',
+    priceUSD: '$700 USD',
     timeline: '3–5 weeks',
     features: [
       '4–7 department Power BI dashboards',
@@ -78,7 +78,7 @@ export const packages = [
     name: 'Career Kickstart',
     audience: 'Fresh graduate · 0–1 yr experience',
     priceKES: 'KES 5,500',
-    priceUSD: '$43 USD',
+    priceUSD: '$45 USD',
     timeline: '3 business days',
     features: [
       'ATS-optimized CV (1–2 pages)',
@@ -98,7 +98,7 @@ export const packages = [
     name: 'Career Builder',
     audience: '1–3 years experience',
     priceKES: 'KES 9,500',
-    priceUSD: '$74 USD',
+    priceUSD: '$75 USD',
     timeline: '4–5 business days',
     features: [
       'ATS-optimized CV',
@@ -121,7 +121,7 @@ export const packages = [
     name: 'Career Pro',
     audience: '3–7 years experience',
     priceKES: 'KES 15,000',
-    priceUSD: '$116 USD',
+    priceUSD: '$120 USD',
     timeline: '5–7 business days',
     features: [
       'ATS-optimized CV',
