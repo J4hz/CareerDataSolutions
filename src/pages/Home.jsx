@@ -1,5 +1,6 @@
-import { memo } from 'react';
+import { useState, memo } from 'react';
 import { Link } from 'react-router-dom';
+import { CALENDLY_URL } from '../config';
 import { services } from '../data/services';
 import { packages } from '../data/packages';
 import { testimonials } from '../data/testimonials';
@@ -7,7 +8,7 @@ import { posts } from '../data/blog';
 import { whyUs, dataProcess, careerProcess, dashboardStats } from '../data/process';
 import { useInView } from '../hooks/useInView';
 import ServiceCard from '../components/ui/ServiceCard';
-import PackagesCarousel from '../components/ui/PackagesCarousel';
+import PackageCard from '../components/ui/PackageCard';
 import TestimonialCard from '../components/ui/TestimonialCard';
 import BlogCard from '../components/ui/BlogCard';
 import ProcessSteps from '../components/ui/ProcessSteps';
@@ -16,27 +17,28 @@ import '../styles/home.css';
 import '../styles/button.css';
 
 const trustItems = [
-  'Excel and Power BI visualization expert',
+  'Excel & Power BI visualization',
   'ATS-optimized CV writing',
   'LinkedIn profile optimization',
   'Local KES & international USD pricing',
   'M-Pesa · Payoneer · Bank transfer',
+  'Claims and payment process analytics',
 ];
 
 const statsBar = [
-  { num: '12', label: 'Years of operational data experience in EMS', color: 'var(--teal)' },
-  { num: '7', label: 'Departments dashboarded\nHR & Workforce · Finance · Operations & Logistics · Supply Chain · Sales & Marketing · Public Relations · Executive', color: 'var(--teal)' },
-  { num: '2', label: 'Service specialities, one trusted consultancy', color: 'var(--gold)' },
+  { num: '7', label: 'Departments dashboarded\nHR · Finance · Operations · Procurement · BD · Executive · PR', color: 'var(--teal)' },
+  { num: '12', label: 'Years of operational data experience in EMS', color: 'var(--gold)' },
+  { num: '2', label: 'Service specialisms, one trusted consultancy', color: 'var(--white)' },
 ];
 
 const departments = [
   { name: 'HR & Workforce', status: 'Live' },
   { name: 'Finance', status: 'Live' },
   { name: 'Operations & Logistics', status: 'Live' },
-  { name: 'Supply Chain', status: 'Live' },
-  { name: 'Sales & Marketing', status: 'Live' },
-  { name: 'Executive', status: 'Live' },
-  { name: 'Public Relations', status: 'Live' },
+  { name: 'Procurement', status: 'Live' },
+  { name: 'Business Development', status: 'Live' },
+  { name: 'Executive Leadership', status: 'Live' },
+  { name: 'PR & Communications', status: 'Live' },
 ];
 
 const pillarIcons = {
@@ -54,14 +56,17 @@ const pillarIcons = {
       <circle cx="9" cy="9" r="1.5" fill="currentColor"/>
     </svg>
   ),
-  pulse: (
+  check: (
     <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-      <polyline points="16.5 9 13.5 9 11.25 15.75 6.75 2.25 4.5 9 1.5 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M3 9.5L7 13.5L15 5.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
   ),
 };
 
 const ProcessSection = memo(function ProcessSection() {
+  const [activeTab, setActiveTab] = useState('data-analytics');
+  const processAccent = activeTab === 'data-analytics' ? 'var(--teal)' : 'var(--gold)';
+
   return (
     <section className="section process" aria-labelledby="process-heading">
       <div className="container">
@@ -74,15 +79,29 @@ const ProcessSection = memo(function ProcessSection() {
           </p>
         </div>
 
-        <div className="process__track-block">
-          <p className="process__track-label process__track-label--data">Data analytics process</p>
-          <ProcessSteps steps={dataProcess} accentColor="var(--teal)" />
+        <div className="process__tabs" role="tablist">
+          <button
+            role="tab"
+            aria-selected={activeTab === 'data-analytics'}
+            className={`process__tab${activeTab === 'data-analytics' ? ' active' : ''}`}
+            onClick={() => setActiveTab('data-analytics')}
+          >
+            Data analytics process
+          </button>
+          <button
+            role="tab"
+            aria-selected={activeTab === 'career-services'}
+            className={`process__tab${activeTab === 'career-services' ? ' active' : ''}`}
+            onClick={() => setActiveTab('career-services')}
+          >
+            Career services process
+          </button>
         </div>
 
-        <div className="process__track-block">
-          <p className="process__track-label process__track-label--career">Career services process</p>
-          <ProcessSteps steps={careerProcess} accentColor="var(--gold)" />
-        </div>
+        <ProcessSteps
+          steps={activeTab === 'data-analytics' ? dataProcess : careerProcess}
+          accentColor={processAccent}
+        />
       </div>
     </section>
   );
@@ -104,22 +123,24 @@ export default function Home() {
     <main>
       {/* HERO */}
       <section className="hero" aria-labelledby="hero-heading">
-        <span className="hero__wm" aria-hidden="true">12</span>
         <div className="hero__inner">
           <h1 id="hero-heading">
-            Data Driven <span style={{ color: 'var(--teal)' }}>Impact.</span>
-            <br />
-            Career Defining <span style={{ color: 'var(--gold)' }}>Results.</span>
+            Data that speaks. Careers that land.
           </h1>
           <p className="hero__sub">
-            CareerDataSolutions bridges two worlds; transforming raw organizational data
-            into actionable insights and propelling professionals towards thriving careers.
-            Built on 12 years of real operational experience.
+            CareerDataSolutions bridges two worlds: turning raw organizational data into
+            actionable Power BI dashboards, and professionals into interview-ready
+            candidates. Built on 12 years of real operational experience.
           </p>
           <div className="hero__actions">
-            <Link to="/contact/data" className="btn btn--teal btn--lg btn--pulse">
+            <a
+              href={CALENDLY_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn--teal btn--lg"
+            >
               Book a free discovery call
-            </Link>
+            </a>
             <Link to="/services" className="btn btn--ghost btn--lg">
               Explore services →
             </Link>
@@ -134,7 +155,7 @@ export default function Home() {
               <span className="hero__stat-label">Departments dashboarded</span>
             </div>
             <div className="hero__stat">
-              <span className="hero__stat-num" style={{ color: 'var(--gold)' }}>2</span>
+              <span className="hero__stat-num">2</span>
               <span className="hero__stat-label">Expert service tracks</span>
             </div>
           </div>
@@ -167,9 +188,9 @@ export default function Home() {
         <div className="container">
           <div className="services-overview__header">
             <span className="eyebrow">What we do</span>
-            <h2 id="services-heading">Two specialities. One clear goal.</h2>
+            <h2 id="services-heading">Two specialisms. One clear goal.</h2>
             <p className="services-overview__subtext">
-              Whether you need your data to work for you or your career to thrive,
+              Whether you need your data to work harder or your career to move faster,
               CareerDataSolutions delivers measurable results, not just documents.
             </p>
           </div>
@@ -231,16 +252,15 @@ export default function Home() {
             </div>
 
             <aside className="why-us__panel" aria-label="Founder quote and dashboard stats">
-              <span className="why-us__initials" aria-hidden="true">KN</span>
               <blockquote className="why-us__quote">
                 "I didn't start as a data analyst behind a desk. I built my career in
-                the field, where every data point represented a real decision."
+                the field — where every data point represented a real decision."
               </blockquote>
               <p className="why-us__attr">
                 Kabiru Nyabwengi | Founder · CareerDataSolutions · 12 Yrs EMS
               </p>
 
-              <p className="why-us__chart-label">Data Analytics — 7-department dashboard coverage</p>
+              <p className="why-us__chart-label">Power BI — 7-dept dashboard coverage</p>
               <div className="why-us__bars">
                 {dashboardStats.map((bar) => (
                   <div key={bar.label} className="why-us__bar-row">
@@ -268,26 +288,6 @@ export default function Home() {
         <ProcessSection />
       </div>
 
-      {/* HOME PACKAGES */}
-      <section
-        ref={packagesRef}
-        className={`section home-packages fade-up${packagesInView ? ' is-visible' : ''}`}
-        aria-labelledby="packages-heading"
-        style={{ overflow: 'hidden' }}
-      >
-        <div className="container">
-          <div className="home-packages__header">
-            <span className="eyebrow">Pricing</span>
-            <h2 id="packages-heading">Packages built for every stage</h2>
-            <p className="home-packages__sub">
-              Local KES pricing for Kenya. USD rates for international and Upwork
-              projects. All packages include clear timelines and revision rounds.
-            </p>
-          </div>
-          <PackagesCarousel packages={packages} />
-        </div>
-      </section>
-
       {/* ABOUT SNIPPET */}
       <section
         ref={aboutRef}
@@ -301,20 +301,14 @@ export default function Home() {
               <h2 id="about-snippet-heading">12 years in the field.</h2>
               <div className="about-snippet__story">
                 <p>
-                  CareerDataSolutions was built on a simple idea: the same discipline
-                  that keeps emergency operations running can make organizational data
-                  and professional careers perform better.
-                </p>
-                <p>
                   I spent over a decade coordinating emergency medical services, managing
                   operations, building teams, and turning messy field data into decisions
                   that mattered under pressure. Not once from behind a desk.
                 </p>
                 <p>
                   That background shapes everything I build. I designed Power BI dashboards
-                  across 7 departments: HR & Workforce, Finance, Operations & Logistics,
-                  Supply Chain, Sales & Marketing, Executive, and Public Relations.
-                  I streamlined claims workflows using
+                  across 7 departments: HR, Finance, Operations, Procurement, Business
+                  Development, Executive, and PR. I streamlined claims workflows using
                   Excel automation that gave teams back hours of manual processing time
                   every week.
                 </p>
@@ -346,7 +340,36 @@ export default function Home() {
         </div>
       </section>
 
-      {/* TESTIMONIALS */}
+      {/* HOME PACKAGES */}
+      <section
+        ref={packagesRef}
+        className={`section home-packages fade-up${packagesInView ? ' is-visible' : ''}`}
+        aria-labelledby="packages-heading"
+      >
+        <div className="container">
+          <div className="home-packages__header">
+            <span className="eyebrow">Pricing</span>
+            <h2 id="packages-heading">Packages built for every stage</h2>
+            <p className="home-packages__sub">
+              Local KES pricing for Kenya. USD rates for international and Upwork
+              projects. All packages include clear timelines and revision rounds.
+            </p>
+          </div>
+          <div className="home-packages__grid">
+            {packages.map((pkg) => (
+              <PackageCard key={pkg.id} pkg={pkg} compact />
+            ))}
+          </div>
+          <div className="home-packages__cta">
+            <Link to="/packages" className="btn btn--ghost-dark btn--lg">
+              View all packages &amp; book a call →
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* TESTIMONIALS (hidden for now) */}
+      {false && (
       <section
         ref={testimonialsRef}
         className={`section testimonials fade-up${testimonialsInView ? ' is-visible' : ''}`}
@@ -369,6 +392,7 @@ export default function Home() {
           </div>
         </div>
       </section>
+      )}
 
       {/* BLOG PREVIEW */}
       <section
