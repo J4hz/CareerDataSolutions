@@ -1,7 +1,7 @@
 /* ── HERO ── */
 .hero {
   background: linear-gradient(155deg, var(--navy) 0%, var(--navy2) 60%, #0d2240 100%);
-  padding: 108px 0 80px;
+  padding: 128px 0 80px;
   position: relative;
   overflow: hidden;
 }
@@ -125,13 +125,13 @@
 
 @media (max-width: 768px) {
   .hero {
-    padding: 88px 0 64px;
+    padding: 104px 0 64px;
   }
 }
 
 @media (max-width: 640px) {
   .hero {
-    padding: 72px 0 48px;
+    padding: 96px 0 48px;
   }
 
   .hero__actions {

@@ -63,8 +63,8 @@ const Footer = memo(function Footer() {
               </a>
             </li>
             <li>
-              <a href="mailto:contact@careerdatasolutions.co.ke">
-                contact@careerdatasolutions.co.ke
+              <a href="mailto:careerdatasolutions@gmail.com">
+                careerdatasolutions@gmail.com
               </a>
             </li>
             <li>
