@@ -5,7 +5,7 @@
 //
 // For local dev (.env.local):
 //   RESEND_API_KEY=re_xxxxxxxxxxxx
-//   NOTIFY_EMAIL=careerdatasolutions@gmail.com
+//   NOTIFY_EMAIL=kabiru@careerdatasolutions.com
 //   NOTIFY_FROM=onboarding@resend.dev
 
 import { Resend } from 'resend';
@@ -34,7 +34,7 @@ export default async function handler(req, res) {
     const { error } = await resend.emails.send({
       from: process.env.NOTIFY_FROM || 'onboarding@resend.dev',
       to:   process.env.NOTIFY_EMAIL
-            || 'careerdatasolutions@gmail.com',
+            || 'kabiru@careerdatasolutions.com',
       subject: `New CV submission: ${name} — ${targetRole}`,
       attachments: [{
         filename: cvName,

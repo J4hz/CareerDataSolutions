@@ -81,7 +81,7 @@ export default function ContactData() {
             <h1 className="contact-page__h1">Let's talk about your data.</h1>
 
             <p className="contact-page__sub">
-              Free. 20 minutes. No commitment. Walk away with clarity on what your
+              Free. 30 minutes. No commitment. Walk away with clarity on what your
               dashboards could look like and what it would cost.
             </p>
 
@@ -111,12 +111,12 @@ export default function ContactData() {
 
               {/* Email */}
               <a
-                href="mailto:careerdatasolutions@gmail.com"
+                href="mailto:kabiru@careerdatasolutions.com"
                 className="contact-alt-card"
               >
                 <div className="contact-alt-icon" style={{ background: 'var(--navy)' }}>@</div>
                 <div>
-                  <div className="contact-alt-card__label">careerdatasolutions@gmail.com</div>
+                  <div className="contact-alt-card__label">kabiru@careerdatasolutions.com</div>
                   <div className="contact-alt-card__sub">Usually responds within a few hours</div>
                 </div>
               </a>

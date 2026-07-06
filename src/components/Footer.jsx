@@ -24,7 +24,7 @@ const Footer = memo(function Footer() {
             />
           </div>
           <p className="footer__tagline">
-            Data-Driven Insights. Career-Defining Results. Based in Nairobi, Kenya.
+            Data Driven Impact. Career Defining Results. Based in Nairobi, Kenya.
             Serving clients locally and globally.
           </p>
         </div>
@@ -63,8 +63,8 @@ const Footer = memo(function Footer() {
               </a>
             </li>
             <li>
-              <a href="mailto:careerdatasolutions@gmail.com">
-                careerdatasolutions@gmail.com
+              <a href="mailto:kabiru@careerdatasolutions.com">
+                kabiru@careerdatasolutions.com
               </a>
             </li>
             <li>

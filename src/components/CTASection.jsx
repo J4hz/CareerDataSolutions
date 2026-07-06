@@ -27,10 +27,10 @@ const CTASection = memo(function CTASection() {
             Chat on WhatsApp
           </a>
           <a
-            href="mailto:careerdatasolutions@gmail.com"
+            href="mailto:kabiru@careerdatasolutions.com"
             className="btn btn--ghost btn--lg"
           >
-            careerdatasolutions@gmail.com
+            kabiru@careerdatasolutions.com
           </a>
         </div>
         <NavLink to="/contact/career" className="cta-sec__career-link">

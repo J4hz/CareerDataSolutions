@@ -13,5 +13,5 @@ export const CAL_LINK      = "careerdatasolutions/discoverycall";
 
 // Notification email — set these as environment variables in Vercel dashboard
 // Never import RESEND_API_KEY into any React component
-export const NOTIFY_EMAIL = "careerdatasolutions@gmail.com";
+export const NOTIFY_EMAIL = "kabiru@careerdatasolutions.com";
 export const NOTIFY_FROM  = "onboarding@resend.dev";

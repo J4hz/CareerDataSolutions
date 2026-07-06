@@ -5,7 +5,7 @@
 //
 // For local dev, create a .env.local file at the project root:
 //   RESEND_API_KEY=re_xxxxxxxxxxxx
-//   NOTIFY_EMAIL=careerdatasolutions@gmail.com
+//   NOTIFY_EMAIL=kabiru@careerdatasolutions.com
 //   NOTIFY_FROM=onboarding@resend.dev
 
 // SETUP CHECKLIST:
@@ -38,7 +38,7 @@ export default async function handler(req, res) {
   try {
     const { error } = await resend.emails.send({
       from: process.env.NOTIFY_FROM || 'onboarding@resend.dev',
-      to:   process.env.NOTIFY_EMAIL || 'careerdatasolutions@gmail.com',
+      to:   process.env.NOTIFY_EMAIL || 'kabiru@careerdatasolutions.com',
       subject: `New discovery call booked: ${name}`,
       html: `
         <div style="font-family: sans-serif; max-width: 560px;">
