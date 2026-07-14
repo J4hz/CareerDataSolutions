@@ -1,0 +1,68 @@
+# CareerDataSolutions — https://careerdatasolutions.com
+#
+# Everything on this site is public marketing content. Crawl all of it,
+# including the AI/LLM crawlers: being cited in an AI answer is the point.
+# The named agents below are already covered by the User-agent: * rule —
+# they are spelled out so it's unambiguous that they are welcome, and so
+# that narrowing access later is a deliberate edit rather than an omission.
+
+User-agent: *
+Allow: /
+
+# Search
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+# AI / LLM crawlers
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+User-agent: meta-externalagent
+Allow: /
+
+Sitemap: https://careerdatasolutions.com/sitemap.xml

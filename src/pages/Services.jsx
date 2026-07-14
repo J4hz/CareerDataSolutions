@@ -51,15 +51,26 @@ export default function Services() {
                         ))}
                       </div>
 
-                      {isTeal ? (
-                        <Link to="/contact/data" className="btn btn--teal">
-                          {s.cta}
+                      {/* This page is the overview of both tracks; each card
+                          hands off to that track's own landing page as well as
+                          straight into its contact flow. */}
+                      <div className="services-page__actions">
+                        {isTeal ? (
+                          <Link to="/contact/data" className="btn btn--teal">
+                            {s.cta}
+                          </Link>
+                        ) : (
+                          <Link to="/contact/career" className="btn btn--gold">
+                            {s.cta}
+                          </Link>
+                        )}
+                        <Link
+                          to={isTeal ? '/data-services' : '/career-services'}
+                          className="btn btn--ghost-dark"
+                        >
+                          Full {isTeal ? 'data' : 'career'} services page
                         </Link>
-                      ) : (
-                        <Link to="/contact/career" className="btn btn--gold">
-                          {s.cta}
-                        </Link>
-                      )}
+                      </div>
                     </div>
 
                     <aside className="services-page__right-panel" aria-label={`${s.track} process`}>

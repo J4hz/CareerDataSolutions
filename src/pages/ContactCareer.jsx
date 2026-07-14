@@ -2,6 +2,11 @@ import { useState, useRef } from 'react';
 import { NavLink } from 'react-router-dom';
 import '../styles/contact.css';
 
+// Mirrors MAX_CV_BYTES in api/_lib/sanitize.js. The server enforces this for
+// real — this copy exists only so the user gets told before a 4MB upload.
+const MAX_CV_MB = 3;
+const MAX_CV_BYTES = MAX_CV_MB * 1024 * 1024;
+
 export default function ContactCareer() {
   const [formData, setFormData] = useState({
     name:            '',
@@ -31,9 +36,9 @@ export default function ContactCareer() {
         cv: 'Please upload a PDF or Word document' }));
       return;
     }
-    if (file.size > 10 * 1024 * 1024) {
+    if (file.size > MAX_CV_BYTES) {
       setErrors(prev => ({ ...prev,
-        cv: 'File must be under 10MB' }));
+        cv: `File must be under ${MAX_CV_MB}MB` }));
       return;
     }
     setCvFile(file);
@@ -77,7 +82,7 @@ export default function ContactCareer() {
         reader.readAsDataURL(cvFile);
       });
 
-      await fetch('/api/notify-career', {
+      const res = await fetch('/api/notify-career', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -87,6 +92,15 @@ export default function ContactCareer() {
           cvType:    cvFile.type,
         }),
       });
+
+      // The response was previously ignored, so a rejected upload still showed
+      // the success screen and the CV was never sent. Now the server's own
+      // validation message is what the user sees.
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        setErrors({ submit: body.error || 'Something went wrong. Please try again or email us directly.' });
+        return;
+      }
 
       setSubmitted(true);
     } catch (err) {
@@ -381,7 +395,7 @@ export default function ContactCareer() {
                           Drop your CV here or click to browse
                         </span>
                         <span className="cv-dropzone__hint">
-                          PDF or Word · Max 10MB
+                          PDF or Word · Max {MAX_CV_MB}MB
                         </span>
                       </div>
                     )}

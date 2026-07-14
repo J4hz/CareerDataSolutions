@@ -10,6 +10,9 @@ export const posts = [
     excerpt:
       "Most healthcare teams in Kenya are sitting on goldmines of operational data with no way to read it. Here's the five-step framework I use to turn that data into decisions.",
     author: "Kabiru Nyabwengi",
+    // ISO date. Feeds sitemap <lastmod> and BlogPosting datePublished —
+    // both are wrong if this is wrong, so update it when a post is revised.
+    date: "2026-06-24",
     readTime: "8 min read",
     body: `
 Most healthcare organizations in Kenya generate enormous volumes of data every single day: patient records, billing cycles, claims submissions, procurement logs, staff attendance, bed occupancy rates. And most of it sits in spreadsheets nobody reads, or systems nobody built reports from.
@@ -42,8 +45,13 @@ The data was always there. The decisions just had nowhere to land.
 
 If your organization is sitting on operational data that isn't driving decisions yet, that's a solvable problem, and it doesn't require a six-month IT project to fix it.
     `.trim(),
+    // Which service track this post feeds. Drives the in-article CTA, which
+    // used to send every reader to the same generic contact page regardless of
+    // what they had just spent eight minutes reading about.
+    track: "data",
     inlineCta:
       "Need a dashboard like this for your organization? Book a free discovery call.",
+    inlineCtaLabel: "Book a free discovery call",
   },
   {
     id: "cv-not-getting-responses",
@@ -56,6 +64,7 @@ If your organization is sitting on operational data that isn't driving decisions
     excerpt:
       "After reviewing hundreds of CVs from Kenyan professionals, I keep seeing the same five mistakes. None are about qualifications. All are fixable in under an hour.",
     author: "Kabiru Nyabwengi",
+    date: "2026-06-24",
     readTime: "6 min read",
     body: `
 After reviewing hundreds of CVs from Kenyan professionals targeting local and international roles, I keep seeing the same five mistakes. None of them are about qualifications. All of them are fixable.
@@ -96,7 +105,9 @@ Every one of these mistakes has the same root cause: the CV is written from the 
 
 That shift in perspective is what separates a CV that gets ignored from one that gets responses.
     `.trim(),
+    track: "career",
     inlineCta:
-      "Want your CV reviewed for free? Book a call and we'll tell you exactly what's holding it back.",
+      "Want your CV reviewed for free? Send it over and we'll tell you exactly what's holding it back.",
+    inlineCtaLabel: "Get a free CV review",
   },
 ];

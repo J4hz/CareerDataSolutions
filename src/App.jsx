@@ -2,9 +2,12 @@ import { lazy, Suspense, useEffect } from 'react';
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import Seo from './components/Seo';
 
-const Home          = lazy(() => import('./pages/Home'));
-const Services      = lazy(() => import('./pages/Services'));
+const Home           = lazy(() => import('./pages/Home'));
+const Services       = lazy(() => import('./pages/Services'));
+const DataServices   = lazy(() => import('./pages/DataServices'));
+const CareerServices = lazy(() => import('./pages/CareerServices'));
 const Packages      = lazy(() => import('./pages/Packages'));
 const About         = lazy(() => import('./pages/About'));
 const Blog          = lazy(() => import('./pages/Blog'));
@@ -28,12 +31,15 @@ function PageFallback() {
 export default function App() {
   return (
     <>
+      <Seo />
       <ScrollToTop />
       <Navbar />
       <Suspense fallback={<PageFallback />}>
         <Routes>
           <Route path="/"           element={<Home />} />
           <Route path="/services"   element={<Services />} />
+          <Route path="/data-services"   element={<DataServices />} />
+          <Route path="/career-services" element={<CareerServices />} />
           <Route path="/packages"   element={<Packages />} />
           <Route path="/about"      element={<About />} />
           <Route path="/blog"       element={<Blog />} />

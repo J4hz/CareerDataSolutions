@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { NavLink } from 'react-router-dom';
 import Cal, { getCalApi } from '@calcom/embed-react';
-import { CAL_NAMESPACE, CAL_LINK, WHATSAPP_URL } from '../config';
+import { CAL_NAMESPACE, CAL_LINK, WHATSAPP_URL, CONTACT_EMAIL } from '../config';
 import '../styles/contact.css';
 
 const expectItems = [
@@ -111,12 +111,12 @@ export default function ContactData() {
 
               {/* Email */}
               <a
-                href="mailto:kabiru@careerdatasolutions.com"
+                href={`mailto:${CONTACT_EMAIL}`}
                 className="contact-alt-card"
               >
                 <div className="contact-alt-icon" style={{ background: 'var(--navy)' }}>@</div>
                 <div>
-                  <div className="contact-alt-card__label">kabiru@careerdatasolutions.com</div>
+                  <div className="contact-alt-card__label">{CONTACT_EMAIL}</div>
                   <div className="contact-alt-card__sub">Usually responds within a few hours</div>
                 </div>
               </a>

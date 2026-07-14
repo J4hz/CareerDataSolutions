@@ -156,6 +156,27 @@
   font-weight: 600;
   color: var(--dark);
   font-size: 1rem;
+  flex: 1 1 260px;
+}
+
+/* Secondary out from an article: the reader who wants the service page before
+   the booking form. Sits under the button so the primary action stays primary. */
+.blog-post__inline-cta-link {
+  flex-basis: 100%;
+  text-align: right;
+  font-size: 0.85rem;
+  color: var(--gm);
+  transition: color var(--transition);
+}
+
+.blog-post__inline-cta-link:hover {
+  color: var(--navy);
+}
+
+@media (max-width: 600px) {
+  .blog-post__inline-cta-link {
+    text-align: left;
+  }
 }
 
 .blog-post__progress {

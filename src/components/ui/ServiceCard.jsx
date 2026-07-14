@@ -1,9 +1,18 @@
 import { memo } from 'react';
 import { Link } from 'react-router-dom';
 
+// The homepage cards now hand off to each track's own landing page rather than
+// jumping straight into a contact flow — the landing page is where someone
+// decides they want the thing they are about to be asked to book.
+const LANDING = {
+  'data-analytics': { to: '/data-services', label: 'Explore Data Services →' },
+  'career-services': { to: '/career-services', label: 'Explore Career Services →' },
+};
+
 const ServiceCard = memo(function ServiceCard({ service }) {
   const isTeal = service.id === 'data-analytics';
   const accent = isTeal ? 'var(--teal)' : 'var(--gold)';
+  const landing = LANDING[service.id];
 
   return (
     <article
@@ -73,23 +82,13 @@ const ServiceCard = memo(function ServiceCard({ service }) {
           ))}
         </ul>
 
-        {isTeal ? (
-          <Link
-            to="/contact/data"
-            className="btn btn--teal"
-            style={{ width: '100%', justifyContent: 'center' }}
-          >
-            {service.cta}
-          </Link>
-        ) : (
-          <Link
-            to="/contact/career"
-            className="btn btn--gold"
-            style={{ width: '100%', justifyContent: 'center' }}
-          >
-            {service.cta}
-          </Link>
-        )}
+        <Link
+          to={landing.to}
+          className={`btn ${isTeal ? 'btn--teal' : 'btn--gold'}`}
+          style={{ width: '100%', justifyContent: 'center' }}
+        >
+          {landing.label}
+        </Link>
       </div>
     </article>
   );

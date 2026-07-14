@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import { NavLink } from 'react-router-dom';
-import { WHATSAPP_URL } from '../config';
+import { WHATSAPP_URL, CONTACT_EMAIL } from '../config';
 
 const CTASection = memo(function CTASection() {
   return (
@@ -27,10 +27,10 @@ const CTASection = memo(function CTASection() {
             Chat on WhatsApp
           </a>
           <a
-            href="mailto:kabiru@careerdatasolutions.com"
+            href={`mailto:${CONTACT_EMAIL}`}
             className="btn btn--ghost btn--lg"
           >
-            kabiru@careerdatasolutions.com
+            {CONTACT_EMAIL}
           </a>
         </div>
         <NavLink to="/contact/career" className="cta-sec__career-link">

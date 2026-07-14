@@ -1,20 +1,26 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import PackageCard from './PackageCard';
 
+// Widest layout. Used for the build-time prerender (no window) and for
+// the client's first render, so the two agree and hydration doesn't
+// mismatch. The mount effect below immediately corrects it.
+const DEFAULT_ITEMS_VISIBLE = 3;
+
 function getItemsVisible() {
   if (window.innerWidth < 768) return 1;
   if (window.innerWidth < 1100) return 2;
-  return 3;
+  return DEFAULT_ITEMS_VISIBLE;
 }
 
 export default function PackagesCarousel({ packages }) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [itemsVisible, setItemsVisible] = useState(getItemsVisible);
+  const [itemsVisible, setItemsVisible] = useState(DEFAULT_ITEMS_VISIBLE);
   const [isPaused, setIsPaused] = useState(false);
   const touchStartX = useRef(null);
 
   useEffect(() => {
     const update = () => setItemsVisible(getItemsVisible());
+    update();
     window.addEventListener('resize', update, { passive: true });
     return () => window.removeEventListener('resize', update);
   }, []);
@@ -22,9 +28,10 @@ export default function PackagesCarousel({ packages }) {
   const total = packages.length;
   const maxIndex = Math.max(0, total - itemsVisible);
 
-  useEffect(() => {
-    setCurrentIndex((i) => Math.min(i, maxIndex));
-  }, [maxIndex]);
+  // A shrinking viewport lowers maxIndex, which can leave currentIndex past the
+  // end. Clamping during render rather than in an effect avoids the extra pass
+  // that would briefly paint the carousel scrolled past its last card.
+  const index = Math.min(currentIndex, maxIndex);
 
   const next = useCallback(() => {
     setCurrentIndex((i) => (i >= maxIndex ? 0 : i + 1));
@@ -54,9 +61,9 @@ export default function PackagesCarousel({ packages }) {
 
   const gap = 24;
   const cardWidth = `calc((100% - ${(itemsVisible - 1) * gap}px) / ${itemsVisible})`;
-  const translateX = `calc(${-currentIndex} * ((100% + ${gap}px) / ${itemsVisible}))`;
+  const translateX = `calc(${-index} * ((100% + ${gap}px) / ${itemsVisible}))`;
 
-  const currentTrack = packages[currentIndex]?.track;
+  const currentTrack = packages[index]?.track;
   const trackLabel = currentTrack === 'data' ? 'Data Analytics' : 'Career Services';
   const trackColor = currentTrack === 'data' ? 'var(--teal)' : 'var(--gold)';
 
@@ -119,10 +126,10 @@ export default function PackagesCarousel({ packages }) {
           <button
             key={pkg.id}
             role="tab"
-            aria-selected={i === currentIndex}
+            aria-selected={i === index}
             aria-label={`Go to ${pkg.name}`}
-            className={`packages-carousel__dot${i === currentIndex ? ' packages-carousel__dot--active' : ''}`}
-            style={i === currentIndex ? { background: pkg.track === 'data' ? 'var(--teal)' : 'var(--gold)' } : {}}
+            className={`packages-carousel__dot${i === index ? ' packages-carousel__dot--active' : ''}`}
+            style={i === index ? { background: pkg.track === 'data' ? 'var(--teal)' : 'var(--gold)' } : {}}
             onClick={() => setCurrentIndex(Math.min(i, maxIndex))}
           />
         ))}

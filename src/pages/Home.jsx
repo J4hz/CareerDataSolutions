@@ -117,19 +117,24 @@ export default function Home() {
             into actionable insights and propelling professionals towards thriving careers.
             Built on 12 years of real operational experience.
           </p>
+          {/* Both tracks are above the fold and equal weight. A visitor should
+              never have to guess which half of the business they are in — the
+              old single "Explore services" link made them find out by clicking. */}
           <div className="hero__actions">
-            <a
-              href={CALENDLY_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn--teal btn--lg"
-            >
-              Book a free discovery call
-            </a>
-            <Link to="/services" className="btn btn--ghost btn--lg">
-              Explore services →
+            <Link to="/data-services" className="btn btn--teal btn--lg">
+              Data Services →
+            </Link>
+            <Link to="/career-services" className="btn btn--gold btn--lg">
+              Career Services →
             </Link>
           </div>
+          <p className="hero__secondary">
+            Not sure which you need?{' '}
+            <a href={CALENDLY_URL} target="_blank" rel="noopener noreferrer">
+              Book a free discovery call
+            </a>{' '}
+            and we will point you at the right one.
+          </p>
           <div className="hero__stats">
             <div className="hero__stat">
               <span className="hero__stat-num">12+</span>

@@ -21,6 +21,8 @@
 //    Until then, use: onboarding@resend.dev as NOTIFY_FROM
 
 import { Resend } from 'resend';
+import { CONTACT_EMAIL, NOTIFY_FROM, SITE_DOMAIN } from '../src/config.js';
+import { cleanText, cleanHeader, isValidEmail } from './_lib/sanitize.js';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -29,17 +31,32 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { name, email, phone, reason, discussion } = req.body;
+  const { name, email, phone, reason, discussion } = req.body ?? {};
 
   if (!name || !email) {
     return res.status(400).json({ error: 'Name and email are required' });
   }
 
+  if (!isValidEmail(email)) {
+    return res.status(400).json({ error: 'Please enter a valid email address.' });
+  }
+
+  // This endpoint is public: everything below is escaped before it reaches
+  // the HTML body. See api/_lib/sanitize.js.
+  const safe = {
+    name:       cleanText(name, { maxLength: 120 }),
+    email:      cleanText(email, { maxLength: 254 }),
+    phone:      cleanText(phone, { maxLength: 40 }),
+    reason:     cleanText(reason, { maxLength: 500, multiline: true }),
+    discussion: cleanText(discussion, { maxLength: 2000, multiline: true }),
+  };
+
   try {
     const { error } = await resend.emails.send({
-      from: process.env.NOTIFY_FROM || 'onboarding@resend.dev',
-      to:   process.env.NOTIFY_EMAIL || 'kabiru@careerdatasolutions.com',
-      subject: `New discovery call booked: ${name}`,
+      from: process.env.NOTIFY_FROM || NOTIFY_FROM,
+      to:   process.env.NOTIFY_EMAIL || CONTACT_EMAIL,
+      replyTo: email,
+      subject: cleanHeader(`New discovery call booked: ${name}`),
       html: `
         <div style="font-family: sans-serif; max-width: 560px;">
           <h2 style="color: #0B1F3A;">New booking from CareerDataSolutions</h2>
@@ -48,37 +65,37 @@ export default async function handler(req, res) {
               <td style="padding: 10px 0; color: #6B7280; font-size: 14px;
                          width: 120px;">Name</td>
               <td style="padding: 10px 0; color: #0F172A; font-size: 14px;
-                         font-weight: 600;">${name}</td>
+                         font-weight: 600;">${safe.name}</td>
             </tr>
             <tr>
               <td style="padding: 10px 0; color: #6B7280; font-size: 14px;">
                 Email</td>
               <td style="padding: 10px 0; color: #0F172A; font-size: 14px;
-                         font-weight: 600;">${email}</td>
+                         font-weight: 600;">${safe.email}</td>
             </tr>
             <tr>
               <td style="padding: 10px 0; color: #6B7280; font-size: 14px;">
                 Phone</td>
               <td style="padding: 10px 0; color: #0F172A; font-size: 14px;
-                         font-weight: 600;">${phone || 'Not provided'}</td>
+                         font-weight: 600;">${safe.phone || 'Not provided'}</td>
             </tr>
             <tr>
               <td style="padding: 10px 0; color: #6B7280; font-size: 14px;
                          vertical-align: top;">Reason</td>
               <td style="padding: 10px 0; color: #0F172A; font-size: 14px;">
-                ${reason || 'Not provided'}</td>
+                ${safe.reason || 'Not provided'}</td>
             </tr>
-            ${discussion ? `
+            ${safe.discussion ? `
             <tr>
               <td style="padding: 10px 0; color: #6B7280; font-size: 14px;
                          vertical-align: top;">Discussion</td>
               <td style="padding: 10px 0; color: #0F172A; font-size: 14px;">
-                ${discussion}
+                ${safe.discussion}
               </td>
             </tr>` : ''}
           </table>
           <p style="margin-top: 24px; font-size: 13px; color: #6B7280;">
-            Sent from careerdatasolutions.co.ke
+            Sent from ${SITE_DOMAIN}
           </p>
         </div>
       `,

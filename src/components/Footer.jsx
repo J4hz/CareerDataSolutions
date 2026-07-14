@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import { Link } from 'react-router-dom';
-import { WHATSAPP_URL } from '../config';
+import { WHATSAPP_URL, CONTACT_EMAIL } from '../config';
 import logoStacked from '../assets/logo-stacked.jpg';
 import '../styles/footer.css';
 
@@ -29,14 +29,21 @@ const Footer = memo(function Footer() {
           </p>
         </div>
 
+        {/* Each line goes to the track that actually delivers it — these all
+            used to land on the generic /services page regardless. */}
         <div className="footer__col">
-          <h3 className="footer__col-title">Services</h3>
+          <h3 className="footer__col-title">Data Services</h3>
           <ul>
-            <li><Link to="/services">Power BI dashboards</Link></li>
-            <li><Link to="/services">Excel automation</Link></li>
-            <li><Link to="/services">CV writing</Link></li>
-            <li><Link to="/services">LinkedIn optimization</Link></li>
-            <li><Link to="/services">Career coaching</Link></li>
+            <li><Link to="/data-services">Power BI dashboards</Link></li>
+            <li><Link to="/data-services">Excel automation</Link></li>
+            <li><Link to="/data-services">KPI &amp; executive reporting</Link></li>
+          </ul>
+
+          <h3 className="footer__col-title footer__col-title--stacked">Career Services</h3>
+          <ul>
+            <li><Link to="/career-services">CV writing</Link></li>
+            <li><Link to="/career-services">LinkedIn optimization</Link></li>
+            <li><Link to="/career-services">Career coaching</Link></li>
           </ul>
         </div>
 
@@ -44,6 +51,7 @@ const Footer = memo(function Footer() {
           <h3 className="footer__col-title">Company</h3>
           <ul>
             <li><Link to="/about">About Kabiru</Link></li>
+            <li><Link to="/services">All services</Link></li>
             <li><Link to="/#testimonials">Testimonials</Link></li>
             <li><Link to="/blog">Blog</Link></li>
             <li><Link to="/packages">Packages</Link></li>
@@ -63,8 +71,8 @@ const Footer = memo(function Footer() {
               </a>
             </li>
             <li>
-              <a href="mailto:kabiru@careerdatasolutions.com">
-                kabiru@careerdatasolutions.com
+              <a href={`mailto:${CONTACT_EMAIL}`}>
+                {CONTACT_EMAIL}
               </a>
             </li>
             <li>

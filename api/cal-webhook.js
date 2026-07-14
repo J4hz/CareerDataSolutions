@@ -14,6 +14,8 @@
 
 import crypto from 'node:crypto';
 import { Resend } from 'resend';
+import { EMAIL_LOGO_URL, NOTIFY_FROM } from '../src/config.js';
+import { cleanText, isValidEmail } from './_lib/sanitize.js';
 
 export const config = {
   api: { bodyParser: false },
@@ -68,22 +70,29 @@ export default async function handler(req, res) {
 
   const booking = event.payload || {};
   const attendee = booking.attendees?.[0] || {};
-  const name = attendee.name || 'there';
   const email = attendee.email;
-  const reason = responseValue(booking.responses?.reason);
 
-  if (!email) {
+  // The HMAC proves the payload came from Cal.com — it says nothing about the
+  // *contents*, which the booker typed into a public booking form. Escape them
+  // like any other untrusted input before they reach the HTML body.
+  const name = cleanText(attendee.name, { maxLength: 120 }) || 'there';
+  const reason = cleanText(responseValue(booking.responses?.reason), {
+    maxLength: 500,
+    multiline: true,
+  });
+
+  if (!email || !isValidEmail(email)) {
     return res.status(200).json({ ok: true, skipped: true });
   }
 
   try {
     const { error } = await resend.emails.send({
-      from: process.env.NOTIFY_FROM || 'onboarding@resend.dev',
+      from: process.env.NOTIFY_FROM || NOTIFY_FROM,
       to: email,
       subject: "You're booked with CareerDataSolutions",
       html: `
         <div style="font-family: sans-serif; max-width: 560px;">
-          <img src="https://careerdatasolutions.co.ke/logo-email.png" alt="CareerDataSolutions" width="200" height="100" style="display: block; margin-bottom: 24px;" />
+          <img src="${EMAIL_LOGO_URL}" alt="CareerDataSolutions" width="200" height="100" style="display: block; margin-bottom: 24px;" />
           <h2 style="color: #0B1F3A;">Thanks for booking, ${name}!</h2>
           <p style="color: #0F172A; font-size: 14px; line-height: 1.6;">
             Your discovery call is confirmed. Cal.com has already sent you a

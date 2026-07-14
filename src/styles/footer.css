@@ -43,6 +43,11 @@
   margin-bottom: 18px;
 }
 
+/* Second heading inside a column (the services column carries both tracks). */
+.footer__col-title--stacked {
+  margin-top: 26px;
+}
+
 .footer__col ul {
   display: flex;
   flex-direction: column;

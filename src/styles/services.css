@@ -144,3 +144,17 @@
     padding: 24px;
   }
 }
+
+/* Card actions: primary contact CTA plus the link through to that track's
+   dedicated landing page. Wraps to a column on narrow cards. */
+.services-page__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+@media (max-width: 600px) {
+  .services-page__actions .btn {
+    flex: 1 1 100%;
+  }
+}

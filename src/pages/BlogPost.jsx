@@ -23,6 +23,12 @@ function renderBody(body) {
   });
 }
 
+// Where an in-article CTA sends the reader, per track.
+const TRACK_CTA = {
+  data:   { to: '/contact/data',   className: 'btn--teal', landing: '/data-services' },
+  career: { to: '/contact/career', className: 'btn--gold', landing: '/career-services' },
+};
+
 export default function BlogPost() {
   const { slug } = useParams();
   const post = posts.find((p) => p.id === slug);
@@ -44,6 +50,8 @@ export default function BlogPost() {
   }, []);
 
   if (!post) return <Navigate to="/blog" replace />;
+
+  const cta = TRACK_CTA[post.track] ?? TRACK_CTA.data;
 
   return (
     <main>
@@ -77,8 +85,11 @@ export default function BlogPost() {
 
           <div className="blog-post__inline-cta">
             <p>{post.inlineCta}</p>
-            <Link to="/contact" className="btn btn--primary">
-              Book a free discovery call
+            <Link to={cta.to} className={`btn ${cta.className}`}>
+              {post.inlineCtaLabel}
+            </Link>
+            <Link to={cta.landing} className="blog-post__inline-cta-link">
+              Or read more about this service first →
             </Link>
           </div>
         </div>

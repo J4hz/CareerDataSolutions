@@ -27,8 +27,14 @@ const Navbar = memo(function Navbar() {
         </NavLink>
 
         <nav className="navbar__nav" aria-label="Main navigation">
-          <NavLink to="/services" className={({ isActive }) => `navbar__link${isActive ? ' navbar__link--active' : ''}`}>
-            Services
+          {/* The two tracks are top-level and equal weight — neither is a
+              sub-item of the other, and the old single "Services" entry made
+              visitors guess which half of the business they had landed in. */}
+          <NavLink to="/data-services" className={({ isActive }) => `navbar__link${isActive ? ' navbar__link--active' : ''}`}>
+            Data Services
+          </NavLink>
+          <NavLink to="/career-services" className={({ isActive }) => `navbar__link${isActive ? ' navbar__link--active' : ''}`}>
+            Career Services
           </NavLink>
           <NavLink to="/packages" className={({ isActive }) => `navbar__link${isActive ? ' navbar__link--active' : ''}`}>
             Packages
@@ -59,7 +65,8 @@ const Navbar = memo(function Navbar() {
       </div>
 
       <nav className={`navbar__mobile${open ? ' is-open' : ''}`} aria-label="Mobile navigation">
-        <NavLink to="/services" className="navbar__link" onClick={close}>Services</NavLink>
+        <NavLink to="/data-services" className="navbar__link" onClick={close}>Data Services</NavLink>
+        <NavLink to="/career-services" className="navbar__link" onClick={close}>Career Services</NavLink>
         <NavLink to="/packages" className="navbar__link" onClick={close}>Packages</NavLink>
         <NavLink to="/about" className="navbar__link" onClick={close}>About</NavLink>
         <NavLink to="/blog" className="navbar__link" onClick={close}>Insights</NavLink>

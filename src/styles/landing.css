@@ -1,0 +1,333 @@
+/* ─────────────────────────────────────────────────────────────
+   /data-services and /career-services.
+
+   One stylesheet for both pages. The track supplies --lp-accent,
+   --lp-accent-soft and --lp-accent-glow on the <main>; everything below
+   derives from those, so the two pages differ in colour and nothing else.
+   Header, footer, container width, type scale and section rhythm are the
+   site's existing ones — this file adds no new design vocabulary.
+   ───────────────────────────────────────────────────────────── */
+
+/* ── Hero ─────────────────────────────────────────────────── */
+
+.lp-hero {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(160deg, var(--navy) 0%, var(--navy2) 100%);
+  padding: 150px 0 88px;
+}
+
+/* The accent's only structural appearance: a soft glow bleeding in from the
+   top-right, and a hairline rule at the very top of the page. Enough to make
+   the two tracks feel distinct at a glance without changing the layout. */
+.lp-hero::before {
+  content: '';
+  position: absolute;
+  top: -220px;
+  right: -160px;
+  width: 620px;
+  height: 620px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--lp-accent-glow) 0%, transparent 68%);
+  pointer-events: none;
+}
+
+.lp-hero::after {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 4px;
+  background: var(--lp-accent);
+}
+
+.lp-hero__inner {
+  position: relative;
+  max-width: 860px;
+}
+
+.lp-hero__eyebrow {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--lp-accent);
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: var(--lp-accent-soft);
+  margin-bottom: 22px;
+}
+
+.lp-hero__title {
+  font-size: clamp(2.2rem, 5.2vw, 3.6rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  color: var(--white);
+  margin-bottom: 22px;
+}
+
+.lp-hero__title-accent {
+  color: var(--lp-accent);
+}
+
+.lp-hero__intro {
+  font-size: 1.075rem;
+  line-height: 1.75;
+  color: rgba(255, 255, 255, 0.76);
+  max-width: 680px;
+  margin-bottom: 34px;
+}
+
+.lp-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 56px;
+}
+
+.lp-hero__stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 48px;
+  padding-top: 32px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.lp-hero__stat-num {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--lp-accent);
+  letter-spacing: -0.02em;
+}
+
+.lp-hero__stat-label {
+  margin-top: 4px;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.6);
+  max-width: 210px;
+}
+
+/* ── Shared section furniture ─────────────────────────────── */
+
+.lp-eyebrow {
+  color: var(--lp-accent);
+}
+
+.lp h2 {
+  font-size: clamp(1.6rem, 3vw, 2.1rem);
+  letter-spacing: -0.02em;
+  margin-bottom: 40px;
+}
+
+/* ── Deliverables ─────────────────────────────────────────── */
+
+.lp-deliverables__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+/* Borderless: the cards are separated by whitespace and a soft shadow rather
+   than by outlines, so the grid reads as content and not as a set of boxes. */
+.lp-card {
+  position: relative;
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: 30px;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--transition), transform var(--transition);
+}
+
+.lp-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.lp-card__title {
+  font-size: 1.075rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 10px;
+}
+
+.lp-card__body {
+  font-size: 0.925rem;
+  line-height: 1.72;
+  color: var(--gm);
+}
+
+/* ── Audience ─────────────────────────────────────────────── */
+
+/* Borderless cards need something to sit on, so the two mid-page sections
+   alternate tint instead of relying on outlines to define the card edges. */
+.lp-deliverables {
+  background: var(--off);
+}
+
+.lp-audience {
+  background: var(--white);
+}
+
+.lp-audience__layout {
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr;
+  gap: 56px;
+  align-items: start;
+}
+
+.lp-audience__layout h2 {
+  margin-bottom: 0;
+}
+
+.lp-audience__list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.lp-audience__item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--gl);
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--gd);
+}
+
+.lp-audience__item:last-child {
+  border-bottom: none;
+}
+
+.lp-audience__check {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  margin-top: 1px;
+  border-radius: 50%;
+  background: var(--lp-accent-soft);
+  color: var(--lp-accent);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+/* ── Process ──────────────────────────────────────────────── */
+
+/* Centred: the five steps run left-to-right across the full container, so a
+   left-aligned heading over a centred row read as two different columns. */
+.lp-process {
+  text-align: center;
+}
+
+/* Back to the constrained width the steps had before — the numbered circles
+   and their connectors stay as they were; the block is just centred in the
+   container rather than pinned to the left edge. */
+.lp-process__steps {
+  max-width: 900px;
+  margin: 8px auto 0;
+}
+
+/* ── Closing CTA ──────────────────────────────────────────── */
+
+.lp-cta {
+  position: relative;
+  overflow: hidden;
+  background: var(--navy);
+  padding: 88px 0;
+  text-align: center;
+}
+
+.lp-cta::before {
+  content: '';
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 4px;
+  background: var(--lp-accent);
+}
+
+.lp-cta__inner {
+  max-width: 680px;
+}
+
+.lp-cta__title {
+  color: var(--white);
+  margin-bottom: 16px;
+}
+
+.lp-cta__body {
+  font-size: 1.02rem;
+  line-height: 1.75;
+  color: rgba(255, 255, 255, 0.72);
+  margin-bottom: 32px;
+}
+
+.lp-cta__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 26px;
+}
+
+.lp-cta__email {
+  display: inline-block;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.55);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding-bottom: 2px;
+  transition: color var(--transition), border-color var(--transition);
+}
+
+.lp-cta__email:hover {
+  color: var(--white);
+  border-color: var(--lp-accent);
+}
+
+/* ── Responsive ───────────────────────────────────────────── */
+
+@media (max-width: 900px) {
+  .lp-deliverables__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .lp-audience__layout {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .lp-audience__layout h2 {
+    margin-bottom: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .lp-hero {
+    padding: 124px 0 64px;
+  }
+
+  .lp-hero__actions {
+    margin-bottom: 40px;
+  }
+
+  .lp-hero__actions .btn {
+    flex: 1 1 100%;
+  }
+
+  .lp-hero__stats {
+    gap: 28px;
+  }
+
+  .lp-cta {
+    padding: 64px 0;
+  }
+
+  .lp-cta__actions .btn {
+    flex: 1 1 100%;
+  }
+}

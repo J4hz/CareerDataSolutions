@@ -94,7 +94,26 @@
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
-  margin-bottom: 52px;
+  margin-bottom: 18px;
+}
+
+/* The "not sure which?" line under the two track buttons. Deliberately quiet:
+   the discovery call is the fallback for undecided visitors, not the headline. */
+.hero__secondary {
+  font-size: 0.925rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 46px;
+}
+
+.hero__secondary a {
+  color: var(--white);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+  padding-bottom: 1px;
+  transition: border-color var(--transition);
+}
+
+.hero__secondary a:hover {
+  border-color: var(--teal2);
 }
 
 .hero__stats {
@@ -137,7 +156,11 @@
   .hero__actions {
     flex-direction: column;
     align-items: stretch;
-    margin-bottom: 40px;
+    margin-bottom: 16px;
+  }
+
+  .hero__secondary {
+    margin-bottom: 36px;
   }
 
   .hero__actions .btn {
