@@ -1,28 +1,12 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-
-  "//": [
-    "Every app route is now prerendered to its own static HTML file by",
-    "scripts/prerender.js, so the old catch-all rewrite to /index.html is gone.",
-    "It had to go: with that rewrite in place, any unknown URL was served the",
-    "homepage's HTML — including the homepage's canonical tag — with a 200.",
-    "Vercel matches the filesystem first and then falls back to dist/404.html",
-    "with a real 404 status, which the prerenderer now emits.",
-    "",
-    "Consequence worth knowing: a route that exists in App.jsx but NOT in",
-    "src/seo/meta.js will not be prerendered, and will hard-404 on a direct load",
-    "instead of silently working. Add new routes to meta.js."
-  ],
-
   "redirects": [
     {
-      "//": "/contact is a client-side <Navigate> in App.jsx. Without a server-side redirect it would 404 on a direct load or an inbound link.",
       "source": "/contact",
       "destination": "/contact/data",
       "permanent": true
     }
   ],
-
   "headers": [
     {
       "source": "/sitemap.xml",

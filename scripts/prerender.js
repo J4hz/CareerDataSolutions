@@ -15,6 +15,28 @@
 // The tags written here are marked data-prerendered; src/main.jsx removes
 // them just before hydration so React can own the head from then on
 // without duplicating anything.
+//
+// ── Why vercel.json has no rewrites ──
+//
+// It used to carry a catch-all rewrite of every path to /index.html, which is
+// the standard SPA setup. That has to go once routes are prerendered: with it
+// in place Vercel hands any unknown URL the homepage's HTML — including the
+// homepage's canonical tag — with a 200 status, which is the "every page
+// canonicalises to the homepage" bug all over again, just narrowed to 404s.
+//
+// Instead: every route is a real file on disk, Vercel matches the filesystem
+// first, and anything unmatched falls back to the dist/404.html written below
+// (noindex, no canonical) with a real 404 status.
+//
+// Two consequences to keep in mind:
+//   • A route in App.jsx but NOT in src/seo/meta.js is never prerendered, so
+//     it will hard-404 on a direct load instead of silently working. Add new
+//     routes to meta.js.
+//   • /contact is a client-side <Navigate>, not a page, so it needs the
+//     server-side redirect in vercel.json to survive a direct load.
+//
+// (vercel.json is strict JSON and rejects comment keys inside a redirect
+// object, so this note lives here rather than next to the config.)
 // ─────────────────────────────────────────────────────────────
 
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
