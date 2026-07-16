@@ -24,15 +24,16 @@ const BUILD_DATE = new Date().toISOString().slice(0, 10);
 
 /** Crawl priority and expected update cadence, by route. */
 const RULES = {
-  '/':                { priority: '1.0', changefreq: 'monthly' },
-  '/data-services':   { priority: '0.9', changefreq: 'monthly' },
-  '/career-services': { priority: '0.9', changefreq: 'monthly' },
-  '/services':        { priority: '0.8', changefreq: 'monthly' },
-  '/packages':        { priority: '0.8', changefreq: 'monthly' },
-  '/contact/data':    { priority: '0.7', changefreq: 'yearly'  },
-  '/contact/career':  { priority: '0.7', changefreq: 'yearly'  },
-  '/about':           { priority: '0.6', changefreq: 'yearly'  },
-  '/blog':            { priority: '0.6', changefreq: 'weekly'  },
+  '/':                 { priority: '1.0', changefreq: 'monthly' },
+  '/data/services':    { priority: '0.9', changefreq: 'monthly' },
+  '/career/services':  { priority: '0.9', changefreq: 'monthly' },
+  '/data/packages':    { priority: '0.8', changefreq: 'monthly' },
+  '/career/packages':  { priority: '0.8', changefreq: 'monthly' },
+  '/data/contact':     { priority: '0.7', changefreq: 'yearly'  },
+  '/career/contact':   { priority: '0.7', changefreq: 'yearly'  },
+  '/data/about':       { priority: '0.6', changefreq: 'yearly'  },
+  '/career/about':     { priority: '0.6', changefreq: 'yearly'  },
+  '/blog':             { priority: '0.6', changefreq: 'weekly'  },
 };
 
 const DEFAULT_RULE = { priority: '0.5', changefreq: 'yearly' };

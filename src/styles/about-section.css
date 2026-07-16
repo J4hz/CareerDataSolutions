@@ -1,0 +1,110 @@
+/* ─────────────────────────────────────────────────────────────
+   The shared founder section on /career/about and /data/about.
+
+   Ported from the reference file's .about styles, translated into the
+   site's tokens. Every accent below is var(--accent), supplied by the
+   layout shell — gold in .theme-career, teal in .theme-data. Nothing
+   else may differ between the two routes.
+   ───────────────────────────────────────────────────────────── */
+
+.about-sec {
+  background: var(--navy-950);
+  color: var(--paper);
+  padding: 160px 0 96px; /* clears the fixed navbar */
+}
+
+.about-sec__grid {
+  display: grid;
+  grid-template-columns: 0.8fr 1.2fr;
+  gap: 64px;
+  align-items: start;
+}
+
+/* ── Photo column ── */
+
+/* Placeholder monogram panel standing in for the founder photo. Swap for
+   an <img> once the real asset exists (see components/AboutSection.jsx). */
+.about-sec__monogram {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 4 / 5;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(247, 245, 240, 0.12);
+  background: linear-gradient(165deg, var(--navy-900) 0%, var(--navy-800) 100%);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(4rem, 8vw, 6rem);
+  letter-spacing: 4px;
+  color: rgba(247, 245, 240, 0.18);
+  user-select: none;
+}
+
+.about-sec__credentials {
+  margin-top: 18px;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: rgba(247, 245, 240, 0.65);
+  line-height: 1.9;
+  letter-spacing: 0.02em;
+  border-left: 2px solid var(--accent);
+  padding-left: 12px;
+}
+
+/* ── Copy column ── */
+
+.about-sec__copy .eyebrow {
+  color: var(--accent);
+}
+
+.about-sec__pull-quote {
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 2.4vw, 1.4rem);
+  font-weight: 600;
+  line-height: 1.4;
+  margin: 20px 0 28px;
+  padding: 22px 0 22px 24px;
+  border-left: 3px solid var(--accent);
+  color: var(--white);
+  max-width: 560px;
+}
+
+.about-sec__body {
+  color: rgba(247, 245, 240, 0.78);
+  font-size: 0.97rem;
+  line-height: 1.75;
+  max-width: 560px;
+}
+
+.about-sec__body + .about-sec__body {
+  margin-top: 16px;
+}
+
+.about-sec__mission {
+  margin-top: 26px;
+  padding: 16px 18px;
+  background: var(--accent-soft);
+  border: 1px solid var(--accent-glow);
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  line-height: 1.65;
+  color: var(--paper);
+  max-width: 560px;
+}
+
+/* ── Responsive ── */
+
+@media (max-width: 860px) {
+  .about-sec {
+    padding: 130px 0 64px;
+  }
+
+  .about-sec__grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .about-sec__monogram {
+    max-width: 320px;
+  }
+}

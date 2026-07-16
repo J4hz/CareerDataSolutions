@@ -1,0 +1,87 @@
+/* ─────────────────────────────────────────────────────────────
+   FAQ accordion — components/FaqAccordion.jsx.
+
+   Adapted from the reference file's .faq-item pattern. All accent
+   colour comes from var(--accent), so the same component reads gold on
+   /career/services and teal on /data/services.
+   ───────────────────────────────────────────────────────────── */
+
+.faq-acc {
+  max-width: 760px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.faq-acc__item {
+  border-bottom: 1px solid var(--gl);
+}
+
+.faq-acc__heading {
+  margin: 0;
+}
+
+.faq-acc__q {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 20px 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--gd);
+  transition: color var(--transition);
+}
+
+.faq-acc__q:hover {
+  color: var(--navy);
+}
+
+.faq-acc__plus {
+  flex-shrink: 0;
+  font-size: 1.25rem;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--accent-dark, var(--accent));
+  transition: transform 0.25s ease;
+}
+
+/* "+" rotates into "×" when the item is open, like the reference. */
+.faq-acc__item.is-open .faq-acc__plus {
+  transform: rotate(45deg);
+}
+
+/* Grid-rows 0fr→1fr: animated open/close without JS height measuring. */
+.faq-acc__a {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s ease;
+}
+
+.faq-acc__item.is-open .faq-acc__a {
+  grid-template-rows: 1fr;
+}
+
+.faq-acc__a-inner {
+  overflow: hidden;
+}
+
+.faq-acc__a-inner p {
+  margin: 0;
+  padding: 0 4px 22px;
+  font-size: 0.925rem;
+  line-height: 1.7;
+  color: var(--gm);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .faq-acc__a,
+  .faq-acc__plus {
+    transition: none;
+  }
+}

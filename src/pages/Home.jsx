@@ -1,13 +1,11 @@
 import { memo } from 'react';
 import { Link } from 'react-router-dom';
 import { CALENDLY_URL } from '../config';
-import { services } from '../data/services';
 import { packages } from '../data/packages';
 import { testimonials } from '../data/testimonials';
 import { posts } from '../data/blog';
 import { whyUs, dataProcess, careerProcess, dashboardStats } from '../data/process';
 import { useInView } from '../hooks/useInView';
-import ServiceCard from '../components/ui/ServiceCard';
 import PackagesCarousel from '../components/ui/PackagesCarousel';
 import TestimonialCard from '../components/ui/TestimonialCard';
 import BlogCard from '../components/ui/BlogCard';
@@ -121,10 +119,10 @@ export default function Home() {
               never have to guess which half of the business they are in — the
               old single "Explore services" link made them find out by clicking. */}
           <div className="hero__actions">
-            <Link to="/data-services" className="btn btn--teal btn--lg">
+            <Link to="/data/services" className="btn btn--teal btn--lg">
               Data Services →
             </Link>
-            <Link to="/career-services" className="btn btn--gold btn--lg">
+            <Link to="/career/services" className="btn btn--gold btn--lg">
               Career Services →
             </Link>
           </div>
@@ -169,25 +167,53 @@ export default function Home() {
         </div>
       </div>
 
-      {/* SERVICES OVERVIEW */}
+      {/* PATH SELECTOR — the two cards that hand the visitor into the
+          gold career shell or the teal data shell. Adapted from the
+          reference file's .path-card pattern. This is the one place the
+          two accents appear side by side, so they are named explicitly
+          rather than themed via --accent. */}
       <section
         ref={servicesRef}
-        className={`section services-overview fade-up${servicesInView ? ' is-visible' : ''}`}
-        aria-labelledby="services-heading"
+        className={`section paths fade-up${servicesInView ? ' is-visible' : ''}`}
+        aria-labelledby="paths-heading"
       >
         <div className="container">
-          <div className="services-overview__header">
-            <span className="eyebrow">What we do</span>
-            <h2 id="services-heading">Two specialities. One clear goal.</h2>
-            <p className="services-overview__subtext">
-              Whether you need your data to work for you or your career to thrive,
-              CareerDataSolutions delivers measurable results, not just documents.
+          <div className="paths__header">
+            <span className="eyebrow" style={{ color: 'var(--ink-soft)' }}>Two paths, one method</span>
+            <h2 id="paths-heading">Tell us which problem you have</h2>
+            <p className="paths__subtext">
+              Everything on this site splits based on your needs — pick your lane
+              and skip straight to what matters to you.
             </p>
           </div>
-          <div className="services-overview__grid">
-            {services.map((s) => (
-              <ServiceCard key={s.id} service={s} />
-            ))}
+
+          <div className="paths__grid">
+            <article className="path-card path-card--data">
+              <span className="path-card__eyebrow">For Businesses</span>
+              <h3 className="path-card__title">Turn scattered data into a dashboard you actually check</h3>
+              <ul className="path-card__list">
+                <li>Custom Power BI and Excel dashboards built from your existing sales, operations, HR, or finance data</li>
+                <li>We clean and structure messy or scattered data as part of the engagement — you don't need it "ready" first</li>
+                <li>Single-department builds in 5–10 business days; multi-source builds in 2–4 weeks</li>
+                <li>Live, visual reporting that replaces "we think" with "we know"</li>
+              </ul>
+              <Link to="/data/services" className="btn btn--teal">
+                Explore Data Services →
+              </Link>
+            </article>
+
+            <article className="path-card path-card--career">
+              <span className="path-card__eyebrow">For Professionals</span>
+              <h3 className="path-card__title">Get your experience past the ATS software and propel your career</h3>
+              <ul className="path-card__list">
+                <li>ATS-optimized CVs built to parse cleanly and read well — for the system and the recruiter</li>
+                <li>LinkedIn optimization available bundled or standalone, written for discoverability, not duplication</li>
+                <li>Positioning and interview coaching, not just documents</li>
+              </ul>
+              <Link to="/career/services" className="btn btn--gold">
+                Explore Career Services →
+              </Link>
+            </article>
           </div>
         </div>
       </section>

@@ -20,6 +20,7 @@ import {
   OG_IMAGE_URL,
 } from '../config.js';
 import { posts } from '../data/blog.js';
+import { dataFaqs, careerFaqs } from '../data/faqs.js';
 import { allRoutes } from './meta.js';
 
 const ORG_ID = `${SITE_URL}/#organization`;
@@ -92,7 +93,7 @@ const dataService = () =>
   service({
     name: 'Data Analytics & Power BI Dashboards',
     serviceType: 'Business intelligence and data analytics consulting',
-    url: '/data-services',
+    url: '/data/services',
     description:
       'Power BI dashboard design, Excel workflow automation and operational analytics for organizations — built for adoption by teams, not just for reporting.',
     offers: [
@@ -108,7 +109,7 @@ const careerService = () =>
   service({
     name: 'CV Writing, LinkedIn Optimization & Career Coaching',
     serviceType: 'Career consulting and CV writing',
-    url: '/career-services',
+    url: '/career/services',
     description:
       'ATS-optimized CV writing, LinkedIn profile optimization, cover letters and interview preparation for professionals targeting roles in Kenya and internationally.',
     offers: [
@@ -118,6 +119,24 @@ const careerService = () =>
       'Interview preparation and job search strategy',
     ],
   });
+
+/**
+ * FAQPage for a service route. Built from the same data the visible
+ * accordion renders (src/data/faqs.js), so the markup can't drift from
+ * the page — schema that contradicts the page is worse than no schema.
+ */
+function faqPage(faqs, url) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    '@id': `${absoluteUrl(url)}#faq`,
+    mainEntity: faqs.map(({ q, a }) => ({
+      '@type': 'Question',
+      name: q,
+      acceptedAnswer: { '@type': 'Answer', text: a },
+    })),
+  };
+}
 
 /** BlogPosting for a post route. */
 function blogPosting(post) {
@@ -144,14 +163,15 @@ function blogPosting(post) {
 
 /** Human-readable trail for a path, used to build the BreadcrumbList. */
 const BREADCRUMB_LABELS = {
-  '/services': 'Services',
-  '/data-services': 'Data Services',
-  '/career-services': 'Career Services',
-  '/packages': 'Packages',
-  '/about': 'About',
-  '/blog': 'Blog',
-  '/contact/data': 'Book a Discovery Call',
-  '/contact/career': 'Submit Your CV',
+  '/data/services':   'Data Services',
+  '/data/packages':   'Data Packages & Pricing',
+  '/data/about':      'About',
+  '/data/contact':    'Book a Discovery Call',
+  '/career/services': 'Career Services',
+  '/career/packages': 'Career Packages & Pricing',
+  '/career/about':    'About',
+  '/career/contact':  'Submit Your CV',
+  '/blog':            'Blog',
 };
 
 /** BreadcrumbList for any path below the homepage. Blog posts nest under /blog. */
@@ -165,6 +185,17 @@ function breadcrumbs(pathname) {
     trail.push({ name: 'Blog', path: '/blog' });
     trail.push({ name: post.title, path: post.slug });
   } else if (BREADCRUMB_LABELS[pathname]) {
+    // Track pages nest under their track's services page, which acts as
+    // the section root ( /data and /career themselves only redirect ).
+    const trackRoot = pathname.startsWith('/data/')
+      ? '/data/services'
+      : pathname.startsWith('/career/')
+        ? '/career/services'
+        : null;
+
+    if (trackRoot && trackRoot !== pathname) {
+      trail.push({ name: BREADCRUMB_LABELS[trackRoot], path: trackRoot });
+    }
     trail.push({ name: BREADCRUMB_LABELS[pathname], path: pathname });
   } else {
     return null;
@@ -198,12 +229,18 @@ export function schemaForPath(pathname) {
   // landed on a deep link has never seen the homepage's copy.
   blocks.push(organization());
 
-  if (pathname === '/data-services') blocks.push(dataService());
-  if (pathname === '/career-services') blocks.push(careerService());
-
-  // The overview page describes both tracks, so it carries both.
-  if (pathname === '/services') {
+  // The homepage presents both tracks, so it carries both Service nodes.
+  if (pathname === '/') {
     blocks.push(dataService(), careerService());
+  }
+
+  // Each service page carries its Service node and its FAQPage — the FAQ
+  // markup is generated from the same data the visible accordion renders.
+  if (pathname === '/data/services') {
+    blocks.push(dataService(), faqPage(dataFaqs, '/data/services'));
+  }
+  if (pathname === '/career/services') {
+    blocks.push(careerService(), faqPage(careerFaqs, '/career/services'));
   }
 
   const post = posts.find((p) => p.slug === pathname);

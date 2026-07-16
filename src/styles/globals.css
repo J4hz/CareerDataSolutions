@@ -1,19 +1,23 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Inter:wght@400;500;600&display=swap');
+@import './theme.css';
 
 :root {
-  --navy:      #0B1F3A;
-  --navy2:     #122848;
-  --teal:      #1D9E75;
-  --teal2:     #24C28F;
-  --gold:      #F4A833;
-  --gold2:     #F7B94D;
+  /* Legacy aliases, remapped onto the shared palette in theme.css so the
+     whole site shifts to the reference colours without touching every
+     stylesheet. New code should prefer the theme.css tokens (--accent for
+     anything track-coloured); these aliases exist for the CSS written
+     before the career/data split. */
+  --navy:      var(--navy-900);
+  --navy2:     var(--navy-800);
+  --teal2:     #2AA49B;   /* lighter teal: hover states & text on dark */
+  --gold2:     #D9B269;   /* lighter gold: hover states & text on dark */
   --white:     #FFFFFF;
-  --off:       #F7F8FA;
-  --gl:        #E8EAED;
-  --gm:        #6B7280;
-  --gd:        #374151;
-  --dark:      #0F172A;
-  --footer-bg: #060F1E;
+  --off:       var(--paper);
+  --gl:        var(--line);
+  --gm:        var(--ink-soft);
+  --gd:        var(--ink);
+  --dark:      var(--navy-950);
+  --footer-bg: var(--navy-950);
   --whatsapp:  #25D366;
 
   --font-display: 'Plus Jakarta Sans', sans-serif;
@@ -33,9 +37,10 @@
   --container: 1160px;
 }
 
-/* Keyboard focus: visible ring on all interactive elements */
+/* Keyboard focus: visible ring on all interactive elements.
+   Accent-driven, so it goes gold inside /career/* and teal inside /data/*. */
 :focus-visible {
-  outline: 2px solid var(--teal);
+  outline: 2px solid var(--accent);
   outline-offset: 3px;
   border-radius: 3px;
 }
@@ -115,7 +120,7 @@ input, textarea, select {
   font-size: 0.75rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--teal);
+  color: var(--accent);
   margin-bottom: 12px;
 }
 

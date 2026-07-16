@@ -25,8 +25,8 @@ function renderBody(body) {
 
 // Where an in-article CTA sends the reader, per track.
 const TRACK_CTA = {
-  data:   { to: '/contact/data',   className: 'btn--teal', landing: '/data-services' },
-  career: { to: '/contact/career', className: 'btn--gold', landing: '/career-services' },
+  data:   { to: '/data/contact',   className: 'btn--teal', landing: '/data/services' },
+  career: { to: '/career/contact', className: 'btn--gold', landing: '/career/services' },
 };
 
 export default function BlogPost() {

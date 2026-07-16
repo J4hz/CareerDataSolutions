@@ -1,11 +1,12 @@
 import { Link } from 'react-router-dom';
 import { WHATSAPP_URL, CONTACT_EMAIL } from '../config';
 import ProcessSteps from './ui/ProcessSteps';
+import FaqAccordion from './FaqAccordion';
 import '../styles/landing.css';
 import '../styles/button.css';
 
 /**
- * The shared body of /data-services and /career-services.
+ * The shared body of /data/services and /career/services.
  *
  * Both tracks get the same layout grammar, type scale and section rhythm as
  * the rest of the site — the only thing that differs is the accent colour,
@@ -99,6 +100,20 @@ export default function ServiceLanding({ track }) {
           </div>
         </div>
       </section>
+
+      {/* FAQ — content in data/faqs.js; the matching FAQPage JSON-LD is
+          emitted per-route by src/seo/schema.js from the same data. */}
+      {track.faqs && (
+        <section className="section lp-faq" aria-labelledby="lp-faq-heading">
+          <div className="container">
+            <div className="lp-faq__head">
+              <span className="eyebrow lp-eyebrow">Common questions</span>
+              <h2 id="lp-faq-heading">{track.faqTitle}</h2>
+            </div>
+            <FaqAccordion items={track.faqs} />
+          </div>
+        </section>
+      )}
 
       {/* CLOSING CTA */}
       <section className="lp-cta" aria-labelledby="lp-cta-heading">

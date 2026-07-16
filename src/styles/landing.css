@@ -1,5 +1,5 @@
 /* ─────────────────────────────────────────────────────────────
-   /data-services and /career-services.
+   /data/services and /career/services.
 
    One stylesheet for both pages. The track supplies --lp-accent,
    --lp-accent-soft and --lp-accent-glow on the <main>; everything below
@@ -231,6 +231,17 @@
 .lp-process__steps {
   max-width: 900px;
   margin: 8px auto 0;
+}
+
+/* ── FAQ ──────────────────────────────────────────────────── */
+
+.lp-faq {
+  background: var(--off);
+}
+
+.lp-faq__head {
+  text-align: center;
+  margin-bottom: 8px;
 }
 
 /* ── Closing CTA ──────────────────────────────────────────── */

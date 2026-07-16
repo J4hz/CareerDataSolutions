@@ -1,0 +1,77 @@
+/* ─────────────────────────────────────────────────────────────
+   Theme tokens for the career/data split.
+
+   The palette matches reference/careerdatasolutions-rebuild.html.
+   Neutral tokens (navy, paper, ink, line) are global and never themed.
+   The two accents — gold for /career/*, teal for /data/* — are only
+   reachable through the --accent* indirection below.
+
+   .theme-career / .theme-data are applied by the route layout wrappers
+   (src/layouts/CareerLayout.jsx, DataLayout.jsx) on their top-level
+   container, so everything rendered inside a track shell that colours
+   itself with var(--accent) swaps automatically.
+
+   This split is COLOR ONLY. Font, spacing and radius tokens live in
+   globals.css and are deliberately not forked here.
+   ───────────────────────────────────────────────────────────── */
+
+:root {
+  /* Neutral / shared palette */
+  --navy-950: #071527;
+  --navy-900: #0B1F3A;
+  --navy-800: #12294D;
+  --paper:     #F7F5F0;
+  --paper-dim: #EFEBE2;
+  --ink:       #16202E;
+  --ink-soft:  #4A5568;
+  --line:      #DCD8CC;
+  --line-dark: rgba(247, 245, 240, 0.14);
+
+  /* Track accents — reference these directly only when a component must
+     show BOTH tracks at once (the neutral homepage cards, the footer).
+     Inside a themed shell, use var(--accent) instead. */
+  --teal:      #1F8A82;
+  --teal-dark: #146058;
+  --teal-soft: rgba(31, 138, 130, 0.12);
+  --teal-glow: rgba(31, 138, 130, 0.22);
+
+  --gold:      #C89A44;
+  --gold-dark: #96702B;
+  --gold-soft: rgba(200, 154, 68, 0.14);
+  --gold-glow: rgba(200, 154, 68, 0.24);
+
+  /* Default accent outside a themed shell (neutral pages lean teal,
+     matching the site's historic primary). */
+  --accent:          var(--teal);
+  --accent-dark:     var(--teal-dark);
+  --accent-soft:     var(--teal-soft);
+  --accent-glow:     var(--teal-glow);
+  --accent-hover:    var(--teal-dark);
+  --accent-contrast: #FFFFFF;
+}
+
+/* ── Track themes ─────────────────────────────────────────────
+   Applied at the layout wrapper. Only accent-dependent tokens are
+   overridden — nothing structural. */
+
+.theme-data {
+  --accent:          var(--teal);
+  --accent-dark:     var(--teal-dark);
+  --accent-soft:     var(--teal-soft);
+  --accent-glow:     var(--teal-glow);
+  --accent-hover:    var(--teal-dark);
+  /* White text passes on teal */
+  --accent-contrast: #FFFFFF;
+}
+
+.theme-career {
+  --accent:          var(--gold);
+  --accent-dark:     var(--gold-dark);
+  --accent-soft:     var(--gold-soft);
+  --accent-glow:     var(--gold-glow);
+  /* Reference hover for gold buttons (#b78a38) — a shade deeper, not the
+     full --gold-dark, which is too muddy for a filled button. */
+  --accent-hover:    #B78A38;
+  /* Navy text passes on gold; white does not */
+  --accent-contrast: var(--navy-950);
+}

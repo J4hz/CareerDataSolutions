@@ -3,7 +3,47 @@ import { NavLink, Link } from 'react-router-dom';
 import logoPng from '../assets/logo.png';
 import '../styles/navbar.css';
 
-const Navbar = memo(function Navbar() {
+/**
+ * One structural navbar for all three shells; the `track` prop only changes
+ * which links it carries (and the layout's theme class colours the CTA).
+ *
+ *  - neutral (no track): both tracks side by side, the visitor picks a lane
+ *  - career / data: that track's own pages, plus a quiet link back to the
+ *    other track so nobody gets locked into the wrong half of the business
+ */
+const LINKS = {
+  neutral: [
+    { to: '/data/services',   label: 'Data Services' },
+    { to: '/career/services', label: 'Career Services' },
+    { to: '/blog',            label: 'Insights' },
+  ],
+  data: [
+    { to: '/data/services', label: 'Services' },
+    { to: '/data/packages', label: 'Packages' },
+    { to: '/data/about',    label: 'About' },
+    { to: '/blog',          label: 'Insights' },
+  ],
+  career: [
+    { to: '/career/services', label: 'Services' },
+    { to: '/career/packages', label: 'Packages' },
+    { to: '/career/about',    label: 'About' },
+    { to: '/blog',            label: 'Insights' },
+  ],
+};
+
+/* Cross-shell escape hatch, rendered smaller/quieter than the main links. */
+const SWITCH = {
+  data:   { to: '/career/services', label: 'Career Services ↗' },
+  career: { to: '/data/services',   label: 'Data Services ↗' },
+};
+
+const CTA_TO = {
+  neutral: '/data/contact',
+  data:    '/data/contact',
+  career:  '/career/contact',
+};
+
+const Navbar = memo(function Navbar({ track = null }) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -19,6 +59,11 @@ const Navbar = memo(function Navbar() {
   const close = useCallback(() => setOpen(false), []);
   const toggle = useCallback(() => setOpen((v) => !v), []);
 
+  const key = track ?? 'neutral';
+  const links = LINKS[key];
+  const switchLink = SWITCH[key];
+  const ctaTo = CTA_TO[key];
+
   return (
     <header className={`navbar${scrolled ? ' navbar--scrolled' : ''}`}>
       <div className="navbar__inner">
@@ -27,28 +72,24 @@ const Navbar = memo(function Navbar() {
         </NavLink>
 
         <nav className="navbar__nav" aria-label="Main navigation">
-          {/* The two tracks are top-level and equal weight — neither is a
-              sub-item of the other, and the old single "Services" entry made
-              visitors guess which half of the business they had landed in. */}
-          <NavLink to="/data-services" className={({ isActive }) => `navbar__link${isActive ? ' navbar__link--active' : ''}`}>
-            Data Services
-          </NavLink>
-          <NavLink to="/career-services" className={({ isActive }) => `navbar__link${isActive ? ' navbar__link--active' : ''}`}>
-            Career Services
-          </NavLink>
-          <NavLink to="/packages" className={({ isActive }) => `navbar__link${isActive ? ' navbar__link--active' : ''}`}>
-            Packages
-          </NavLink>
-          <NavLink to="/about" className={({ isActive }) => `navbar__link${isActive ? ' navbar__link--active' : ''}`}>
-            About
-          </NavLink>
-          <NavLink to="/blog" className={({ isActive }) => `navbar__link${isActive ? ' navbar__link--active' : ''}`}>
-            Insights
-          </NavLink>
+          {links.map(({ to, label }) => (
+            <NavLink
+              key={to}
+              to={to}
+              className={({ isActive }) => `navbar__link${isActive ? ' navbar__link--active' : ''}`}
+            >
+              {label}
+            </NavLink>
+          ))}
+          {switchLink && (
+            <NavLink to={switchLink.to} className="navbar__link navbar__link--switch">
+              {switchLink.label}
+            </NavLink>
+          )}
         </nav>
 
         <div className="navbar__end">
-          <Link to="/contact" className="navbar__cta navbar__cta--pulse">
+          <Link to={ctaTo} className="navbar__cta navbar__cta--pulse">
             Book a call
           </Link>
           <button
@@ -65,12 +106,17 @@ const Navbar = memo(function Navbar() {
       </div>
 
       <nav className={`navbar__mobile${open ? ' is-open' : ''}`} aria-label="Mobile navigation">
-        <NavLink to="/data-services" className="navbar__link" onClick={close}>Data Services</NavLink>
-        <NavLink to="/career-services" className="navbar__link" onClick={close}>Career Services</NavLink>
-        <NavLink to="/packages" className="navbar__link" onClick={close}>Packages</NavLink>
-        <NavLink to="/about" className="navbar__link" onClick={close}>About</NavLink>
-        <NavLink to="/blog" className="navbar__link" onClick={close}>Insights</NavLink>
-        <Link to="/contact" className="navbar__cta navbar__cta--pulse" onClick={close}>
+        {links.map(({ to, label }) => (
+          <NavLink key={to} to={to} className="navbar__link" onClick={close}>
+            {label}
+          </NavLink>
+        ))}
+        {switchLink && (
+          <NavLink to={switchLink.to} className="navbar__link navbar__link--switch" onClick={close}>
+            {switchLink.label}
+          </NavLink>
+        )}
+        <Link to={ctaTo} className="navbar__cta navbar__cta--pulse" onClick={close}>
           Book a call
         </Link>
       </nav>

@@ -64,7 +64,7 @@ export default function ContactData() {
               Data Analytics
             </button>
             <NavLink
-              to="/contact/career"
+              to="/career/contact"
               className="contact-switcher__tab
                          contact-switcher__tab--gold">
               Career Services

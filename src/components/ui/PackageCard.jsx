@@ -5,11 +5,11 @@ export default function PackageCard({ pkg, variant = 'card' }) {
   const accent = isData ? 'var(--teal)' : 'var(--gold)';
   const badgeBg = isData ? 'var(--teal)' : 'var(--gold)';
   const badgeColor = isData ? 'var(--white)' : 'var(--navy)';
-  const contactPath = isData ? '/contact/data' : '/contact/career';
+  const contactPath = isData ? '/data/contact' : '/career/contact';
 
   if (variant === 'list') {
-    const trackPillBg = isData ? 'rgba(29,158,117,0.10)' : 'rgba(244,168,51,0.12)';
-    const trackPillColor = isData ? 'var(--teal)' : '#9A6200';
+    const trackPillBg = isData ? 'rgba(31,138,130,0.10)' : 'rgba(200,154,68,0.12)';
+    const trackPillColor = isData ? 'var(--teal)' : 'var(--gold-dark)';
 
     return (
       <article
@@ -60,10 +60,10 @@ export default function PackageCard({ pkg, variant = 'card' }) {
 
   const featuredStyle = pkg.featured ? {
     borderColor: isData ? 'var(--teal)' : 'var(--gold)',
-    background: isData ? 'rgba(29,158,117,0.04)' : 'rgba(244,168,51,0.04)',
+    background: isData ? 'rgba(31,138,130,0.04)' : 'rgba(200,154,68,0.04)',
     boxShadow: isData
-      ? '0 12px 40px rgba(29,158,117,0.14)'
-      : '0 8px 32px rgba(244,168,51,0.10)',
+      ? '0 12px 40px rgba(31,138,130,0.14)'
+      : '0 8px 32px rgba(200,154,68,0.10)',
   } : {};
 
   return (

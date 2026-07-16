@@ -122,7 +122,7 @@ export default function ContactCareer() {
           </span>
           <div className="contact-switcher__tabs">
             <NavLink
-              to="/contact/data"
+              to="/data/contact"
               className="contact-switcher__tab
                          contact-switcher__tab--teal">
               Data Analytics

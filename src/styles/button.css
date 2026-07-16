@@ -68,6 +68,20 @@
   transform: translateY(-1px);
 }
 
+/* Theme-driven button: gold inside .theme-career, teal inside .theme-data.
+   Use this inside a track shell instead of hardcoding btn--teal / btn--gold,
+   so the same component themes itself when the shell changes. */
+.btn--accent {
+  background: var(--accent);
+  color: var(--accent-contrast);
+  font-weight: 700;
+}
+.btn--accent:hover {
+  background: var(--accent-hover, var(--accent-dark));
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
 .btn--teal {
   background: var(--teal);
   color: var(--white);
@@ -75,7 +89,7 @@
 .btn--teal:hover {
   background: var(--teal2);
   transform: translateY(-1px);
-  box-shadow: 0 4px 16px rgba(29,158,117,0.35);
+  box-shadow: 0 4px 16px rgba(31,138,130,0.35);
 }
 
 .btn--gold {
@@ -100,13 +114,13 @@
 
 @keyframes btn-pulse {
   0% {
-    box-shadow: 0 0 0 0 rgba(29, 158, 117, 0.5);
+    box-shadow: 0 0 0 0 var(--accent-glow);
   }
   70% {
-    box-shadow: 0 0 0 14px rgba(29, 158, 117, 0);
+    box-shadow: 0 0 0 14px transparent;
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(29, 158, 117, 0);
+    box-shadow: 0 0 0 0 transparent;
   }
 }
 

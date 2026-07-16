@@ -4,7 +4,19 @@ import { WHATSAPP_URL, CONTACT_EMAIL } from '../config';
 import logoStacked from '../assets/logo-stacked.jpg';
 import '../styles/footer.css';
 
-const Footer = memo(function Footer() {
+/**
+ * One structural footer for all three shells. Both tracks' columns are
+ * always present — the footer is the cross-navigation surface of the split,
+ * so a visitor deep in /career/* can still find the data side. The `track`
+ * prop only decides where track-ambiguous links (About, Book a call) land;
+ * the layout's theme class handles the accent colour.
+ */
+const Footer = memo(function Footer({ track = null }) {
+  // Neutral shell has no About of its own; it hands off to the data side,
+  // mirroring the /about → /data/about redirect in vercel.json.
+  const aboutTo = track === 'career' ? '/career/about' : '/data/about';
+  const contactTo = track === 'career' ? '/career/contact' : '/data/contact';
+
   return (
     <footer className="footer">
       <div className="footer__main">
@@ -29,32 +41,31 @@ const Footer = memo(function Footer() {
           </p>
         </div>
 
-        {/* Each line goes to the track that actually delivers it — these all
-            used to land on the generic /services page regardless. */}
+        {/* Each line goes to the track that actually delivers it. */}
         <div className="footer__col">
           <h3 className="footer__col-title">Data Services</h3>
           <ul>
-            <li><Link to="/data-services">Power BI dashboards</Link></li>
-            <li><Link to="/data-services">Excel automation</Link></li>
-            <li><Link to="/data-services">KPI &amp; executive reporting</Link></li>
+            <li><Link to="/data/services">Power BI dashboards</Link></li>
+            <li><Link to="/data/services">Excel automation</Link></li>
+            <li><Link to="/data/services">KPI &amp; executive reporting</Link></li>
+            <li><Link to="/data/packages">Packages &amp; pricing</Link></li>
           </ul>
 
           <h3 className="footer__col-title footer__col-title--stacked">Career Services</h3>
           <ul>
-            <li><Link to="/career-services">CV writing</Link></li>
-            <li><Link to="/career-services">LinkedIn optimization</Link></li>
-            <li><Link to="/career-services">Career coaching</Link></li>
+            <li><Link to="/career/services">CV writing</Link></li>
+            <li><Link to="/career/services">LinkedIn optimization</Link></li>
+            <li><Link to="/career/services">Career coaching</Link></li>
+            <li><Link to="/career/packages">Packages &amp; pricing</Link></li>
           </ul>
         </div>
 
         <div className="footer__col">
           <h3 className="footer__col-title">Company</h3>
           <ul>
-            <li><Link to="/about">About Kabiru</Link></li>
-            <li><Link to="/services">All services</Link></li>
+            <li><Link to={aboutTo}>About Kabiru</Link></li>
             <li><Link to="/#testimonials">Testimonials</Link></li>
             <li><Link to="/blog">Blog</Link></li>
-            <li><Link to="/packages">Packages</Link></li>
           </ul>
         </div>
 
@@ -62,10 +73,9 @@ const Footer = memo(function Footer() {
           <h3 className="footer__col-title">Contact</h3>
           <ul>
             <li>
-              <Link to="/contact">Book a discovery call</Link>
+              <Link to={contactTo}>Book a discovery call</Link>
             </li>
             <li>
-              {/* Replace with https://wa.me/2547XXXXXXXX */}
               <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">
                 WhatsApp us
               </a>

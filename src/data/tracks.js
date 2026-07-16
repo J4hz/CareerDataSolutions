@@ -1,6 +1,6 @@
 // ─────────────────────────────────────────────────────────────
-// Copy for the two dedicated landing pages, /data-services and
-// /career-services.
+// Copy for the two dedicated landing pages, /data/services and
+// /career/services.
 //
 // The pages render from one shared component (components/ServiceLanding.jsx),
 // so the layout grammar, spacing and type scale stay identical between the
@@ -11,13 +11,16 @@
 // ─────────────────────────────────────────────────────────────
 
 import { dataProcess, careerProcess } from './process.js';
+import { dataFaqs, careerFaqs } from './faqs.js';
 
 export const dataTrack = {
   id: 'data',
-  accent: 'var(--teal)',
-  accentSoft: 'rgba(29,158,117,0.12)',
-  accentGlow: 'rgba(36,194,143,0.20)',
-  buttonClass: 'btn--teal',
+  // Resolved by the .theme-data class on <DataLayout>; the page itself
+  // never names a colour, so the theme swap stays a one-line CSS change.
+  accent: 'var(--accent)',
+  accentSoft: 'var(--accent-soft)',
+  accentGlow: 'var(--accent-glow)',
+  buttonClass: 'btn--accent',
 
   eyebrow: 'Data Services',
   title: 'Your data already knows.',
@@ -25,8 +28,8 @@ export const dataTrack = {
   intro:
     'Power BI dashboards, Excel automation and operational reporting for organizations that are collecting plenty of data and deciding on none of it. Built by someone who spent 12 years inside operations, so the dashboard speaks your team\'s language on day one — and actually gets opened on a Monday morning.',
 
-  primaryCta: { label: 'Book a free discovery call', to: '/contact/data' },
-  secondaryCta: { label: 'See packages & pricing', to: '/packages' },
+  primaryCta: { label: 'Book a free discovery call', to: '/data/contact' },
+  secondaryCta: { label: 'See packages & pricing', to: '/data/packages' },
 
   stats: [
     { num: '7', label: 'Departments dashboarded' },
@@ -65,6 +68,9 @@ export const dataTrack = {
   processTitle: 'How a data engagement runs',
   process: dataProcess,
 
+  faqTitle: 'Data analytics, answered',
+  faqs: dataFaqs,
+
   closingTitle: 'Start with a conversation, not a contract.',
   closingBody:
     'A free 30-minute discovery call to map what data you already have and what decisions it should be driving. If a dashboard is not the right answer, we will tell you that.',
@@ -72,10 +78,11 @@ export const dataTrack = {
 
 export const careerTrack = {
   id: 'career',
-  accent: 'var(--gold)',
-  accentSoft: 'rgba(244,168,51,0.14)',
-  accentGlow: 'rgba(247,185,77,0.22)',
-  buttonClass: 'btn--gold',
+  // Resolved by the .theme-career class on <CareerLayout>.
+  accent: 'var(--accent)',
+  accentSoft: 'var(--accent-soft)',
+  accentGlow: 'var(--accent-glow)',
+  buttonClass: 'btn--accent',
 
   eyebrow: 'Career Services',
   title: 'A CV that gets read.',
@@ -83,8 +90,8 @@ export const careerTrack = {
   intro:
     'ATS-optimized CV writing, LinkedIn optimization and career coaching for professionals targeting roles in Kenya, the UK, the US and the Gulf. Written from the employer\'s side of the table: keyword-precise, achievement-led, and built for the market you are actually applying into.',
 
-  primaryCta: { label: 'Get a free CV review', to: '/contact/career' },
-  secondaryCta: { label: 'See packages & pricing', to: '/packages' },
+  primaryCta: { label: 'Get a free CV review', to: '/career/contact' },
+  secondaryCta: { label: 'See packages & pricing', to: '/career/packages' },
 
   stats: [
     { num: '1 day', label: 'Turnaround on your free CV assessment' },
@@ -122,6 +129,9 @@ export const careerTrack = {
 
   processTitle: 'How a career engagement runs',
   process: careerProcess,
+
+  faqTitle: 'CVs and careers, answered',
+  faqs: careerFaqs,
 
   closingTitle: 'Send the CV you have, not the one you think we want.',
   closingBody:

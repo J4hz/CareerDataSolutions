@@ -108,15 +108,15 @@
 }
 
 .pkg-row:hover {
-  background: #FAFBFC;
+  background: var(--paper);
 }
 
 .pkg-row--featured {
-  background: #FAFFFE;
+  background: var(--accent-soft);
 }
 
 .pkg-row--featured:hover {
-  background: #F4FDFB;
+  background: var(--accent-glow);
 }
 
 /* ── Main (name block) ── */
@@ -321,12 +321,12 @@
 }
 
 .pkg-h-card--data:hover {
-  box-shadow: 0 10px 40px rgba(29,158,117,0.10);
+  box-shadow: 0 10px 40px rgba(31,138,130,0.10);
   transform: translateY(-2px);
 }
 
 .pkg-h-card--career:hover {
-  box-shadow: 0 10px 40px rgba(244,168,51,0.10);
+  box-shadow: 0 10px 40px rgba(200,154,68,0.10);
   transform: translateY(-2px);
 }
 

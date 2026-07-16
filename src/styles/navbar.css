@@ -90,6 +90,19 @@
   border-radius: 2px;
 }
 
+/* Inside a themed shell the active underline takes the track accent. Scoped
+   to the theme classes so the neutral shell keeps its navy underline. */
+.theme-career .navbar__link--active::after,
+.theme-data .navbar__link--active::after {
+  background: var(--accent);
+}
+
+/* The quiet link across to the other track. */
+.navbar__link--switch {
+  font-size: 0.8rem;
+  color: var(--gm);
+}
+
 .navbar__end {
   flex: 1;
   display: flex;
@@ -116,16 +129,34 @@
   background: var(--navy2);
 }
 
+/* Themed shells colour the CTA with the track accent; the neutral shell
+   keeps the navy button above. Color only — same padding, radius, type. */
+.theme-career .navbar__cta,
+.theme-data .navbar__cta {
+  background: var(--accent);
+  color: var(--accent-contrast);
+}
+
+.theme-career .navbar__cta:hover,
+.theme-data .navbar__cta:hover {
+  background: var(--accent-hover, var(--accent-dark));
+}
+
 @keyframes navbar-cta-pulse {
   0% {
-    box-shadow: 0 0 0 0 rgba(11, 31, 58, 0.45);
+    box-shadow: 0 0 0 0 var(--cta-pulse, rgba(11, 31, 58, 0.45));
   }
   70% {
-    box-shadow: 0 0 0 10px rgba(11, 31, 58, 0);
+    box-shadow: 0 0 0 10px transparent;
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(11, 31, 58, 0);
+    box-shadow: 0 0 0 0 transparent;
   }
+}
+
+.theme-career .navbar__cta--pulse,
+.theme-data .navbar__cta--pulse {
+  --cta-pulse: var(--accent-glow);
 }
 
 .navbar__cta--pulse {
