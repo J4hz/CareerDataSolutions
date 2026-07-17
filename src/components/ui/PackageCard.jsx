@@ -51,7 +51,7 @@ export default function PackageCard({ pkg, variant = 'card' }) {
             className="pkg-row__cta"
             style={{ background: isData ? 'var(--teal)' : 'var(--gold)', color: isData ? '#fff' : 'var(--navy)' }}
           >
-            Get started
+            Get this package
           </Link>
         </div>
       </article>
@@ -132,7 +132,7 @@ export default function PackageCard({ pkg, variant = 'card' }) {
           color: isData ? '#fff' : 'var(--navy)',
         }}
       >
-        Get started
+        Get this package
       </Link>
     </article>
   );

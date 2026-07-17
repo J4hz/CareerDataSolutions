@@ -27,7 +27,6 @@ export default function ServiceLanding({ track }) {
       {/* HERO */}
       <section className="lp-hero" aria-labelledby="lp-heading">
         <div className="container lp-hero__inner">
-          <span className="lp-hero__eyebrow">{track.eyebrow}</span>
           <h1 id="lp-heading" className="lp-hero__title">
             {track.title}
             <br />

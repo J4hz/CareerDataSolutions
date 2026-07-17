@@ -50,8 +50,10 @@ const Footer = memo(function Footer({ track = null }) {
             <li><Link to="/data/services">KPI &amp; executive reporting</Link></li>
             <li><Link to="/data/packages">Packages &amp; pricing</Link></li>
           </ul>
+        </div>
 
-          <h3 className="footer__col-title footer__col-title--stacked">Career Services</h3>
+        <div className="footer__col">
+          <h3 className="footer__col-title">Career Services</h3>
           <ul>
             <li><Link to="/career/services">CV writing</Link></li>
             <li><Link to="/career/services">LinkedIn optimization</Link></li>

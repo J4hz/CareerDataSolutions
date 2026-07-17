@@ -168,7 +168,7 @@ export default function PackageCardHorizontal({ pkg }) {
             color: isData ? 'var(--white)' : 'var(--navy)',
           }}
         >
-          Get started →
+          Get this package →
         </Link>
 
         {/* Discovery call note */}

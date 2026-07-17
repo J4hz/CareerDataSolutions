@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import { NavLink } from 'react-router-dom';
+import { WHATSAPP_URL, CONTACT_EMAIL } from '../config';
 import '../styles/contact.css';
 
 // Mirrors MAX_CV_BYTES in api/_lib/sanitize.js. The server enforces this for
@@ -187,6 +188,35 @@ export default function ContactCareer() {
                   <span>{item}</span>
                 </div>
               ))}
+            </div>
+
+            {/* Prefer to reach out directly */}
+            <div className="contact-alts">
+              {/* WhatsApp */}
+              <a
+                href={WHATSAPP_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="contact-alt-card contact-alt-card--wa"
+              >
+                <div className="contact-alt-icon" style={{ background: '#25D366' }}>W</div>
+                <div>
+                  <div className="contact-alt-card__label">Chat on WhatsApp</div>
+                  <div className="contact-alt-card__sub">Quick questions or get started now</div>
+                </div>
+              </a>
+
+              {/* Email */}
+              <a
+                href={`mailto:${CONTACT_EMAIL}`}
+                className="contact-alt-card"
+              >
+                <div className="contact-alt-icon" style={{ background: 'var(--navy)' }}>@</div>
+                <div>
+                  <div className="contact-alt-card__label">{CONTACT_EMAIL}</div>
+                  <div className="contact-alt-card__sub">Usually responds within a few hours</div>
+                </div>
+              </a>
             </div>
 
           </div>

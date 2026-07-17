@@ -1,5 +1,5 @@
 import { dataPackages, careerPackages } from '../data/packages';
-import PackageCardHorizontal from '../components/ui/PackageCardHorizontal';
+import PackageCard from '../components/ui/PackageCard';
 import CTASection from '../components/CTASection';
 import '../styles/packages.css';
 
@@ -44,9 +44,11 @@ export default function Packages({ track = 'data' }) {
               {copy.trackLabel}
             </p>
             <h3 className="packages-page__section-title">{copy.sectionTitle}</h3>
-            {packages.map((pkg) => (
-              <PackageCardHorizontal key={pkg.id} pkg={pkg} />
-            ))}
+            <div className="packages-page__grid">
+              {packages.map((pkg) => (
+                <PackageCard key={pkg.id} pkg={pkg} />
+              ))}
+            </div>
           </div>
 
           <p className="packages-page__note">

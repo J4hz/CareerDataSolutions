@@ -173,6 +173,99 @@
   }
 }
 
+/* ── BOOK-A-CALL DROPDOWN ──
+   The one warm action on the site. Orange in every shell (not themed), so
+   booking always looks like the same button wherever the visitor is. */
+.navbar__book {
+  position: relative;
+}
+
+.navbar__cta.navbar__cta--book {
+  background: var(--orange);
+  color: var(--navy-950);
+  font-weight: 700;
+  --cta-pulse: var(--orange-glow);
+}
+
+.navbar__cta.navbar__cta--book:hover {
+  background: var(--orange-dark);
+}
+
+.navbar__cta-caret {
+  transition: transform var(--transition);
+}
+
+.navbar__cta--book[aria-expanded='true'] .navbar__cta-caret {
+  transform: rotate(180deg);
+}
+
+.navbar__book-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 216px;
+  background: var(--white);
+  border: 1px solid var(--gl);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  padding: 8px;
+  z-index: 120;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  animation: book-menu-in 0.16s ease;
+}
+
+@keyframes book-menu-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.navbar__book-title {
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gm);
+  padding: 6px 10px 4px;
+}
+
+.navbar__book-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--gd);
+  transition: background var(--transition), color var(--transition);
+}
+
+.navbar__book-item::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.navbar__book-item--data::before   { background: var(--teal); }
+.navbar__book-item--career::before { background: var(--gold); }
+
+.navbar__book-item:hover {
+  background: var(--off);
+  color: var(--navy);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .navbar__book-menu {
+    animation: none;
+  }
+}
+
 /* Hamburger */
 .navbar__burger {
   display: none;
@@ -233,9 +326,22 @@
 }
 
 .navbar__mobile .navbar__cta {
-  margin: 16px 0 0;
+  margin: 0;
   justify-content: center;
   padding: 12px 20px;
+}
+
+/* Mobile booking: the same two choices as the desktop dropdown, laid out as
+   stacked buttons under a shared label. */
+.navbar__mobile-book {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.navbar__mobile-book .navbar__book-title {
+  padding: 0 0 2px;
 }
 
 @media (max-width: 768px) {
@@ -245,7 +351,7 @@
   .navbar__nav {
     display: none;
   }
-  .navbar__end .navbar__cta {
+  .navbar__end .navbar__book {
     display: none;
   }
   .navbar__burger {

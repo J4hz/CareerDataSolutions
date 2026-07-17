@@ -102,6 +102,21 @@
   transform: translateY(-1px);
 }
 
+/* Outlined gold — the quieter career-track CTA that still reads as gold,
+   used beside a filled teal button on dark backgrounds. */
+.btn--outline-gold {
+  background: transparent;
+  color: var(--gold2);
+  border: 1.5px solid rgba(200, 154, 68, 0.5);
+  font-weight: 700;
+}
+.btn--outline-gold:hover {
+  background: var(--gold);
+  color: var(--navy);
+  border-color: var(--gold);
+  transform: translateY(-1px);
+}
+
 .btn--sm {
   padding: 9px 18px;
   font-size: 0.85rem;

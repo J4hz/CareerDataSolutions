@@ -1,0 +1,64 @@
+/* ── AUTO-SCROLLING TESTIMONIALS ──
+   Two identical groups sit end to end inside the track; the track slides left
+   by exactly one group width and loops, so the wall appears to scroll forever.
+   Every item (including the last of each group) carries the gap as margin-right,
+   so the -50% loop point is seamless. Edges fade out via a mask. */
+.tmarquee {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  padding: 8px 0;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+}
+
+.tmarquee__track {
+  display: flex;
+  width: max-content;
+  animation: tmarquee-scroll 38s linear infinite;
+}
+
+.tmarquee:hover .tmarquee__track,
+.tmarquee:focus-within .tmarquee__track {
+  animation-play-state: paused;
+}
+
+.tmarquee__group {
+  display: flex;
+  flex-shrink: 0;
+}
+
+.tmarquee__item {
+  width: 384px;
+  flex-shrink: 0;
+  margin-right: 24px;
+  display: flex;
+}
+
+/* The card fills its slot so heights line up across the row. */
+.tmarquee__item > article {
+  width: 100%;
+}
+
+@keyframes tmarquee-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* No autoplay for reduced-motion users — let them scroll the wall by hand. */
+@media (prefers-reduced-motion: reduce) {
+  .tmarquee {
+    overflow-x: auto;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+  .tmarquee__track {
+    animation: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .tmarquee__item {
+    width: 300px;
+  }
+}

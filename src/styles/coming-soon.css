@@ -1,0 +1,81 @@
+/* ── COMING SOON (data track placeholder) ──
+   Rendered inside DataLayout, so var(--accent) is teal here. */
+.coming-soon {
+  min-height: 72vh;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 168px 24px 120px;
+  background: linear-gradient(155deg, var(--navy) 0%, var(--navy2) 60%, var(--navy-800) 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.coming-soon__inner {
+  max-width: 620px;
+  position: relative;
+  z-index: 1;
+}
+
+.coming-soon__eyebrow {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 16px;
+}
+
+.coming-soon__title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(2.4rem, 6vw, 3.8rem);
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  color: var(--white);
+  margin-bottom: 20px;
+}
+
+.coming-soon__body {
+  font-size: 1.05rem;
+  line-height: 1.75;
+  color: rgba(255, 255, 255, 0.72);
+  max-width: 540px;
+  margin: 0 auto 36px;
+}
+
+.coming-soon__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 28px;
+}
+
+.coming-soon__contact {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.coming-soon__contact a {
+  color: var(--white);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  padding-bottom: 1px;
+  transition: border-color var(--transition);
+}
+
+.coming-soon__contact a:hover {
+  border-color: var(--accent);
+}
+
+@media (max-width: 560px) {
+  .coming-soon {
+    padding: 140px 20px 88px;
+  }
+
+  .coming-soon__actions .btn {
+    width: 100%;
+  }
+}

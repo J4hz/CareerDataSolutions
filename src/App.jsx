@@ -6,14 +6,13 @@ import DataLayout from './layouts/DataLayout';
 import Seo from './components/Seo';
 
 const Home           = lazy(() => import('./pages/Home'));
-const DataServices   = lazy(() => import('./pages/DataServices'));
 const CareerServices = lazy(() => import('./pages/CareerServices'));
 const Packages      = lazy(() => import('./pages/Packages'));
 const About         = lazy(() => import('./pages/About'));
 const Blog          = lazy(() => import('./pages/Blog'));
 const BlogPost      = lazy(() => import('./pages/BlogPost'));
-const ContactData   = lazy(() => import('./pages/ContactData'));
 const ContactCareer = lazy(() => import('./pages/ContactCareer'));
+const ComingSoon    = lazy(() => import('./pages/ComingSoon'));
 const NotFound      = lazy(() => import('./pages/NotFound'));
 
 function ScrollToTop() {
@@ -66,12 +65,12 @@ export default function App() {
             <Route path="contact"   element={<ContactCareer />} />
           </Route>
 
+          {/* Data track is temporarily "coming soon": every /data/* path
+              renders the same placeholder, so all data links across the site
+              land there. Restore the individual routes to bring it back. */}
           <Route path="/data" element={<DataLayout />}>
-            <Route index            element={<Navigate to="/data/services" replace />} />
-            <Route path="services"  element={<DataServices />} />
-            <Route path="packages"  element={<Packages track="data" />} />
-            <Route path="about"     element={<About track="data" />} />
-            <Route path="contact"   element={<ContactData />} />
+            <Route index      element={<ComingSoon />} />
+            <Route path="*"   element={<ComingSoon />} />
           </Route>
 
           {/* Legacy routes from before the split */}

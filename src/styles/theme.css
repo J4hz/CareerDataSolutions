@@ -40,6 +40,14 @@
   --gold-soft: rgba(200, 154, 68, 0.14);
   --gold-glow: rgba(200, 154, 68, 0.24);
 
+  /* Booking / high-visibility warm accent. Used for the "Book a call" CTA so
+     it reads as a single, consistent action across every shell rather than
+     shifting with the track theme. Navy text passes on it (as with gold). */
+  --orange:      #E8823C;
+  --orange-dark: #D66E28;
+  --orange-soft: rgba(232, 130, 60, 0.16);
+  --orange-glow: rgba(232, 130, 60, 0.45);
+
   /* Default accent outside a themed shell (neutral pages lean teal,
      matching the site's historic primary). */
   --accent:          var(--teal);

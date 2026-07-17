@@ -17,9 +17,10 @@
   padding: 150px 0 88px;
 }
 
-/* The accent's only structural appearance: a soft glow bleeding in from the
-   top-right, and a hairline rule at the very top of the page. Enough to make
-   the two tracks feel distinct at a glance without changing the layout. */
+/* The accent's only structural appearance: a faint accent tint bleeding in
+   from the top-right, and a hairline rule at the very top of the page. Enough
+   to make the two tracks feel distinct at a glance without changing the
+   layout. Kept low-intensity so it reads as ambient tint, not a glow. */
 .lp-hero::before {
   content: '';
   position: absolute;
@@ -29,6 +30,7 @@
   height: 620px;
   border-radius: 50%;
   background: radial-gradient(circle, var(--lp-accent-glow) 0%, transparent 68%);
+  opacity: 0.5;
   pointer-events: none;
 }
 

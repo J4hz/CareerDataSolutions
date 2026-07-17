@@ -9,8 +9,9 @@
   margin: 0 auto;
   padding: 72px 24px 48px;
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1.4fr;
-  gap: 48px;
+  /* Brand + all four link groups (Data, Career, Company, Contact) on one row. */
+  grid-template-columns: 1.6fr 1fr 1fr 1fr 1.2fr;
+  gap: 40px;
 }
 
 .footer__brand-logo {
@@ -41,11 +42,6 @@
   text-transform: uppercase;
   color: rgba(255,255,255,0.4);
   margin-bottom: 18px;
-}
-
-/* Second heading inside a column (the services column carries both tracks). */
-.footer__col-title--stacked {
-  margin-top: 26px;
 }
 
 .footer__col ul {

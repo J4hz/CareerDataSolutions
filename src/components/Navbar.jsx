@@ -1,7 +1,15 @@
-import { memo, useState, useEffect, useCallback } from 'react';
+import { memo, useState, useEffect, useCallback, useRef } from 'react';
 import { NavLink, Link } from 'react-router-dom';
 import logoPng from '../assets/logo.png';
 import '../styles/navbar.css';
+
+/* The two things a visitor can book. The dropdown exists because "Book a call"
+   is ambiguous on the neutral shell — this makes the visitor name their track
+   up front, so they land on the right contact page. */
+const BOOK_OPTIONS = [
+  { to: '/data/contact',   label: 'Data Services',      track: 'data' },
+  { to: '/career/contact', label: 'Career Advancement', track: 'career' },
+];
 
 /**
  * One structural navbar for all three shells; the `track` prop only changes
@@ -37,15 +45,11 @@ const SWITCH = {
   career: { to: '/data/services',   label: 'Data Services ↗' },
 };
 
-const CTA_TO = {
-  neutral: '/data/contact',
-  data:    '/data/contact',
-  career:  '/career/contact',
-};
-
 const Navbar = memo(function Navbar({ track = null }) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [bookOpen, setBookOpen] = useState(false);
+  const bookRef = useRef(null);
 
   const handleScroll = useCallback(() => {
     setScrolled(window.scrollY > 20);
@@ -56,13 +60,32 @@ const Navbar = memo(function Navbar({ track = null }) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [handleScroll]);
 
-  const close = useCallback(() => setOpen(false), []);
+  // Close the booking menu on outside click or Escape.
+  useEffect(() => {
+    if (!bookOpen) return undefined;
+    const onDown = (e) => {
+      if (bookRef.current && !bookRef.current.contains(e.target)) setBookOpen(false);
+    };
+    const onKey = (e) => {
+      if (e.key === 'Escape') setBookOpen(false);
+    };
+    document.addEventListener('mousedown', onDown);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('mousedown', onDown);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [bookOpen]);
+
+  const close = useCallback(() => {
+    setOpen(false);
+    setBookOpen(false);
+  }, []);
   const toggle = useCallback(() => setOpen((v) => !v), []);
 
   const key = track ?? 'neutral';
   const links = LINKS[key];
   const switchLink = SWITCH[key];
-  const ctaTo = CTA_TO[key];
 
   return (
     <header className={`navbar${scrolled ? ' navbar--scrolled' : ''}`}>
@@ -89,9 +112,36 @@ const Navbar = memo(function Navbar({ track = null }) {
         </nav>
 
         <div className="navbar__end">
-          <Link to={ctaTo} className="navbar__cta navbar__cta--pulse">
-            Book a call
-          </Link>
+          <div className="navbar__book" ref={bookRef}>
+            <button
+              type="button"
+              className="navbar__cta navbar__cta--book navbar__cta--pulse"
+              aria-haspopup="menu"
+              aria-expanded={bookOpen}
+              onClick={() => setBookOpen((v) => !v)}
+            >
+              Book a call
+              <svg className="navbar__cta-caret" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
+                <path d="M2.5 4.5 6 8l3.5-3.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+            {bookOpen && (
+              <div className="navbar__book-menu" role="menu">
+                <span className="navbar__book-title">Book a call for</span>
+                {BOOK_OPTIONS.map((o) => (
+                  <Link
+                    key={o.to}
+                    to={o.to}
+                    role="menuitem"
+                    className={`navbar__book-item navbar__book-item--${o.track}`}
+                    onClick={close}
+                  >
+                    {o.label}
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
           <button
             className={`navbar__burger${open ? ' navbar__burger--open' : ''}`}
             onClick={toggle}
@@ -116,9 +166,19 @@ const Navbar = memo(function Navbar({ track = null }) {
             {switchLink.label}
           </NavLink>
         )}
-        <Link to={ctaTo} className="navbar__cta navbar__cta--pulse" onClick={close}>
-          Book a call
-        </Link>
+        <div className="navbar__mobile-book">
+          <span className="navbar__book-title">Book a call for</span>
+          {BOOK_OPTIONS.map((o) => (
+            <Link
+              key={o.to}
+              to={o.to}
+              className={`navbar__cta navbar__cta--book navbar__cta--book-${o.track}`}
+              onClick={close}
+            >
+              {o.label}
+            </Link>
+          ))}
+        </div>
       </nav>
     </header>
   );
