@@ -74,7 +74,7 @@ export default function ServiceLanding({ track }) {
       {/* AUDIENCE */}
       <section className="section lp-audience" aria-labelledby="lp-audience-heading">
         <div className="container lp-audience__layout">
-          <div>
+          <div className="lp-audience__intro">
             <span className="eyebrow lp-eyebrow">Fit</span>
             <h2 id="lp-audience-heading">{track.audienceTitle}</h2>
           </div>

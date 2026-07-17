@@ -28,7 +28,9 @@ export const CALENDLY_URL  = `https://cal.com/${CAL_LINK}`;
 export const OG_IMAGE_URL    = absoluteUrl("/og-image.png");
 export const EMAIL_LOGO_URL  = absoluteUrl("/logo-email.png");
 
-// Notification email — real values come from Vercel env vars.
+// Notification email — real values come from Vercel env vars (NOTIFY_EMAIL,
+// NOTIFY_FROM). These are only the fallbacks used when the env var is unset.
 // Never import RESEND_API_KEY into a React component.
+// NOTIFY_FROM must be an address on a domain verified in Resend.
 export const NOTIFY_EMAIL = CONTACT_EMAIL;
-export const NOTIFY_FROM  = "onboarding@resend.dev";
+export const NOTIFY_FROM  = "notifications@careerdatasolutions.com";

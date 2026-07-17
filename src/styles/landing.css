@@ -126,21 +126,25 @@
 
 /* ── Deliverables ─────────────────────────────────────────── */
 
+/* Vertical stack: one deliverable per row, its title held beside the body so
+   the full width reads as a considered list rather than a sparse box grid. */
 .lp-deliverables__grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
+  grid-template-columns: 1fr;
+  gap: 14px;
 }
 
-/* Borderless: the cards are separated by whitespace and a soft shadow rather
-   than by outlines, so the grid reads as content and not as a set of boxes. */
 .lp-card {
   position: relative;
   background: var(--white);
   border-radius: var(--radius-lg);
-  padding: 30px;
+  padding: 26px 32px;
   box-shadow: var(--shadow-sm);
   transition: box-shadow var(--transition), transform var(--transition);
+  display: grid;
+  grid-template-columns: 0.85fr 1.6fr;
+  gap: 6px 48px;
+  align-items: start;
 }
 
 .lp-card:hover {
@@ -152,13 +156,21 @@
   font-size: 1.075rem;
   font-weight: 700;
   color: var(--navy);
-  margin-bottom: 10px;
 }
 
 .lp-card__body {
   font-size: 0.925rem;
   line-height: 1.72;
   color: var(--gm);
+}
+
+/* Below tablet the title sits above the body. */
+@media (max-width: 720px) {
+  .lp-card {
+    grid-template-columns: 1fr;
+    gap: 6px;
+    padding: 24px;
+  }
 }
 
 /* ── Audience ─────────────────────────────────────────────── */
@@ -173,11 +185,15 @@
   background: var(--white);
 }
 
+/* Heading sits above a 2×2 grid of the qualifying points, each its own card,
+   so the section reads as a quick self-check rather than a long list. */
 .lp-audience__layout {
-  display: grid;
-  grid-template-columns: 0.85fr 1.15fr;
-  gap: 56px;
-  align-items: start;
+  display: block;
+}
+
+.lp-audience__intro {
+  max-width: 620px;
+  margin-bottom: 32px;
 }
 
 .lp-audience__layout h2 {
@@ -185,38 +201,50 @@
 }
 
 .lp-audience__list {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
 }
 
 .lp-audience__item {
   display: flex;
   align-items: flex-start;
   gap: 14px;
-  padding: 18px 0;
-  border-bottom: 1px solid var(--gl);
+  padding: 22px 24px;
+  border: 1px solid var(--gl);
+  border-radius: var(--radius-md);
+  background: var(--white);
+  box-shadow: var(--shadow-sm);
   font-size: 1rem;
-  line-height: 1.65;
+  line-height: 1.6;
   color: var(--gd);
+  transition: border-color var(--transition), box-shadow var(--transition), transform var(--transition);
 }
 
-.lp-audience__item:last-child {
-  border-bottom: none;
+.lp-audience__item:hover {
+  border-color: var(--lp-accent);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
 }
 
 .lp-audience__check {
   flex-shrink: 0;
   display: grid;
   place-items: center;
-  width: 24px;
-  height: 24px;
+  width: 26px;
+  height: 26px;
   margin-top: 1px;
   border-radius: 50%;
   background: var(--lp-accent-soft);
   color: var(--lp-accent);
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   font-weight: 700;
+}
+
+@media (max-width: 640px) {
+  .lp-audience__list {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* ── Process ──────────────────────────────────────────────── */
