@@ -95,8 +95,18 @@
   line-height: 1.12;
   letter-spacing: -0.025em;
   color: var(--white);
-  max-width: 18ch;
+  /* Was 18ch, which could not fit the longer clause ("We turn data into
+     decisions," is 28 characters) and pushed the headline onto three lines.
+     Sized to the longer clause so each one holds a single line. */
+  max-width: 30ch;
   margin: 0 auto 20px;
+}
+
+/* One clause per line. Balancing is applied per line rather than to the
+   whole headline, so a line that does wrap on a narrow screen still breaks
+   evenly instead of leaving one orphaned word. */
+.hero__title-line {
+  display: block;
   text-wrap: balance;
 }
 

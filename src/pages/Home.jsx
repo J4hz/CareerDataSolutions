@@ -51,9 +51,16 @@ export default function Home() {
               <span className="hero__kicker--career">clarity for your career.</span>
             </p>
 
+            {/* Each clause is its own line: the data half above, the career
+                half below. Wrapping is not left to chance, so the headline
+                cannot fall into three lines at an awkward width. */}
             <h1 id="hero-heading" className="hero__title">
-              We turn <span className="hero__hl hero__hl--data">data</span> into decisions,
-              and <span className="hero__hl hero__hl--career">careers</span> into direction.
+              <span className="hero__title-line">
+                We turn <span className="hero__hl hero__hl--data">data</span> into decisions,
+              </span>
+              <span className="hero__title-line">
+                and <span className="hero__hl hero__hl--career">careers</span> into direction.
+              </span>
             </h1>
           </div>
 
