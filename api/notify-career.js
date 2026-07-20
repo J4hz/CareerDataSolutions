@@ -68,7 +68,11 @@ export default async function handler(req, res) {
   };
 
   try {
-    let fromAddress = process.env.NOTIFY_FROM || NOTIFY_FROM;
+    // The configured sender. The team notification below may fall back to the
+    // Resend sandbox address if this one fails, but the applicant confirmation
+    // never does — see the comment on that send.
+    const configuredFrom = process.env.NOTIFY_FROM || NOTIFY_FROM;
+    let fromAddress = configuredFrom;
     const emailOptions = {
       from: fromAddress,
       to:   process.env.NOTIFY_EMAIL || CONTACT_EMAIL,
@@ -181,14 +185,16 @@ export default async function handler(req, res) {
     try {
       const toAddress = email.trim();
       const ownerAddress = process.env.NOTIFY_EMAIL || CONTACT_EMAIL;
-      const isSandbox = fromAddress.includes('onboarding@resend.dev');
 
-      if (isSandbox && toAddress.toLowerCase() !== ownerAddress.toLowerCase()) {
-        console.log(`Skipping welcome email to ${toAddress} because Resend is in sandbox mode (can only send to verified owner address ${ownerAddress}).`);
-      } else {
+      // Always the configured sender, never the sandbox fallback that the team
+      // notification may have switched to. onboarding@resend.dev can only
+      // deliver to the Resend account owner, so sending an applicant
+      // confirmation from it is guaranteed to fail — better to attempt the real
+      // address and log a real error than to send from one that cannot work.
+      {
         const firstName = safe.name.split(' ')[0] || 'there';
         const { error: welcomeError } = await resend.emails.send({
-          from:    fromAddress,
+          from:    configuredFrom,
           to:      toAddress,
           replyTo: ownerAddress,
           subject: cleanHeader("We've received your CV — CareerDataSolutions"),

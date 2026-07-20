@@ -33,4 +33,4 @@ export const EMAIL_LOGO_URL  = absoluteUrl("/logo-email.png");
 // Never import RESEND_API_KEY into a React component.
 // NOTIFY_FROM must be an address on a domain verified in Resend.
 export const NOTIFY_EMAIL = CONTACT_EMAIL;
-export const NOTIFY_FROM  = "notifications@careerdatasolutions.com";
+export const NOTIFY_FROM  = CONTACT_EMAIL;
