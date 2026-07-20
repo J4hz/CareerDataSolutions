@@ -14,14 +14,14 @@
 
 import crypto from 'node:crypto';
 import { Resend } from 'resend';
-import { EMAIL_LOGO_URL, NOTIFY_FROM } from '../src/config.js';
+import { EMAIL_LOGO_URL, NOTIFY_FROM, CONTACT_EMAIL, NOTIFY_EMAIL } from '../src/config.js';
 import { cleanText, isValidEmail } from './_lib/sanitize.js';
 
 export const config = {
   api: { bodyParser: false },
 };
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Resend client is initialized inside handler to avoid startup errors if key is missing.
 
 async function readRawBody(req) {
   const chunks = [];
@@ -46,6 +46,12 @@ function responseValue(field) {
 }
 
 export default async function handler(req, res) {
+  if (!process.env.RESEND_API_KEY) {
+    console.error('RESEND_API_KEY is not configured');
+    return res.status(500).json({ error: 'Resend API key is not configured' });
+  }
+  const resend = new Resend(process.env.RESEND_API_KEY);
+
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -86,9 +92,19 @@ export default async function handler(req, res) {
   }
 
   try {
+    const fromAddress = process.env.NOTIFY_FROM || NOTIFY_FROM;
+    const isSandbox = fromAddress.includes('onboarding@resend.dev');
+    const toAddress = email.trim();
+    const ownerAddress = process.env.NOTIFY_EMAIL || CONTACT_EMAIL;
+
+    if (isSandbox && toAddress.toLowerCase() !== ownerAddress.toLowerCase()) {
+      console.log(`Skipping webhook confirmation email to attendee ${toAddress} because Resend is in sandbox mode (can only send to verified owner address ${ownerAddress}).`);
+      return res.status(200).json({ ok: true, sandboxSkipped: true });
+    }
+
     const { error } = await resend.emails.send({
-      from: process.env.NOTIFY_FROM || NOTIFY_FROM,
-      to: email,
+      from: fromAddress,
+      to: toAddress,
       subject: "You're booked with CareerDataSolutions",
       html: `
         <div style="font-family: sans-serif; max-width: 560px;">

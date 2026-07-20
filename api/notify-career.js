@@ -19,9 +19,13 @@ import { Resend } from 'resend';
 import { CONTACT_EMAIL, NOTIFY_FROM, SITE_DOMAIN, WHATSAPP_URL } from '../src/config.js';
 import { cleanText, cleanHeader, isValidEmail, validateCvUpload } from './_lib/sanitize.js';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 export default async function handler(req, res) {
+  if (!process.env.RESEND_API_KEY) {
+    console.error('RESEND_API_KEY is not configured');
+    return res.status(500).json({ error: 'Resend API key is not configured' });
+  }
+  const resend = new Resend(process.env.RESEND_API_KEY);
+
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -64,8 +68,9 @@ export default async function handler(req, res) {
   };
 
   try {
-    const { error } = await resend.emails.send({
-      from: process.env.NOTIFY_FROM || NOTIFY_FROM,
+    let fromAddress = process.env.NOTIFY_FROM || NOTIFY_FROM;
+    const emailOptions = {
+      from: fromAddress,
       to:   process.env.NOTIFY_EMAIL || CONTACT_EMAIL,
       replyTo: email,
       subject: cleanHeader(`New CV submission: ${name} — ${targetRole}`),
@@ -150,7 +155,18 @@ export default async function handler(req, res) {
           </p>
         </div>
       `,
-    });
+    };
+
+    let sendResult = await resend.emails.send(emailOptions);
+    let error = sendResult.error;
+
+    if (error && fromAddress !== 'onboarding@resend.dev') {
+      console.warn(`Resend career failed with sender ${fromAddress}. Retrying with onboarding@resend.dev... Error:`, error);
+      fromAddress = 'onboarding@resend.dev';
+      emailOptions.from = fromAddress;
+      const retryResult = await resend.emails.send(emailOptions);
+      error = retryResult.error;
+    }
 
     if (error) {
       console.error('Resend career error:', error);
@@ -163,41 +179,49 @@ export default async function handler(req, res) {
     // submission failed. Interpolated values are the already-escaped `safe.*`
     // ones; the recipient address is the validated raw email.
     try {
-      const firstName = safe.name.split(' ')[0] || 'there';
-      const { error: welcomeError } = await resend.emails.send({
-        from:    process.env.NOTIFY_FROM || NOTIFY_FROM,
-        to:      email.trim(),
-        replyTo: process.env.NOTIFY_EMAIL || CONTACT_EMAIL,
-        subject: cleanHeader("We've received your CV — CareerDataSolutions"),
-        html: `
-          <div style="font-family:Arial,Helvetica,sans-serif;max-width:560px;margin:0 auto;color:#0F172A;">
-            <div style="height:4px;background:#C89A44;border-radius:2px;margin-bottom:28px;"></div>
-            <h1 style="color:#0B1F3A;font-size:22px;margin:0 0 16px;">
-              Thanks, ${firstName} — we've got your CV.
-            </h1>
-            <p style="font-size:15px;line-height:1.7;color:#334155;margin:0 0 16px;">
-              This is a quick confirmation that your CV and details reached
-              CareerDataSolutions. There is nothing else you need to do right now.
-            </p>
-            <p style="font-size:15px;line-height:1.7;color:#334155;margin:0 0 16px;">
-              <strong style="color:#0B1F3A;">What happens next:</strong> we will review
-              your CV against your target role${safe.targetRole ? ` (${safe.targetRole})` : ''}
-              and market, then send you an honest written assessment within one
-              business day. If the problem is not your CV, we will tell you that too —
-              there is no obligation to buy anything.
-            </p>
-            <p style="font-size:15px;line-height:1.7;color:#334155;margin:0 0 24px;">
-              Questions in the meantime? Just reply to this email, or message us on
-              <a href="${WHATSAPP_URL}" style="color:#96702B;">WhatsApp</a>.
-            </p>
-            <p style="font-size:13px;line-height:1.6;color:#6B7280;margin:0;border-top:1px solid #E5E7EB;padding-top:16px;">
-              CareerDataSolutions · Nairobi, Kenya<br />
-              ${SITE_DOMAIN}
-            </p>
-          </div>
-        `,
-      });
-      if (welcomeError) console.error('Welcome email error:', welcomeError);
+      const toAddress = email.trim();
+      const ownerAddress = process.env.NOTIFY_EMAIL || CONTACT_EMAIL;
+      const isSandbox = fromAddress.includes('onboarding@resend.dev');
+
+      if (isSandbox && toAddress.toLowerCase() !== ownerAddress.toLowerCase()) {
+        console.log(`Skipping welcome email to ${toAddress} because Resend is in sandbox mode (can only send to verified owner address ${ownerAddress}).`);
+      } else {
+        const firstName = safe.name.split(' ')[0] || 'there';
+        const { error: welcomeError } = await resend.emails.send({
+          from:    fromAddress,
+          to:      toAddress,
+          replyTo: ownerAddress,
+          subject: cleanHeader("We've received your CV — CareerDataSolutions"),
+          html: `
+            <div style="font-family:Arial,Helvetica,sans-serif;max-width:560px;margin:0 auto;color:#0F172A;">
+              <div style="height:4px;background:#C89A44;border-radius:2px;margin-bottom:28px;"></div>
+              <h1 style="color:#0B1F3A;font-size:22px;margin:0 0 16px;">
+                Thanks, ${firstName} — we've got your CV.
+              </h1>
+              <p style="font-size:15px;line-height:1.7;color:#334155;margin:0 0 16px;">
+                This is a quick confirmation that your CV and details reached
+                CareerDataSolutions. There is nothing else you need to do right now.
+              </p>
+              <p style="font-size:15px;line-height:1.7;color:#334155;margin:0 0 16px;">
+                <strong style="color:#0B1F3A;">What happens next:</strong> we will review
+                your CV against your target role${safe.targetRole ? ` (${safe.targetRole})` : ''}
+                and market, then send you an honest written assessment within one
+                business day. If the problem is not your CV, we will tell you that too —
+                there is no obligation to buy anything.
+              </p>
+              <p style="font-size:15px;line-height:1.7;color:#334155;margin:0 0 24px;">
+                Questions in the meantime? Just reply to this email, or message us on
+                <a href="${WHATSAPP_URL}" style="color:#96702B;">WhatsApp</a>.
+              </p>
+              <p style="font-size:13px;line-height:1.6;color:#6B7280;margin:0;border-top:1px solid #E5E7EB;padding-top:16px;">
+                CareerDataSolutions · Nairobi, Kenya<br />
+                ${SITE_DOMAIN}
+              </p>
+            </div>
+          `,
+        });
+        if (welcomeError) console.error('Welcome email error:', welcomeError);
+      }
     } catch (welcomeErr) {
       console.error('Welcome email error:', welcomeErr);
     }

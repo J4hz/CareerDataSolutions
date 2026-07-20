@@ -24,9 +24,13 @@ import { Resend } from 'resend';
 import { CONTACT_EMAIL, NOTIFY_FROM, SITE_DOMAIN } from '../src/config.js';
 import { cleanText, cleanHeader, isValidEmail } from './_lib/sanitize.js';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 export default async function handler(req, res) {
+  if (!process.env.RESEND_API_KEY) {
+    console.error('RESEND_API_KEY is not configured');
+    return res.status(500).json({ error: 'Resend API key is not configured' });
+  }
+  const resend = new Resend(process.env.RESEND_API_KEY);
+
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -52,8 +56,9 @@ export default async function handler(req, res) {
   };
 
   try {
-    const { error } = await resend.emails.send({
-      from: process.env.NOTIFY_FROM || NOTIFY_FROM,
+    let fromAddress = process.env.NOTIFY_FROM || NOTIFY_FROM;
+    const emailOptions = {
+      from: fromAddress,
       to:   process.env.NOTIFY_EMAIL || CONTACT_EMAIL,
       replyTo: email,
       subject: cleanHeader(`New discovery call booked: ${name}`),
@@ -99,7 +104,18 @@ export default async function handler(req, res) {
           </p>
         </div>
       `,
-    });
+    };
+
+    let sendResult = await resend.emails.send(emailOptions);
+    let error = sendResult.error;
+
+    if (error && fromAddress !== 'onboarding@resend.dev') {
+      console.warn(`Resend failed with sender ${fromAddress}. Retrying with onboarding@resend.dev... Error:`, error);
+      fromAddress = 'onboarding@resend.dev';
+      emailOptions.from = fromAddress;
+      const retryResult = await resend.emails.send(emailOptions);
+      error = retryResult.error;
+    }
 
     if (error) {
       console.error('Resend error:', error);
