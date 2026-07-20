@@ -9,8 +9,9 @@ const Home           = lazy(() => import('./pages/Home'));
 const CareerServices = lazy(() => import('./pages/CareerServices'));
 const Packages      = lazy(() => import('./pages/Packages'));
 const About         = lazy(() => import('./pages/About'));
-const Blog          = lazy(() => import('./pages/Blog'));
-const BlogPost      = lazy(() => import('./pages/BlogPost'));
+// Restore alongside the /blog routes below to bring the blog back.
+// const Blog       = lazy(() => import('./pages/Blog'));
+// const BlogPost   = lazy(() => import('./pages/BlogPost'));
 const ContactCareer = lazy(() => import('./pages/ContactCareer'));
 const ComingSoon    = lazy(() => import('./pages/ComingSoon'));
 const NotFound      = lazy(() => import('./pages/NotFound'));
@@ -52,8 +53,15 @@ export default function App() {
         <Routes>
           <Route element={<SiteLayout />}>
             <Route path="/"           element={<Home />} />
+            {/* Blog ("Insights") is hidden from the live site. The pages and
+                posts still exist (pages/Blog.jsx, pages/BlogPost.jsx,
+                data/blog.js); uncomment these two routes, restore the nav
+                entries in components/Navbar.jsx and the Footer link, and
+                re-add the seo/meta.js + seo/schema.js entries to bring it
+                back.
             <Route path="/blog"       element={<Blog />} />
             <Route path="/blog/:slug" element={<BlogPost />} />
+            */}
             <Route path="*"           element={<NotFound />} />
           </Route>
 

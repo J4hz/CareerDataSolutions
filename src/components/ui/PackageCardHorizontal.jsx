@@ -29,13 +29,13 @@ export default function PackageCardHorizontal({ pkg }) {
   const accent     = isData ? 'var(--teal)' : 'var(--gold)';
   const badgeBg    = isData ? 'var(--teal)' : 'var(--gold)';
   const badgeColor = isData ? 'var(--white)' : 'var(--navy)';
-  const iconBg     = isData ? 'rgba(31,138,130,0.10)' : 'rgba(200,154,68,0.12)';
+  const iconBg     = isData ? 'rgba(29,158,117,0.10)' : 'rgba(244,168,51,0.12)';
 
   const featuredBorderColor = pkg.featured
     ? (isData ? 'var(--teal)' : 'var(--gold)')
     : 'var(--gl)';
   const featuredBg = pkg.featured
-    ? (isData ? 'rgba(31,138,130,0.025)' : 'rgba(200,154,68,0.025)')
+    ? (isData ? 'rgba(29,158,117,0.025)' : 'rgba(244,168,51,0.025)')
     : 'var(--white)';
 
   const isSingleCol = pkg.features.length <= 3;

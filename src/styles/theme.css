@@ -1,9 +1,21 @@
 /* ─────────────────────────────────────────────────────────────
    Theme tokens for the career/data split.
 
-   The palette matches reference/careerdatasolutions-rebuild.html.
+   BRAND PALETTE — these four values are the brand colours. Everything
+   else in this file is derived from them (a darkened shade for hover, or
+   navy at reduced alpha for borders and body copy):
+
+       Navy   #0B1F3A
+       Teal   #1D9E75
+       Gold   #F4A833
+       White  #FFFFFF
+
+   ONE exception, defined under "Booking / high-visibility CTA" below: the
+   orange used by the "Book a call" button. It is intentionally outside the
+   palette so the booking action stays constant across both track themes.
+
    Neutral tokens (navy, paper, ink, line) are global and never themed.
-   The two accents — gold for /career/*, teal for /data/* — are only
+   The two accents, gold for /career/* and teal for /data/*, are only
    reachable through the --accent* indirection below.
 
    .theme-career / .theme-data are applied by the route layout wrappers
@@ -13,40 +25,63 @@
 
    This split is COLOR ONLY. Font, spacing and radius tokens live in
    globals.css and are deliberately not forked here.
+
+   CONTRAST NOTE: navy on gold is 8.2:1 and passes comfortably, so gold
+   surfaces always take navy text, never white (white on gold is 2.0:1
+   and fails). White on teal is 3.4:1, which passes for large/bold text
+   such as buttons but not for small body copy.
    ───────────────────────────────────────────────────────────── */
 
 :root {
-  /* Neutral / shared palette */
-  --navy-950: #071527;
-  --navy-900: #0B1F3A;
-  --navy-800: #12294D;
-  --paper:     #F7F5F0;
-  --paper-dim: #EFEBE2;
-  --ink:       #16202E;
-  --ink-soft:  #4A5568;
-  --line:      #DCD8CC;
-  --line-dark: rgba(247, 245, 240, 0.14);
+  /* ── The four brand colours ──────────────────────────────── */
+  --navy:  #0B1F3A;
+  --teal:  #1D9E75;
+  --gold:  #F4A833;
+  --white: #FFFFFF;
 
-  /* Track accents — reference these directly only when a component must
-     show BOTH tracks at once (the neutral homepage cards, the footer).
-     Inside a themed shell, use var(--accent) instead. */
-  --teal:      #1F8A82;
-  --teal-dark: #146058;
-  --teal-soft: rgba(31, 138, 130, 0.12);
-  --teal-glow: rgba(31, 138, 130, 0.22);
+  /* ── Derived navy shades (same hue, adjusted lightness) ──── */
+  --navy-950: #06121F;
+  --navy-900: var(--navy);
+  --navy-800: #143255;
 
-  --gold:      #C89A44;
-  --gold-dark: #96702B;
-  --gold-soft: rgba(200, 154, 68, 0.14);
-  --gold-glow: rgba(200, 154, 68, 0.24);
+  /* ── Derived neutrals: navy at reduced alpha over white ──── */
+  --paper:     var(--white);
+  --paper-dim: #F4F6F8;
+  --ink:       var(--navy);
+  --ink-soft:  rgba(11, 31, 58, 0.70);
+  --line:      rgba(11, 31, 58, 0.12);
+  --line-dark: rgba(255, 255, 255, 0.14);
 
-  /* Booking / high-visibility warm accent. Used for the "Book a call" CTA so
-     it reads as a single, consistent action across every shell rather than
-     shifting with the track theme. Navy text passes on it (as with gold). */
+  /* ── Track accents ───────────────────────────────────────────
+     Reference these directly only when a component must show BOTH
+     tracks at once (the neutral homepage cards, the footer). Inside a
+     themed shell, use var(--accent) instead. Every value below is the
+     brand teal or brand gold, darkened for hover or dropped to a low
+     alpha for soft fills. */
+  --teal-dark: #17805E;
+  --teal-soft: rgba(29, 158, 117, 0.12);
+  --teal-glow: rgba(29, 158, 117, 0.22);
+
+  --gold-dark: #D98F1C;
+  --gold-deep: #8A5A0F;
+  --gold-soft: rgba(244, 168, 51, 0.14);
+  --gold-glow: rgba(244, 168, 51, 0.24);
+
+  /* Booking / high-visibility CTA.
+     This orange is a deliberate exception to the four-colour palette above,
+     kept so the "Book a call" button reads as a single consistent action
+     across every shell rather than shifting with the track theme, and so it
+     stays distinct from the gold used for the career track. Navy text passes
+     on it, as with gold. */
   --orange:      #E8823C;
   --orange-dark: #D66E28;
   --orange-soft: rgba(232, 130, 60, 0.16);
   --orange-glow: rgba(232, 130, 60, 0.45);
+
+  --cta:       var(--orange);
+  --cta-dark:  var(--orange-dark);
+  --cta-soft:  var(--orange-soft);
+  --cta-glow:  var(--orange-glow);
 
   /* Default accent outside a themed shell (neutral pages lean teal,
      matching the site's historic primary). */
@@ -55,12 +90,12 @@
   --accent-soft:     var(--teal-soft);
   --accent-glow:     var(--teal-glow);
   --accent-hover:    var(--teal-dark);
-  --accent-contrast: #FFFFFF;
+  --accent-contrast: var(--white);
 }
 
 /* ── Track themes ─────────────────────────────────────────────
    Applied at the layout wrapper. Only accent-dependent tokens are
-   overridden — nothing structural. */
+   overridden, nothing structural. */
 
 .theme-data {
   --accent:          var(--teal);
@@ -68,8 +103,8 @@
   --accent-soft:     var(--teal-soft);
   --accent-glow:     var(--teal-glow);
   --accent-hover:    var(--teal-dark);
-  /* White text passes on teal */
-  --accent-contrast: #FFFFFF;
+  /* White on teal is 3.4:1, fine for the large bold text on buttons */
+  --accent-contrast: var(--white);
 }
 
 .theme-career {
@@ -77,9 +112,7 @@
   --accent-dark:     var(--gold-dark);
   --accent-soft:     var(--gold-soft);
   --accent-glow:     var(--gold-glow);
-  /* Reference hover for gold buttons (#b78a38) — a shade deeper, not the
-     full --gold-dark, which is too muddy for a filled button. */
-  --accent-hover:    #B78A38;
-  /* Navy text passes on gold; white does not */
-  --accent-contrast: var(--navy-950);
+  --accent-hover:    var(--gold-dark);
+  /* Navy text passes on gold at 8.2:1; white does not */
+  --accent-contrast: var(--navy);
 }

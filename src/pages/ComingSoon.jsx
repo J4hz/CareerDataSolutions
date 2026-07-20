@@ -18,8 +18,8 @@ export default function ComingSoon() {
           Coming soon
         </h1>
         <p className="coming-soon__body">
-          Our data analytics services — Power BI dashboards, executive reporting,
-          and Excel automation — are being finished and will be live shortly.
+          Our data analytics services (Power BI dashboards, executive reporting,
+          and Excel automation) are being finished and will be live shortly.
           Thanks for your patience.
         </p>
 

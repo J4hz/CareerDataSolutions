@@ -158,7 +158,7 @@ export default function ContactCareer() {
 
             <div className="contact-expect">
               {[
-                "Upload your current CV — even if you think it needs work.",
+                "Upload your current CV, even if you think it needs work.",
                 "Tell us your target role, market, and experience level.",
                 "We review and respond within one business day with exactly what we recommend.",
               ].map((text, i) => (
@@ -181,7 +181,7 @@ export default function ContactCareer() {
                 "We review your CV against your target role and market",
                 "We identify the exact gaps holding you back",
                 "You receive a written assessment within 1 business day",
-                "No obligation to purchase — the review is free",
+                "No obligation to purchase; the review is free",
               ].map((item, i) => (
                 <div key={i} className="contact-next-card__item">
                   <span className="contact-next-card__dot" />

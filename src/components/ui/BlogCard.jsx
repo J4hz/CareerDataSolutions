@@ -11,7 +11,7 @@ const BlogCard = memo(function BlogCard({ post }) {
     padding: '4px 10px',
     borderRadius: 'var(--radius-sm)',
     marginBottom: '16px',
-    background: 'rgba(107,114,128,0.08)',
+    background: 'rgba(11,31,58,0.08)',
     color: 'var(--gd)',
   };
 

@@ -26,7 +26,7 @@ export const dataTrack = {
   title: 'Your data already knows.',
   titleAccent: 'Make it say it out loud.',
   intro:
-    'Power BI dashboards, Excel automation and operational reporting for organizations that are collecting plenty of data and deciding on none of it. Built by someone who spent 12 years inside operations, so the dashboard speaks your team\'s language on day one — and actually gets opened on a Monday morning.',
+    'Power BI dashboards, Excel automation and operational reporting for organizations that are collecting plenty of data and deciding on none of it. Built by someone who spent 12 years inside operations, so the dashboard speaks your team\'s language on day one, and actually gets opened on a Monday morning.',
 
   primaryCta: { label: 'Book a free discovery call', to: '/data/contact' },
   secondaryCta: { label: 'See packages & pricing', to: '/data/packages' },
@@ -84,14 +84,14 @@ export const careerTrack = {
   accentGlow: 'var(--accent-glow)',
   buttonClass: 'btn--accent',
 
-  eyebrow: 'Career Services',
-  title: 'A CV that gets read.',
-  titleAccent: 'A profile that gets found.',
+  eyebrow: 'Career advancement services',
+  title: 'We turn your job search',
+  titleAccent: 'into a job offer.',
   intro:
-    'ATS-optimized CV writing, LinkedIn optimization and career coaching for professionals targeting roles in Kenya, the UK, the US and the Gulf. Written from the employer\'s side of the table: keyword-precise, achievement-led, and built for the market you are actually applying into.',
+    'CV and LinkedIn optimisation, interview coaching, and job search strategy, every step, covered.',
 
-  primaryCta: { label: 'Get a free CV review', to: '/career/contact' },
-  secondaryCta: { label: 'See packages & pricing', to: '/career/packages' },
+  primaryCta: { label: 'View packages', to: '/career/packages' },
+  secondaryCta: { label: 'Book a consultation', to: '/career/contact' },
 
   stats: [
     { num: '1 day', label: 'Turnaround on your free CV assessment' },
@@ -107,7 +107,7 @@ export const careerTrack = {
     },
     {
       title: 'LinkedIn profile optimization',
-      body: 'Rebuilt for recruiter search — the headline, the About section and the experience entries that determine whether you surface at all.',
+      body: 'Rebuilt for recruiter search: the headline, the About section and the experience entries that determine whether you surface at all.',
     },
     {
       title: 'Cover letters that are actually read',
@@ -118,6 +118,14 @@ export const careerTrack = {
       body: 'Where to apply, how to position 12 years of experience for a market that has never heard of your last employer, and how to answer the question you are dreading.',
     },
   ],
+
+  /* Renders the packages block on the services page, straight after the
+     deliverables. Opt-in per track: set this on dataTrack to show the data
+     packages on /data/services too. Copy for the cards lives in
+     src/data/packages.js and is shared with the /career/packages page, so
+     prices are never maintained in two places. */
+  showPackages: true,
+  packagesTitle: 'Packages and pricing',
 
   audienceTitle: 'This is for you if',
   audience: [
@@ -135,5 +143,5 @@ export const careerTrack = {
 
   closingTitle: 'Send the CV you have, not the one you think we want.',
   closingBody:
-    'The review is free and the feedback is honest — including telling you if your CV is already fine and the problem is somewhere else. No obligation to buy anything.',
+    'The review is free and the feedback is honest, including telling you if your CV is already fine and the problem is somewhere else. No obligation to buy anything.',
 };

@@ -7,11 +7,11 @@
      stylesheet. New code should prefer the theme.css tokens (--accent for
      anything track-coloured); these aliases exist for the CSS written
      before the career/data split. */
-  --navy:      var(--navy-900);
   --navy2:     var(--navy-800);
-  --teal2:     #2AA49B;   /* lighter teal: hover states & text on dark */
-  --gold2:     #D9B269;   /* lighter gold: hover states & text on dark */
-  --white:     #FFFFFF;
+  /* Were separate lighter tints; now the brand teal and gold themselves,
+     which are vivid enough to read on navy (4.8:1 and 8.2:1). */
+  --teal2:     var(--teal);
+  --gold2:     var(--gold);
   --off:       var(--paper);
   --gl:        var(--line);
   --gm:        var(--ink-soft);
@@ -105,12 +105,14 @@ input, textarea, select {
   padding: 0 24px;
 }
 
+/* Vertical rhythm between sections. Tightened from 96/64 so sections sit
+   closer together and less of the page is empty band. */
 .section {
-  padding: 96px 0;
+  padding: 64px 0;
 }
 
 .section--sm {
-  padding: 64px 0;
+  padding: 44px 0;
 }
 
 .eyebrow {

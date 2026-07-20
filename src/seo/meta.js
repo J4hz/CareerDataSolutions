@@ -34,12 +34,12 @@ export const staticRoutes = {
   '/data/services': {
     title: `Data Services · Power BI Dashboards & Analytics Automation | ${SITE_NAME}`,
     description:
-      'Power BI dashboards, Excel automation and operational analytics for organizations in Kenya and beyond — built by an analyst with 12 years inside EMS operations. Book a free discovery call.',
+      'Power BI dashboards, Excel automation and operational analytics for organizations in Kenya and beyond, built by an analyst with 12 years inside EMS operations. Book a free discovery call.',
   },
   '/data/packages': {
     title: `Data Packages & Pricing · Power BI Dashboards | ${SITE_NAME}`,
     description:
-      'Transparent packages for Power BI dashboard builds and analytics automation — from single-department dashboards to multi-department enterprise suites, in KES and USD.',
+      'Transparent packages for Power BI dashboard builds and analytics automation, from single-department dashboards to multi-department enterprise suites, in KES and USD.',
   },
   '/data/about': {
     title: `About Kabiru Nyabwengi · ${SITE_NAME} | Nairobi, Kenya`,
@@ -61,7 +61,7 @@ export const staticRoutes = {
   '/career/packages': {
     title: `Career Packages & Pricing · CV Writing & LinkedIn | ${SITE_NAME}`,
     description:
-      'Transparent packages for ATS-optimized CV writing, LinkedIn optimization and interview coaching — from entry-level to mid-career, in KES and USD.',
+      'Transparent packages for ATS-optimized CV writing, LinkedIn optimization and interview coaching, from entry-level to mid-career, in KES and USD.',
   },
   '/career/about': {
     title: `About Kabiru Nyabwengi · ${SITE_NAME} | Nairobi, Kenya`,
@@ -75,14 +75,18 @@ export const staticRoutes = {
   },
 
   // ── Neutral ──
-  '/blog': {
-    title: `Blog · Data Analytics & Career Strategy | ${SITE_NAME}`,
-    description:
-      'Practical writing on Power BI, operational analytics and career strategy — drawn from real dashboard builds and CV reviews in the Kenyan and international job markets.',
-  },
+  // The '/blog' entry is removed while Insights is hidden, so the blog is
+  // left out of the prerender and the sitemap. Restore it alongside the
+  // routes in App.jsx:
+  // '/blog': {
+  //   title: `Blog · Data Analytics & Career Strategy | ${SITE_NAME}`,
+  //   description:
+  //     'Practical writing on Power BI, operational analytics and career strategy, drawn from real dashboard builds and CV reviews in the Kenyan and international job markets.',
+  // },
 };
 
-/** Blog post routes, derived from the post data so they can't drift. */
+/** Blog post routes, derived from the post data so they can't drift.
+ *  Not currently wired into allRoutes() while the blog is hidden. */
 export function blogRoutes() {
   return Object.fromEntries(
     posts.map((post) => [
@@ -98,9 +102,10 @@ export function blogRoutes() {
   );
 }
 
-/** Every route that should be prerendered and listed in the sitemap. */
+/** Every route that should be prerendered and listed in the sitemap.
+ *  Spread blogRoutes() back in here to restore the blog. */
 export function allRoutes() {
-  return { ...staticRoutes, ...blogRoutes() };
+  return { ...staticRoutes };
 }
 
 /** Head tags for any path not in the registry (404s). Never indexed,
@@ -108,7 +113,7 @@ export function allRoutes() {
  *  every unknown URL claim to be the homepage. */
 const NOT_FOUND = {
   title: `Page not found · ${SITE_NAME}`,
-  description: 'That page does not exist. Browse our services, packages or blog instead.',
+  description: 'That page does not exist. Browse our services, packages or about page instead.',
   noindex: true,
 };
 

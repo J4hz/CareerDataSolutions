@@ -2,6 +2,11 @@ import { Link } from 'react-router-dom';
 import { WHATSAPP_URL, CONTACT_EMAIL } from '../config';
 import ProcessSteps from './ui/ProcessSteps';
 import FaqAccordion from './FaqAccordion';
+import TestimonialCard from './ui/TestimonialCard';
+import PackageCard from './ui/PackageCard';
+import { testimonials } from '../data/testimonials';
+import { dataPackages, careerPackages } from '../data/packages';
+import '../styles/packages.css';
 import '../styles/landing.css';
 import '../styles/button.css';
 
@@ -71,7 +76,30 @@ export default function ServiceLanding({ track }) {
         </div>
       </section>
 
-      {/* AUDIENCE */}
+      {/* PACKAGES — opt-in per track via track.showPackages (see
+          src/data/tracks.js). Cards come from the same src/data/packages.js
+          the /career/packages page uses, so pricing lives in one place. */}
+      {track.showPackages && (
+        <section className="section lp-packages" aria-labelledby="lp-packages-heading">
+          <div className="container">
+            <span className="eyebrow lp-eyebrow">Pricing</span>
+            <h2 id="lp-packages-heading">{track.packagesTitle}</h2>
+
+            <div className="packages-page__grid">
+              {(track.id === 'career' ? careerPackages : dataPackages).map((pkg) => (
+                <PackageCard key={pkg.id} pkg={pkg} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* AUDIENCE ("Fit") — HIDDEN FROM THE LIVE SITE.
+          Kept here rather than deleted so it can be restored: uncomment the
+          block below to bring it back. The backing copy is untouched in
+          src/data/tracks.js (track.audienceTitle / track.audience) and the
+          styles remain in src/styles/landing.css (.lp-audience*).
+
       <section className="section lp-audience" aria-labelledby="lp-audience-heading">
         <div className="container lp-audience__layout">
           <div className="lp-audience__intro">
@@ -86,6 +114,23 @@ export default function ServiceLanding({ track }) {
               </li>
             ))}
           </ul>
+        </div>
+      </section>
+      */}
+
+      {/* TESTIMONIALS — sits between the deliverables and the process steps.
+          Reuses the site-wide testimonials in src/data/testimonials.js and the
+          shared TestimonialCard, so there is no track-specific copy to keep in
+          sync here. */}
+      <section className="section lp-testimonials" aria-labelledby="lp-testimonials-heading">
+        <div className="container">
+          <span className="eyebrow lp-eyebrow">Client results</span>
+          <h2 id="lp-testimonials-heading">What clients say</h2>
+          <div className="lp-testimonials__grid">
+            {testimonials.map((t) => (
+              <TestimonialCard key={t.id} testimonial={t} />
+            ))}
+          </div>
         </div>
       </section>
 

@@ -1,0 +1,127 @@
+/* ─────────────────────────────────────────────────────────────
+   Styles for components/ui/ProcessSteps.jsx.
+
+   These lived in home.css, which meant they only loaded on the homepage:
+   the /career/services and /data/services pages render the same component
+   through ServiceLanding but import only landing.css, so their steps came
+   out unstyled (no circles, no connector line). Imported by the component
+   itself now, so the styles travel wherever it is used.
+   ───────────────────────────────────────────────────────────── */
+
+/* ── PROCESS STEPS (horizontal) ── */
+.process-steps {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  margin: 0 auto;
+}
+
+.process-steps__item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0 12px;
+  position: relative;
+}
+
+.process-steps__visual {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.process-steps__label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+.process-steps__circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+}
+
+.process-steps__connector {
+  position: absolute;
+  top: 40px; /* step label (~14px line + 8px margin) + half circle (20px) ≈ 42px, visual centre */
+  left: 50%;
+  right: -50%;
+  height: 2px;
+  z-index: 0;
+}
+
+.process-steps__content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.process-steps__title {
+  display: block;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--dark);
+  line-height: 1.3;
+}
+
+.process-steps__desc {
+  font-size: 0.85rem;
+  color: var(--gm);
+  line-height: 1.6;
+}
+
+@media (max-width: 640px) {
+  .process-steps {
+    flex-direction: column;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  .process-steps__item {
+    flex: none;
+    width: 100%;
+    flex-direction: row;
+    text-align: left;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 0 0 32px;
+  }
+
+  .process-steps__item:last-child {
+    padding-bottom: 0;
+  }
+
+  .process-steps__visual {
+    flex-shrink: 0;
+    margin-bottom: 0;
+  }
+
+  .process-steps__connector {
+    left: 20px; /* centre of 40px circle */
+    top: 62px;  /* label (14px + 8px margin) + full circle (40px) */
+    right: auto;
+    width: 2px;
+    height: auto;
+    bottom: 0;
+  }
+
+  .process-steps__content {
+    padding-top: 22px; /* align content alongside circle */
+  }
+}

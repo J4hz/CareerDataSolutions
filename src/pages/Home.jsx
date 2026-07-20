@@ -15,16 +15,18 @@ const trustItems = [
   'M-Pesa · Payoneer · Bank transfer',
 ];
 
+/* Copy for the hidden stats bar. Restore alongside the markup further down.
 const statsBar = [
   { num: '12', label: 'Years of operational data experience in EMS', color: 'var(--teal)' },
   { num: '7', label: 'Departments dashboarded\nHR & Workforce · Finance · Operations & Logistics · Supply Chain · Sales & Marketing · Public Relations · Executive', color: 'var(--teal)' },
   { num: '2', label: 'Service specialities, one trusted consultancy', color: 'var(--gold)' },
 ];
+*/
 
 export default function Home() {
   const [trustRef, trustInView] = useInView();
   const [servicesRef, servicesInView] = useInView();
-  const [statsRef, statsInView] = useInView();
+  // const [statsRef, statsInView] = useInView();  — restore with the stats bar
   const [testimonialsRef, testimonialsInView] = useInView();
   const [faqRef, faqInView] = useInView();
   const [ctaRef, ctaInView] = useInView();
@@ -41,9 +43,12 @@ export default function Home() {
         <span className="hero__wm" aria-hidden="true">12</span>
         <div className="hero__inner">
           <div className="hero__head">
+            {/* One sentence, not two: the kicker plus the h1 below make the
+                hero exactly two sentences. Both accent spans are kept so the
+                data and career halves stay colour-coded. */}
             <p className="hero__kicker">
-              <span className="hero__kicker--data">Precision for your data.</span>{' '}
-              <span className="hero__kicker--career">Clarity for your career.</span>
+              <span className="hero__kicker--data">Precision for your data,</span>{' '}
+              <span className="hero__kicker--career">clarity for your career.</span>
             </p>
 
             <h1 id="hero-heading" className="hero__title">
@@ -89,8 +94,7 @@ export default function Home() {
               <ul className="hero__track-list">
                 <li>CV and LinkedIn optimisation</li>
                 <li>Cover letter/Resume tailored for specific roles</li>
-                <li>Interview coaching</li>
-                <li>Job search strategy</li>
+                <li>Interview coaching and job search strategy</li>
               </ul>
               <Link to="/career/services" className="btn btn--gold btn--lg hero__track-cta">
                 Advance my career →
@@ -132,31 +136,18 @@ export default function Home() {
             <span className="eyebrow" style={{ color: 'var(--ink-soft)' }}>Two paths, one method</span>
             <h2 id="paths-heading">Tell us which problem you have</h2>
             <p className="paths__subtext">
-              Everything on this site splits based on your needs — pick your lane
+              Everything on this site splits based on your needs. Pick your lane
               and skip straight to what matters to you.
             </p>
           </div>
 
+          {/* Career ("For Professionals") sits first, ahead of the data card. */}
           <div className="paths__grid">
-            <article className="path-card path-card--data">
-              <span className="path-card__eyebrow">For Businesses</span>
-              <h3 className="path-card__title">Turn scattered data into a dashboard you actually check</h3>
-              <ul className="path-card__list">
-                <li>Custom Power BI and Excel dashboards built from your existing sales, operations, HR, or finance data</li>
-                <li>We clean and structure messy or scattered data as part of the engagement — you don't need it "ready" first</li>
-                <li>Single-department builds in 5–10 business days; multi-source builds in 2–4 weeks</li>
-                <li>Live, visual reporting that replaces "we think" with "we know"</li>
-              </ul>
-              <Link to="/data/services" className="btn btn--teal">
-                Explore Data Services →
-              </Link>
-            </article>
-
             <article className="path-card path-card--career">
               <span className="path-card__eyebrow">For Professionals</span>
               <h3 className="path-card__title">Get your experience past the ATS software and propel your career</h3>
               <ul className="path-card__list">
-                <li>ATS-optimized CVs built to parse cleanly and read well — for the system and the recruiter</li>
+                <li>ATS-optimized CVs built to parse cleanly and read well, for both the system and the recruiter</li>
                 <li>Cover letters and resumes tailored to the specific roles you're targeting, not generic templates</li>
                 <li>LinkedIn optimization available bundled or standalone, written for discoverability, not duplication</li>
                 <li>Positioning and interview coaching, not just documents</li>
@@ -165,11 +156,30 @@ export default function Home() {
                 Explore Career Services →
               </Link>
             </article>
+
+            <article className="path-card path-card--data">
+              <span className="path-card__eyebrow">For Businesses</span>
+              <h3 className="path-card__title">Turn scattered data into a dashboard you actually check</h3>
+              <ul className="path-card__list">
+                <li>Custom Power BI and Excel dashboards built from your existing sales, operations, HR, or finance data</li>
+                <li>We clean and structure messy or scattered data as part of the engagement, so you don't need it "ready" first</li>
+                <li>Single-department builds in 5–10 business days; multi-source builds in 2–4 weeks</li>
+                <li>Live, visual reporting that replaces "we think" with "we know"</li>
+              </ul>
+              <Link to="/data/services" className="btn btn--teal">
+                Explore Data Services →
+              </Link>
+            </article>
           </div>
         </div>
       </section>
 
-      {/* STATS BAR */}
+      {/* STATS BAR (12 years / 7 departments / 2 specialities)
+          HIDDEN FROM THE LIVE SITE. Kept rather than deleted so it can be
+          restored: uncomment the block below and the statsRef/statsBar lines
+          at the top of this file. The copy is in the `statsBar` array and the
+          styles remain in src/styles/home.css (.stats-bar*).
+
       <div
         ref={statsRef}
         className={`stats-bar fade-up${statsInView ? ' is-visible' : ''}`}
@@ -185,6 +195,7 @@ export default function Home() {
           ))}
         </div>
       </div>
+      */}
 
       {/* TESTIMONIALS — an auto-scrolling wall of client results, in the slot
           the old "why us" block used to hold. */}
@@ -197,7 +208,7 @@ export default function Home() {
         <div className="container">
           <div className="testimonials__header">
             <span className="eyebrow">Client results</span>
-            <h2 id="testimonials-heading">What clients say</h2>
+            <h2 id="testimonials-heading">Testimonials</h2>
             <p>
               Real results from professionals and organizations who trusted
               CareerDataSolutions with what matters most.

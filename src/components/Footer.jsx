@@ -1,7 +1,9 @@
 import { memo } from 'react';
 import { Link } from 'react-router-dom';
 import { WHATSAPP_URL, CONTACT_EMAIL } from '../config';
-import logoStacked from '../assets/logo-stacked.jpg';
+// Same asset as the navbar: one logo file, so a rebrand is a single swap.
+// (Was logo-stacked.jpg, a separate stacked lockup of the old brand.)
+import logo from '../assets/logo.png';
 import '../styles/footer.css';
 
 /**
@@ -22,42 +24,52 @@ const Footer = memo(function Footer({ track = null }) {
       <div className="footer__main">
         <div className="footer__brand">
           <div className="footer__brand-logo">
+            {/* The horizontal lockup is wide (5.4:1), so it sits shorter here
+                than the old stacked mark did while occupying similar width. */}
             <img
-              src={logoStacked}
+              src={logo}
               alt="CareerDataSolutions"
               style={{
-                height: '88px',
+                height: '38px',
                 width: 'auto',
+                maxWidth: '100%',
                 display: 'block',
                 background: 'var(--white)',
                 borderRadius: '10px',
-                padding: '6px 10px',
+                padding: '8px 12px',
               }}
             />
           </div>
           <p className="footer__tagline">
-            Data Driven Impact. Career Defining Results. Based in Nairobi, Kenya.
-            Serving clients locally and globally.
+            We turn data into decisions, and careers into direction.
+          </p>
+          {/* Hyphen, not an em dash: the site is deliberately em-dash free. */}
+          <p className="footer__location">
+            Nairobi, Kenya - working with clients worldwide.
           </p>
         </div>
 
         {/* Each line goes to the track that actually delivers it. */}
         <div className="footer__col">
+          {/* These three mirror the data bullets in the home page hero
+              (src/pages/Home.jsx). Keep the two lists in step. */}
           <h3 className="footer__col-title">Data Services</h3>
           <ul>
-            <li><Link to="/data/services">Power BI dashboards</Link></li>
-            <li><Link to="/data/services">Excel automation</Link></li>
-            <li><Link to="/data/services">KPI &amp; executive reporting</Link></li>
+            <li><Link to="/data/services">Dashboards and reporting</Link></li>
+            <li><Link to="/data/services">Business performance analysis</Link></li>
+            <li><Link to="/data/services">Data-driven forecasting and planning</Link></li>
             <li><Link to="/data/packages">Packages &amp; pricing</Link></li>
           </ul>
         </div>
 
         <div className="footer__col">
+          {/* These three mirror the career bullets in the home page hero
+              (src/pages/Home.jsx). Keep the two lists in step. */}
           <h3 className="footer__col-title">Career Services</h3>
           <ul>
-            <li><Link to="/career/services">CV writing</Link></li>
-            <li><Link to="/career/services">LinkedIn optimization</Link></li>
-            <li><Link to="/career/services">Career coaching</Link></li>
+            <li><Link to="/career/services">CV and LinkedIn optimisation</Link></li>
+            <li><Link to="/career/services">Cover letter/Resume tailored for specific roles</Link></li>
+            <li><Link to="/career/services">Interview coaching and job search strategy</Link></li>
             <li><Link to="/career/packages">Packages &amp; pricing</Link></li>
           </ul>
         </div>
@@ -67,7 +79,8 @@ const Footer = memo(function Footer({ track = null }) {
           <ul>
             <li><Link to={aboutTo}>About Kabiru</Link></li>
             <li><Link to="/#testimonials">Testimonials</Link></li>
-            <li><Link to="/blog">Blog</Link></li>
+            {/* Blog link removed with the Insights nav entries; restore
+                alongside the routes in App.jsx to bring the blog back. */}
           </ul>
         </div>
 

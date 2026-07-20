@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "vite build && vite build --ssr src/entry-server.jsx --outDir dist-ssr && node scripts/prerender.js && node scripts/sitemap.js",
     "og": "node scripts/og-image.js",
+    "favicons": "node scripts/favicons.js",
     "lint": "eslint .",
     "preview": "vite preview"
   },

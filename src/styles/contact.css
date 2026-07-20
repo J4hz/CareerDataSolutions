@@ -47,7 +47,7 @@
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: rgba(31,138,130,0.12);
+  background: rgba(29,158,117,0.12);
   color: var(--teal);
   font-size: 13px;
   font-weight: 700;
@@ -124,8 +124,8 @@
 
 /* ── Booking success banner ── */
 .contact-booking-success {
-  background: rgba(31,138,130,0.08);
-  border: 1px solid rgba(31,138,130,0.25);
+  background: rgba(29,158,117,0.08);
+  border: 1px solid rgba(29,158,117,0.25);
   border-radius: 10px;
   padding: 16px 20px;
   color: var(--teal);
@@ -181,7 +181,7 @@
 }
 
 .contact-switcher__tab--teal {
-  background: rgba(31,138,130,0.10);
+  background: rgba(29,158,117,0.10);
   color: var(--teal);
 }
 
@@ -214,7 +214,7 @@
 
 /* ── NUMBERED STEPS GOLD VARIANT ─────────── */
 .contact-expect__num--gold {
-  background: rgba(200,154,68,0.12);
+  background: rgba(244,168,51,0.12);
   color: var(--gold);
 }
 
@@ -314,7 +314,7 @@
 .contact-form-card__field select:focus,
 .contact-form-card__field textarea:focus {
   border-color: var(--gold);
-  box-shadow: 0 0 0 3px rgba(200,154,68,0.12);
+  box-shadow: 0 0 0 3px rgba(244,168,51,0.12);
 }
 
 .contact-form-card__field textarea {
@@ -359,13 +359,13 @@
 
 .cv-dropzone:hover {
   border-color: var(--gold);
-  background: rgba(200,154,68,0.03);
+  background: rgba(244,168,51,0.03);
 }
 
 .cv-dropzone--has-file {
   border-style: solid;
   border-color: var(--gold);
-  background: rgba(200,154,68,0.04);
+  background: rgba(244,168,51,0.04);
 }
 
 .cv-dropzone--error {
@@ -483,7 +483,7 @@
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  background: rgba(200,154,68,0.12);
+  background: rgba(244,168,51,0.12);
   color: var(--gold);
   font-size: 22px;
   font-weight: 700;

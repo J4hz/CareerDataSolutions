@@ -28,9 +28,13 @@
   align-items: center;
 }
 
+/* The logo asset is trimmed to its bounding box, so these heights are the
+   logo's actual rendered height. They were previously ~3x larger (130/100/84)
+   because the source image carried a wide white margin and most of that box
+   was empty; the rendered size is unchanged. */
 .navbar__logo-img {
   display: block;
-  height: 130px;
+  height: 45px;
   width: auto;
   max-width: 460px;
   object-fit: contain;
@@ -40,14 +44,14 @@
 
 @media (max-width: 768px) {
   .navbar__logo-img {
-    height: 100px;
+    height: 34px;
     max-width: 360px;
   }
 }
 
 @media (max-width: 400px) {
   .navbar__logo-img {
-    height: 84px;
+    height: 29px;
     max-width: 280px;
   }
 }
@@ -181,14 +185,14 @@
 }
 
 .navbar__cta.navbar__cta--book {
-  background: var(--orange);
+  background: var(--cta);
   color: var(--navy-950);
   font-weight: 700;
-  --cta-pulse: var(--orange-glow);
+  --cta-pulse: var(--cta-glow);
 }
 
 .navbar__cta.navbar__cta--book:hover {
-  background: var(--orange-dark);
+  background: var(--cta-dark);
 }
 
 .navbar__cta-caret {

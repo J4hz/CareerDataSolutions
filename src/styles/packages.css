@@ -336,12 +336,12 @@
 }
 
 .pkg-h-card--data:hover {
-  box-shadow: 0 10px 40px rgba(31,138,130,0.10);
+  box-shadow: 0 10px 40px rgba(29,158,117,0.10);
   transform: translateY(-2px);
 }
 
 .pkg-h-card--career:hover {
-  box-shadow: 0 10px 40px rgba(200,154,68,0.10);
+  box-shadow: 0 10px 40px rgba(244,168,51,0.10);
   transform: translateY(-2px);
 }
 

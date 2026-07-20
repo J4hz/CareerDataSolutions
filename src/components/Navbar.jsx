@@ -7,8 +7,8 @@ import '../styles/navbar.css';
    is ambiguous on the neutral shell — this makes the visitor name their track
    up front, so they land on the right contact page. */
 const BOOK_OPTIONS = [
-  { to: '/data/contact',   label: 'Data Services',      track: 'data' },
-  { to: '/career/contact', label: 'Career Advancement', track: 'career' },
+  { to: '/data/contact',   label: 'Data Services',   track: 'data' },
+  { to: '/career/contact', label: 'Career Services', track: 'career' },
 ];
 
 /**
@@ -19,23 +19,30 @@ const BOOK_OPTIONS = [
  *  - career / data: that track's own pages, plus a quiet link back to the
  *    other track so nobody gets locked into the wrong half of the business
  */
+/* The Insights (/blog) entries are intentionally absent from all three
+   shells. The blog pages and posts still exist on disk (pages/Blog.jsx,
+   pages/BlogPost.jsx, data/blog.js); restore a { to: '/blog', label:
+   'Insights' } entry here, plus the routes in App.jsx and the entries in
+   seo/meta.js and seo/schema.js, to bring it back.
+
+   About sits on the neutral shell too, pointing at the career copy since
+   /data/* currently renders the "coming soon" placeholder. The About page
+   content is identical on both tracks; only the accent differs. */
 const LINKS = {
   neutral: [
     { to: '/data/services',   label: 'Data Services' },
     { to: '/career/services', label: 'Career Services' },
-    { to: '/blog',            label: 'Insights' },
+    { to: '/career/about',    label: 'About' },
   ],
   data: [
     { to: '/data/services', label: 'Services' },
     { to: '/data/packages', label: 'Packages' },
     { to: '/data/about',    label: 'About' },
-    { to: '/blog',          label: 'Insights' },
   ],
   career: [
     { to: '/career/services', label: 'Services' },
     { to: '/career/packages', label: 'Packages' },
     { to: '/career/about',    label: 'About' },
-    { to: '/blog',            label: 'Insights' },
   ],
 };
 

@@ -23,9 +23,11 @@ const outputPath = join(root, 'public', 'og-image.png');
 const WIDTH = 1200;
 const HEIGHT = 630;
 
+// Brand palette, kept in step with src/styles/theme.css. TEAL and NAVY2 were
+// once slightly off the tokens (#24C28F / #122848); they now match exactly.
 const NAVY = '#0B1F3A';
-const NAVY2 = '#122848';
-const TEAL = '#24C28F';
+const NAVY2 = '#143255';
+const TEAL = '#1D9E75';
 const GOLD = '#F4A833';
 
 const svg = `
@@ -60,7 +62,7 @@ const svg = `
   <text x="80" y="460" font-family="Helvetica, Arial, sans-serif"
         font-size="27" fill="#FFFFFF" fill-opacity="0.75">Power BI dashboards and ATS-optimized CVs.</text>
   <text x="80" y="500" font-family="Helvetica, Arial, sans-serif"
-        font-size="27" fill="#FFFFFF" fill-opacity="0.75">Nairobi, Kenya — working with clients worldwide.</text>
+        font-size="27" fill="#FFFFFF" fill-opacity="0.75">Nairobi, Kenya - working with clients worldwide.</text>
 
   <text x="80" y="570" font-family="Helvetica, Arial, sans-serif"
         font-size="22" fill="${TEAL}">careerdatasolutions.com</text>

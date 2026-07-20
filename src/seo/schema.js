@@ -95,7 +95,7 @@ const dataService = () =>
     serviceType: 'Business intelligence and data analytics consulting',
     url: '/data/services',
     description:
-      'Power BI dashboard design, Excel workflow automation and operational analytics for organizations — built for adoption by teams, not just for reporting.',
+      'Power BI dashboard design, Excel workflow automation and operational analytics for organizations, built for adoption by teams, not just for reporting.',
     offers: [
       'Power BI dashboard design and build',
       'Excel workflow automation and data digitization',
@@ -171,7 +171,7 @@ const BREADCRUMB_LABELS = {
   '/career/packages': 'Career Packages & Pricing',
   '/career/about':    'About',
   '/career/contact':  'Submit Your CV',
-  '/blog':            'Blog',
+  // '/blog': 'Blog',  — restore with the blog routes in App.jsx.
 };
 
 /** BreadcrumbList for any path below the homepage. Blog posts nest under /blog. */

@@ -6,8 +6,8 @@
    glance, not from a card outline. */
 .hero {
   background:
-    radial-gradient(58% 75% at 14% 20%, rgba(31, 138, 130, 0.10), transparent 60%),
-    radial-gradient(56% 72% at 87% 28%, rgba(200, 154, 68, 0.09), transparent 60%),
+    radial-gradient(58% 75% at 14% 20%, rgba(29,158,117, 0.10), transparent 60%),
+    radial-gradient(56% 72% at 87% 28%, rgba(244,168,51, 0.09), transparent 60%),
     linear-gradient(155deg, var(--navy) 0%, var(--navy2) 58%, var(--navy-800) 100%);
   padding: 108px 0 60px;
   position: relative;
@@ -122,9 +122,13 @@
   text-align: center;
 }
 
+/* Centred: the "Data advantage" / "Career advantage" headers sit centred
+   over their card, while the bullet list below stays left-aligned. */
 .hero__track-head {
   display: flex;
   align-items: center;
+  justify-content: center;
+  text-align: center;
   gap: 12px;
   margin-bottom: 18px;
 }
@@ -374,8 +378,12 @@
 }
 
 
+/* "For Professionals" / "For Businesses" are centred over their card. The
+   block display is what lets text-align take effect (an inline-block only
+   centres its own contents, not itself). */
 .path-card__eyebrow {
-  display: inline-block;
+  display: block;
+  text-align: center;
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.1em;
@@ -386,7 +394,10 @@
 .path-card--data .path-card__eyebrow   { color: var(--teal); }
 .path-card--career .path-card__eyebrow { color: var(--gold-dark); }
 
+/* Centred with the eyebrow so the two read as one header block; the bullet
+   list below stays left-aligned. */
 .path-card__title {
+  text-align: center;
   font-size: 1.35rem;
   font-weight: 800;
   color: var(--navy);
@@ -527,9 +538,9 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  background: rgba(31,138,130,0.08);
+  background: rgba(29,158,117,0.08);
   color: var(--teal);
-  border: 1px solid rgba(31,138,130,0.15);
+  border: 1px solid rgba(29,158,117,0.15);
 }
 
 .why-us__pillar h3 {
@@ -710,123 +721,8 @@
 .process__track-label--data  { color: var(--teal); }
 .process__track-label--career { color: var(--gold2); }
 
-/* ── PROCESS STEPS (horizontal) ── */
-.process-steps {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  margin: 0 auto;
-}
-
-.process-steps__item {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: 0 12px;
-  position: relative;
-}
-
-.process-steps__visual {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 16px;
-}
-
-.process-steps__label {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  margin-bottom: 8px;
-  line-height: 1.4;
-}
-
-.process-steps__circle {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  color: var(--white);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  font-size: 0.9rem;
-  position: relative;
-  z-index: 1;
-  flex-shrink: 0;
-}
-
-.process-steps__connector {
-  position: absolute;
-  top: 40px; /* step label (~14px line + 8px margin) + half circle (20px) ≈ 42px, visual centre */
-  left: 50%;
-  right: -50%;
-  height: 2px;
-  z-index: 0;
-}
-
-.process-steps__content {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.process-steps__title {
-  display: block;
-  font-weight: 700;
-  font-size: 0.95rem;
-  color: var(--dark);
-  line-height: 1.3;
-}
-
-.process-steps__desc {
-  font-size: 0.85rem;
-  color: var(--gm);
-  line-height: 1.6;
-}
-
-@media (max-width: 640px) {
-  .process-steps {
-    flex-direction: column;
-    max-width: 500px;
-    margin: 0 auto;
-  }
-
-  .process-steps__item {
-    flex: none;
-    width: 100%;
-    flex-direction: row;
-    text-align: left;
-    align-items: flex-start;
-    gap: 16px;
-    padding: 0 0 32px;
-  }
-
-  .process-steps__item:last-child {
-    padding-bottom: 0;
-  }
-
-  .process-steps__visual {
-    flex-shrink: 0;
-    margin-bottom: 0;
-  }
-
-  .process-steps__connector {
-    left: 20px; /* centre of 40px circle */
-    top: 62px;  /* label (14px + 8px margin) + full circle (40px) */
-    right: auto;
-    width: 2px;
-    height: auto;
-    bottom: 0;
-  }
-
-  .process-steps__content {
-    padding-top: 22px; /* align content alongside circle */
-  }
-}
+/* Process step styles moved to styles/process-steps.css, imported by
+   components/ui/ProcessSteps.jsx so they load on every page that uses it. */
 
 /* ── ABOUT SNIPPET ── */
 .about-snippet {
@@ -977,13 +873,13 @@
 
 .pkg-card--data:not(.pkg-card--featured):hover {
   border-color: var(--teal);
-  box-shadow: 0 8px 32px rgba(31,138,130,0.12);
+  box-shadow: 0 8px 32px rgba(29,158,117,0.12);
   transform: translateY(-2px);
 }
 
 .pkg-card--career:not(.pkg-card--featured):hover {
   border-color: var(--gold);
-  box-shadow: 0 8px 32px rgba(200,154,68,0.12);
+  box-shadow: 0 8px 32px rgba(244,168,51,0.12);
   transform: translateY(-2px);
 }
 

@@ -89,7 +89,7 @@
 .btn--teal:hover {
   background: var(--teal2);
   transform: translateY(-1px);
-  box-shadow: 0 4px 16px rgba(31,138,130,0.35);
+  box-shadow: 0 4px 16px rgba(29,158,117,0.35);
 }
 
 .btn--gold {
@@ -107,7 +107,7 @@
 .btn--outline-gold {
   background: transparent;
   color: var(--gold2);
-  border: 1.5px solid rgba(200, 154, 68, 0.5);
+  border: 1.5px solid rgba(244,168,51, 0.5);
   font-weight: 700;
 }
 .btn--outline-gold:hover {

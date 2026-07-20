@@ -34,6 +34,15 @@
   max-width: 280px;
 }
 
+/* Sits under the tagline, one step quieter so the tagline still leads. */
+.footer__location {
+  margin-top: 8px;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: rgba(255,255,255,0.4);
+  max-width: 280px;
+}
+
 .footer__col-title {
   font-family: var(--font-display);
   font-weight: 700;

@@ -27,8 +27,8 @@ export const about = {
     '"Data and careers fail for the same reason: no one translated them properly."',
 
   bio: [
-    'Kabiru is the founder of CareerDataSolutions. After 13 years of hands-on experience in EMS operations — where split-second decisions depended on accurate data and clear reporting — he saw the same gap repeat itself in two places: businesses drowning in data they couldn’t turn into decisions, and skilled professionals whose experience never made it past an applicant tracking system.',
-    'CareerDataSolutions was built to close both gaps, grounded in one belief: every service we offer should be built around a real, provable market need — not a trend.',
+    'Kabiru is the founder of CareerDataSolutions. After 13 years of hands-on experience in EMS operations, where split-second decisions depended on accurate data and clear reporting, he saw the same gap repeat itself in two places: businesses drowning in data they couldn’t turn into decisions, and skilled professionals whose experience never made it past an applicant tracking system.',
+    'CareerDataSolutions was built to close both gaps, grounded in one belief: every service we offer should be built around a real, provable market need, not a trend.',
   ],
 
   mission:
@@ -38,7 +38,7 @@ export const about = {
     'KABIRU NYABWENGI',
     'FOUNDER, CAREERDATASOLUTIONS',
     '13 YEARS · EMS OPERATIONS',
-    'DATA ANALYST & CAREER ADVANCEMENT STRATEGIST',
+    'BUSINESS INTELLIGENCE ANALYST, HEALTHCARE ANALYTICS, CAREER ADVANCEMENT STRATEGIST',
   ],
 
   /* Initials for the photo placeholder panel. Swap for the real image —

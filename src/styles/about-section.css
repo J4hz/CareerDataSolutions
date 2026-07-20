@@ -30,13 +30,13 @@
   justify-content: center;
   aspect-ratio: 4 / 5;
   border-radius: var(--radius-md);
-  border: 1px solid rgba(247, 245, 240, 0.12);
+  border: 1px solid rgba(255,255,255, 0.12);
   background: linear-gradient(165deg, var(--navy-900) 0%, var(--navy-800) 100%);
   font-family: var(--font-display);
   font-weight: 800;
   font-size: clamp(4rem, 8vw, 6rem);
   letter-spacing: 4px;
-  color: rgba(247, 245, 240, 0.18);
+  color: rgba(255,255,255, 0.18);
   user-select: none;
 }
 
@@ -44,7 +44,7 @@
   margin-top: 18px;
   font-size: 11.5px;
   font-weight: 500;
-  color: rgba(247, 245, 240, 0.65);
+  color: rgba(255,255,255, 0.65);
   line-height: 1.9;
   letter-spacing: 0.02em;
   border-left: 2px solid var(--accent);
@@ -70,7 +70,7 @@
 }
 
 .about-sec__body {
-  color: rgba(247, 245, 240, 0.78);
+  color: rgba(255,255,255, 0.78);
   font-size: 0.97rem;
   line-height: 1.75;
   max-width: 560px;
