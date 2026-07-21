@@ -1,5 +1,4 @@
 import { useState, useRef } from 'react';
-import { NavLink } from 'react-router-dom';
 import { WHATSAPP_URL, CONTACT_EMAIL } from '../config';
 import '../styles/contact.css';
 
@@ -116,25 +115,12 @@ export default function ContactCareer() {
     <main className="contact-page">
       <div className="container">
 
-        {/* Switcher */}
-        <div className="contact-switcher">
-          <span className="contact-switcher__label">
-            I need help with:
-          </span>
-          <div className="contact-switcher__tabs">
-            <NavLink
-              to="/data/contact"
-              className="contact-switcher__tab
-                         contact-switcher__tab--teal">
-              Data Analytics
-            </NavLink>
-            <button className="contact-switcher__tab
-                               contact-switcher__tab--gold
-                               contact-switcher__tab--active">
-              Career Services
-            </button>
-          </div>
-        </div>
+        {/* The data/career switcher was removed: this page is reached from the
+            career booking CTA, so the visitor has already chosen their track
+            and the data side is still "coming soon". With only one option left
+            the control was not a choice, and the "Career Services" tab said the
+            same thing as the eyebrow directly below it. The .contact-switcher*
+            styles stay in contact.css for ContactData.jsx. */}
 
         {/* Two column grid */}
         <div className="contact-page__inner">
@@ -153,7 +139,8 @@ export default function ContactCareer() {
             <p className="contact-page__sub">
               Send your CV and tell us where you want to go.
               We will come back to you within one business day
-              with an honest assessment and a clear recommendation.
+              with an honest assessment, a clear recommendation,
+              and a link to book your free discovery call.
             </p>
 
             <div className="contact-expect">
@@ -181,6 +168,7 @@ export default function ContactCareer() {
                 "We review your CV against your target role and market",
                 "We identify the exact gaps holding you back",
                 "You receive a written assessment within 1 business day",
+                "Your assessment includes a link to book your free discovery call",
                 "No obligation to purchase; the review is free",
               ].map((item, i) => (
                 <div key={i} className="contact-next-card__item">
@@ -233,7 +221,8 @@ export default function ContactCareer() {
                 </h2>
                 <p className="contact-career-success__body">
                   We have your CV and details. Expect a written
-                  assessment in your inbox within one business day.
+                  assessment in your inbox within one business day,
+                  along with a link to book your free discovery call.
                   Check your spam folder if you do not hear from us.
                 </p>
                 <p className="contact-career-success__email">

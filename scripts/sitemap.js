@@ -53,7 +53,10 @@ function urlEntry(pathname) {
 }
 
 async function main() {
-  const routes = Object.keys(allRoutes());
+  // A noindex route is prerendered but deliberately kept out of the sitemap —
+  // listing it would ask crawlers to fetch a page that then tells them not to
+  // index it. Checkout is the first such route.
+  const routes = Object.keys(allRoutes()).filter((p) => !metaForPath(p).noindex);
 
   const xml = [
     '<?xml version="1.0" encoding="UTF-8"?>',

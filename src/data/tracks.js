@@ -20,7 +20,9 @@ export const dataTrack = {
   accent: 'var(--accent)',
   accentSoft: 'var(--accent-soft)',
   accentGlow: 'var(--accent-glow)',
-  buttonClass: 'btn--accent',
+  // primaryCta is a booking, so it takes the orange booking colour rather
+  // than the track accent — same button as the navbar.
+  buttonClass: 'btn--cta',
 
   eyebrow: 'Data Services',
   title: 'Your data already knows.',
@@ -95,7 +97,6 @@ export const careerTrack = {
 
   stats: [
     { num: '1 day', label: 'Turnaround on your free CV assessment' },
-    { num: '5', label: 'Target markets: Kenya, UK, US, Gulf, remote' },
     { num: 'Free', label: 'Honest review before you pay anything' },
   ],
 

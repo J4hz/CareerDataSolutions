@@ -73,6 +73,17 @@ export const staticRoutes = {
     description:
       'Send us your CV and career goals to start an ATS-optimized CV rewrite, LinkedIn optimization or career coaching engagement.',
   },
+  // Checkout. Listed here so it is prerendered — a route in App.jsx but not in
+  // this registry hard-404s on a direct load (see scripts/prerender.js). The
+  // package is a query param, so this one file serves every package. noindex
+  // because a checkout page has nothing to offer a search result, and
+  // scripts/sitemap.js skips it for the same reason.
+  '/career/order': {
+    title: `Complete Your Order · Career Services | ${SITE_NAME}`,
+    description:
+      'Complete your CareerDataSolutions package order: send your CV and details, then pay securely by M-Pesa.',
+    noindex: true,
+  },
 
   // ── Neutral ──
   // The '/blog' entry is removed while Insights is hidden, so the blog is
@@ -134,6 +145,10 @@ export function metaForPath(pathname) {
     type: route.type ?? 'website',
     author: route.author,
     date: route.date,
-    noindex: false,
+    // Registered routes are indexable unless they opt out. This used to be a
+    // hardcoded false, which silently discarded `noindex: true` on any entry in
+    // staticRoutes — Seo.jsx and scripts/prerender.js both read this function,
+    // so neither could emit a robots tag for a real route.
+    noindex: route.noindex ?? false,
   };
 }

@@ -13,6 +13,7 @@ const About         = lazy(() => import('./pages/About'));
 // const Blog       = lazy(() => import('./pages/Blog'));
 // const BlogPost   = lazy(() => import('./pages/BlogPost'));
 const ContactCareer = lazy(() => import('./pages/ContactCareer'));
+const CareerOrder   = lazy(() => import('./pages/CareerOrder'));
 const ComingSoon    = lazy(() => import('./pages/ComingSoon'));
 const NotFound      = lazy(() => import('./pages/NotFound'));
 
@@ -71,6 +72,10 @@ export default function App() {
             <Route path="packages"  element={<Packages track="career" />} />
             <Route path="about"     element={<About track="career" />} />
             <Route path="contact"   element={<ContactCareer />} />
+            {/* Paid checkout. /career/contact stays the free CV review; this is
+                where "Get this package" lands, with ?pkg=<id> naming the
+                package. Registered in seo/meta.js as noindex. */}
+            <Route path="order"     element={<CareerOrder />} />
           </Route>
 
           {/* Data track is temporarily "coming soon": every /data/* path

@@ -310,6 +310,14 @@
   margin-bottom: 28px;
 }
 
+/* Career track only: the group heading is centred over the cards, matching
+   the centred headings on /career/services. The data track keeps its
+   left-aligned heading. */
+.theme-career .packages-page__track-label,
+.theme-career .packages-page__section-title {
+  text-align: center;
+}
+
 .packages-page__group {
   margin-bottom: 64px;
 }

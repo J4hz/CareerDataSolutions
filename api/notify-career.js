@@ -16,7 +16,7 @@
 //   NOTIFY_FROM=onboarding@resend.dev
 
 import { Resend } from 'resend';
-import { CONTACT_EMAIL, NOTIFY_FROM, SITE_DOMAIN, WHATSAPP_URL } from '../src/config.js';
+import { CALENDLY_URL, CONTACT_EMAIL, NOTIFY_FROM, SITE_DOMAIN, WHATSAPP_URL } from '../src/config.js';
 import { cleanText, cleanHeader, isValidEmail, validateCvUpload } from './_lib/sanitize.js';
 
 export default async function handler(req, res) {
@@ -153,6 +153,17 @@ export default async function handler(req, res) {
                 ${safe.message}</td>
             </tr>
           </table>
+          <div style="margin-top:24px;padding:14px 16px;background:#F8FAFC;
+                      border-left:4px solid #C89A44;">
+            <div style="font-size:13px;font-weight:700;color:#0B1F3A;
+                        margin-bottom:4px;">
+              Once you have reviewed the CV
+            </div>
+            <div style="font-size:13px;color:#334155;line-height:1.6;">
+              Send this booking link with your assessment:<br />
+              <a href="${CALENDLY_URL}" style="color:#96702B;">${CALENDLY_URL}</a>
+            </div>
+          </div>
           <p style="margin-top:24px;font-size:13px;
                     color:#6B7280;">
             Attached: ${safe.filename} · Sent from ${SITE_DOMAIN}
@@ -212,8 +223,10 @@ export default async function handler(req, res) {
                 <strong style="color:#0B1F3A;">What happens next:</strong> we will review
                 your CV against your target role${safe.targetRole ? ` (${safe.targetRole})` : ''}
                 and market, then send you an honest written assessment within one
-                business day. If the problem is not your CV, we will tell you that too —
-                there is no obligation to buy anything.
+                business day. That email will include a link to book your free discovery
+                call, so we can talk it through once you have read it. If the problem is
+                not your CV, we will tell you that too — there is no obligation to buy
+                anything.
               </p>
               <p style="font-size:15px;line-height:1.7;color:#334155;margin:0 0 24px;">
                 Questions in the meantime? Just reply to this email, or message us on

@@ -54,7 +54,7 @@ const Footer = memo(function Footer({ track = null }) {
           {/* These three mirror the data bullets in the home page hero
               (src/pages/Home.jsx). Keep the two lists in step. */}
           <h3 className="footer__col-title">Data Services</h3>
-          <ul>
+          <ul className="footer__list footer__list--data">
             <li><Link to="/data/services">Dashboards and reporting</Link></li>
             <li><Link to="/data/services">Business performance analysis</Link></li>
             <li><Link to="/data/services">Data-driven forecasting and planning</Link></li>
@@ -66,7 +66,7 @@ const Footer = memo(function Footer({ track = null }) {
           {/* These three mirror the career bullets in the home page hero
               (src/pages/Home.jsx). Keep the two lists in step. */}
           <h3 className="footer__col-title">Career Services</h3>
-          <ul>
+          <ul className="footer__list footer__list--career">
             <li><Link to="/career/services">CV and LinkedIn optimisation</Link></li>
             <li><Link to="/career/services">Cover letter/Resume tailored for specific roles</Link></li>
             <li><Link to="/career/services">Interview coaching and job search strategy</Link></li>
@@ -98,12 +98,6 @@ const Footer = memo(function Footer({ track = null }) {
             <li>
               <a href={`mailto:${CONTACT_EMAIL}`}>
                 {CONTACT_EMAIL}
-              </a>
-            </li>
-            <li>
-              {/* Replace with Instagram or LinkedIn profile URL */}
-              <a href="#social" aria-label="CareerDataSolutionsKE social profile">
-                @CareerDataSolutionsKE
               </a>
             </li>
           </ul>

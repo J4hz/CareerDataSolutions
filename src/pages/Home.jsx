@@ -17,7 +17,7 @@ const trustItems = [
 
 /* Copy for the hidden stats bar. Restore alongside the markup further down.
 const statsBar = [
-  { num: '12', label: 'Years of operational data experience in EMS', color: 'var(--teal)' },
+  { num: '13', label: 'Years of operational data experience in EMS', color: 'var(--teal)' },
   { num: '7', label: 'Departments dashboarded\nHR & Workforce · Finance · Operations & Logistics · Supply Chain · Sales & Marketing · Public Relations · Executive', color: 'var(--teal)' },
   { num: '2', label: 'Service specialities, one trusted consultancy', color: 'var(--gold)' },
 ];
@@ -40,7 +40,7 @@ export default function Home() {
           glow and track-coloured CTA. Teal glow anchors the left, gold the
           right, so the split reads before a single word is. */}
       <section className="hero" aria-labelledby="hero-heading">
-        <span className="hero__wm" aria-hidden="true">12</span>
+        <span className="hero__wm" aria-hidden="true">13</span>
         <div className="hero__inner">
           <div className="hero__head">
             {/* One sentence, not two: the kicker plus the h1 below make the
@@ -140,30 +140,16 @@ export default function Home() {
       >
         <div className="container">
           <div className="paths__header">
-            <span className="eyebrow" style={{ color: 'var(--ink-soft)' }}>Two paths, one method</span>
+            <span className="eyebrow" style={{ color: 'var(--ink-soft)' }}>What we do</span>
             <h2 id="paths-heading">Tell us which problem you have</h2>
             <p className="paths__subtext">
-              Everything on this site splits based on your needs. Pick your lane
+              Everything at this stage splits based on your needs. Pick your lane
               and skip straight to what matters to you.
             </p>
           </div>
 
-          {/* Career ("For Professionals") sits first, ahead of the data card. */}
+          {/* Data ("For Businesses") sits first, ahead of the career card. */}
           <div className="paths__grid">
-            <article className="path-card path-card--career">
-              <span className="path-card__eyebrow">For Professionals</span>
-              <h3 className="path-card__title">Get your experience past the ATS software and propel your career</h3>
-              <ul className="path-card__list">
-                <li>ATS-optimized CVs built to parse cleanly and read well, for both the system and the recruiter</li>
-                <li>Cover letters and resumes tailored to the specific roles you're targeting, not generic templates</li>
-                <li>LinkedIn optimization available bundled or standalone, written for discoverability, not duplication</li>
-                <li>Positioning and interview coaching, not just documents</li>
-              </ul>
-              <Link to="/career/services" className="btn btn--gold">
-                Explore Career Services →
-              </Link>
-            </article>
-
             <article className="path-card path-card--data">
               <span className="path-card__eyebrow">For Businesses</span>
               <h3 className="path-card__title">Turn scattered data into a dashboard you actually check</h3>
@@ -177,11 +163,25 @@ export default function Home() {
                 Explore Data Services →
               </Link>
             </article>
+
+            <article className="path-card path-card--career">
+              <span className="path-card__eyebrow">For Professionals</span>
+              <h3 className="path-card__title">Get your experience past the ATS software and propel your career</h3>
+              <ul className="path-card__list">
+                <li>ATS-optimized CVs built to parse cleanly and read well, for both the system and the recruiter</li>
+                <li>Cover letters and resumes tailored to the specific roles you're targeting, not generic templates</li>
+                <li>LinkedIn optimization available bundled or standalone, written for discoverability, not duplication</li>
+                <li>Positioning and interview coaching, not just documents</li>
+              </ul>
+              <Link to="/career/services" className="btn btn--gold">
+                Explore Career Services →
+              </Link>
+            </article>
           </div>
         </div>
       </section>
 
-      {/* STATS BAR (12 years / 7 departments / 2 specialities)
+      {/* STATS BAR (13 years / 7 departments / 2 specialities)
           HIDDEN FROM THE LIVE SITE. Kept rather than deleted so it can be
           restored: uncomment the block below and the statsRef/statsBar lines
           at the top of this file. The copy is in the `statsBar` array and the
@@ -217,7 +217,7 @@ export default function Home() {
             <span className="eyebrow">Client results</span>
             <h2 id="testimonials-heading">Testimonials</h2>
             <p>
-              Real results from professionals and organizations who trusted
+              Real results from organizations and professionals who trusted
               CareerDataSolutions with what matters most.
             </p>
           </div>
@@ -237,10 +237,6 @@ export default function Home() {
           <div className="home-faq__header">
             <span className="eyebrow">Questions</span>
             <h2 id="home-faq-heading">Frequently asked questions</h2>
-            <p>
-              A quick answer from each side of the business. Find the rest on the
-              data and career services pages.
-            </p>
           </div>
 
           <div className="home-faq__grid">

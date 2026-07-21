@@ -212,6 +212,14 @@
   margin-bottom: 10px;
 }
 
+/* Career contact header centred, matching the centred section headings on
+   /career/services. Scoped to the left column so the gold eyebrow on the
+   order summary (/career/order) keeps its own left alignment. */
+.theme-career .contact-page__left .contact-eyebrow,
+.theme-career .contact-page__left .contact-page__h1 {
+  text-align: center;
+}
+
 /* ── NUMBERED STEPS GOLD VARIANT ─────────── */
 .contact-expect__num--gold {
   background: rgba(244,168,51,0.12);

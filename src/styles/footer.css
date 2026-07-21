@@ -59,6 +59,25 @@
   gap: 10px;
 }
 
+/* Bulleted service lists. The ul is a flex column, so its children are flex
+   items and never render a native list marker — a ::before dot stands in,
+   baseline-aligned to the link and coloured by track. */
+.footer__list li {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.footer__list li::before {
+  content: '•';
+  font-size: 0.875rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.footer__list--data li::before   { color: var(--teal); }
+.footer__list--career li::before { color: var(--gold); }
+
 .footer__col a {
   font-size: 0.875rem;
   color: rgba(255,255,255,0.65);

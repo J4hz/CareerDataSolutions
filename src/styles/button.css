@@ -82,6 +82,21 @@
   box-shadow: var(--shadow-sm);
 }
 
+/* Booking button — the same orange as the navbar's "Book a discovery call",
+   deliberately not themed so booking reads as one action in every shell.
+   Overriding --accent-glow points btn--pulse at the orange glow. */
+.btn--cta {
+  background: var(--cta);
+  color: var(--navy-950);
+  font-weight: 700;
+  --accent-glow: var(--cta-glow);
+}
+.btn--cta:hover {
+  background: var(--cta-dark);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
 .btn--teal {
   background: var(--teal);
   color: var(--white);

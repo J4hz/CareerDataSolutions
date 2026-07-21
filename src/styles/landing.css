@@ -146,6 +146,25 @@
   margin-right: auto;
 }
 
+/* Section headings centred to match the hero. Scoped to the eyebrow and h2
+   sitting directly in a section's container, so the cards and lists below
+   them keep their own alignment. The process and FAQ heads are already
+   centred by their own rules; this picks up deliverables, packages and
+   testimonials. The eyebrow is inline-block, so it has to become a block
+   before text-align can reach it. */
+.lp[data-track='career'] .section > .container > .lp-eyebrow,
+.lp[data-track='career'] .section > .container > h2 {
+  display: block;
+  text-align: center;
+}
+
+/* Card headings follow the section heading above them. The body copy stays
+   left-aligned — it runs to several lines, and centred ragged-both-edges
+   paragraphs are harder to read. */
+.lp[data-track='career'] .lp-card__title {
+  text-align: center;
+}
+
 /* ── Shared section furniture ─────────────────────────────── */
 
 .lp-eyebrow {
@@ -169,13 +188,17 @@
   align-items: stretch;
 }
 
+/* White on the section's --off tint is a faint edge on its own, so the card
+   carries an outline and a real shadow to sit clearly off the page. Hover
+   borrows the accent border from .lp-audience__item below. */
 .lp-card {
   position: relative;
   background: var(--white);
+  border: 1px solid var(--gl);
   border-radius: var(--radius-lg);
   padding: 26px 32px;
-  box-shadow: var(--shadow-sm);
-  transition: box-shadow var(--transition), transform var(--transition);
+  box-shadow: var(--shadow-md);
+  transition: border-color var(--transition), box-shadow var(--transition), transform var(--transition);
   /* Upright: title above body, filling the full height of its grid cell so
      cards in a row share one baseline regardless of copy length. */
   display: flex;
@@ -185,7 +208,8 @@
 }
 
 .lp-card:hover {
-  box-shadow: var(--shadow-md);
+  border-color: var(--lp-accent);
+  box-shadow: var(--shadow-lg);
   transform: translateY(-2px);
 }
 

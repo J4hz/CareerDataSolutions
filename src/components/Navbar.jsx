@@ -3,9 +3,9 @@ import { NavLink, Link } from 'react-router-dom';
 import logoPng from '../assets/logo.png';
 import '../styles/navbar.css';
 
-/* The two things a visitor can book. The dropdown exists because "Book a call"
-   is ambiguous on the neutral shell — this makes the visitor name their track
-   up front, so they land on the right contact page. */
+/* The two things a visitor can book. The dropdown exists because "Book a
+   discovery call" is ambiguous on the neutral shell — this makes the visitor
+   name their track up front, so they land on the right contact page. */
 const BOOK_OPTIONS = [
   { to: '/data/contact',   label: 'Data Services',   track: 'data' },
   { to: '/career/contact', label: 'Career Services', track: 'career' },
@@ -127,7 +127,7 @@ const Navbar = memo(function Navbar({ track = null }) {
               aria-expanded={bookOpen}
               onClick={() => setBookOpen((v) => !v)}
             >
-              Book a call
+              Book a discovery call
               <svg className="navbar__cta-caret" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
                 <path d="M2.5 4.5 6 8l3.5-3.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
               </svg>

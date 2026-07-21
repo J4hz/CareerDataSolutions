@@ -2,10 +2,19 @@ import { memo } from 'react';
 import { NavLink } from 'react-router-dom';
 import { WHATSAPP_URL, CONTACT_EMAIL } from '../config';
 
+/* "clear" stays white in every variant; the track noun carries the colour —
+   data teal, career gold. Inside a themed shell var(--accent) already
+   resolves to the right one, so the split reads the same everywhere. */
 const HEADLINES = {
-  neutral: <>Ready to get <span style={{ color: 'var(--accent)' }}>clear</span> on your data. Or your career?</>,
-  data:    <>Ready to get <span style={{ color: 'var(--accent)' }}>clear</span> on your data?</>,
-  career:  <>Ready to get <span style={{ color: 'var(--accent)' }}>clear</span> on your career?</>,
+  neutral: (
+    <>
+      Ready to get <span style={{ color: 'var(--white)' }}>clear</span> on your{' '}
+      <span style={{ color: 'var(--teal)' }}>data</span>. Or your{' '}
+      <span style={{ color: 'var(--gold)' }}>career</span>?
+    </>
+  ),
+  data:    <>Ready to get <span style={{ color: 'var(--white)' }}>clear</span> on your <span style={{ color: 'var(--accent)' }}>data</span>?</>,
+  career:  <>Ready to get <span style={{ color: 'var(--white)' }}>clear</span> on your <span style={{ color: 'var(--accent)' }}>career</span>?</>,
 };
 
 /**
@@ -18,6 +27,9 @@ const CTASection = memo(function CTASection({ track = null }) {
   const key = track ?? 'neutral';
   const contactTo = track === 'career' ? '/career/contact' : '/data/contact';
   const primaryLabel = track === 'career' ? 'Get a free CV review' : 'Book a discovery call';
+  /* The booking CTA takes the orange; the career shell's CV review is not a
+     booking, so it stays on the track accent. */
+  const primaryClass = track === 'career' ? 'btn--accent' : 'btn--cta';
 
   return (
     <section className="cta-section" aria-labelledby="cta-heading">
@@ -29,7 +41,7 @@ const CTASection = memo(function CTASection({ track = null }) {
           what's possible and what it would cost.
         </p>
         <div className="cta-section__actions">
-          <NavLink to={contactTo} className="btn btn--accent btn--lg btn--pulse">
+          <NavLink to={contactTo} className={`btn ${primaryClass} btn--lg btn--pulse`}>
             {primaryLabel}
           </NavLink>
           <a

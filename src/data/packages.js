@@ -1,3 +1,7 @@
+// `priceKES` / `priceUSD` are display strings and are the only thing the UI
+// shows. `amountKES` is the authoritative integer the server charges — api/order.js
+// looks the package up by id and reads it from here, so a tampered request body
+// cannot change what gets billed. Keep the two in step when a price changes.
 export const packages = [
 
   // ── DATA ANALYTICS ──────────────────────────────────────
@@ -10,6 +14,7 @@ export const packages = [
     name: 'Insight Starter',
     audience: '1–10 staff',
     priceKES: 'KES 20,000',
+    amountKES: 20000,
     priceUSD: '$155 USD',
     timeline: '5–7 business days',
     features: [
@@ -31,6 +36,7 @@ export const packages = [
     name: 'Analytics Pro',
     audience: '11–50 staff',
     priceKES: 'KES 45,000',
+    amountKES: 45000,
     priceUSD: '$350 USD',
     timeline: '2–3 weeks',
     features: [
@@ -54,6 +60,7 @@ export const packages = [
     name: 'Enterprise Suite',
     audience: '51–250 staff',
     priceKES: 'KES 90,000',
+    amountKES: 90000,
     priceUSD: '$700 USD',
     timeline: '3–5 weeks',
     features: [
@@ -78,6 +85,7 @@ export const packages = [
     name: 'Career Kickstart',
     audience: 'Fresh graduate · 0–1 yr experience',
     priceKES: 'KES 5,500',
+    amountKES: 5500,
     priceUSD: '$45 USD',
     timeline: '3 business days',
     features: [
@@ -98,6 +106,7 @@ export const packages = [
     name: 'Career Builder',
     audience: '1–3 years experience',
     priceKES: 'KES 9,500',
+    amountKES: 9500,
     priceUSD: '$75 USD',
     timeline: '4–5 business days',
     features: [
@@ -108,9 +117,8 @@ export const packages = [
       'Interview preparation call (45 mins)',
       '1 revision round',
     ],
-    featured: true,
-    badge: 'Best value',
-    badgeTrack: 'career',
+    featured: false,
+    badge: null,
   },
 
   {
@@ -121,6 +129,7 @@ export const packages = [
     name: 'Career Pro',
     audience: '3–7 years experience',
     priceKES: 'KES 15,000',
+    amountKES: 15000,
     priceUSD: '$120 USD',
     timeline: '5–7 business days',
     features: [

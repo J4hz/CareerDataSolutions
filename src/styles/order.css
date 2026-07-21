@@ -1,0 +1,346 @@
+/* ─────────────────────────────────────────────────────────────
+   /career/order — paid package checkout.
+
+   Only the pieces the free contact page does not already have: the order
+   summary panel, the package picker, and the payment result states. The form
+   itself reuses contact.css wholesale (.contact-form-card, .cv-dropzone,
+   .field-error-msg), so the two pages stay visually identical where they do
+   the same job.
+
+   The page renders inside CareerLayout, so var(--accent) is gold throughout.
+   ───────────────────────────────────────────────────────────── */
+
+.order-layout {
+  display: grid;
+  /* Summary left, form right. The summary is the narrower column — it is
+     reference material once the visitor starts typing. */
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr);
+  gap: 48px;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+  align-items: start;
+}
+
+/* ── Order summary ── */
+
+.order-summary {
+  background: var(--white);
+  border: 1.5px solid var(--gl);
+  border-radius: 16px;
+  padding: 28px 26px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
+  /* Sticks while the form scrolls, so the price stays visible next to the
+     fields that commit to it. */
+  position: sticky;
+  top: 100px;
+}
+
+.order-summary__name {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--dark);
+  letter-spacing: -0.02em;
+  margin: 6px 0 4px;
+}
+
+.order-summary__tier {
+  font-size: 12px;
+  color: var(--gm);
+  margin-bottom: 18px;
+}
+
+.order-summary__price {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.order-summary__kes {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -1px;
+  color: var(--gold-dark);
+}
+
+.order-summary__usd {
+  font-size: 13px;
+  color: var(--gm);
+}
+
+.order-summary__timeline {
+  font-size: 13px;
+  color: var(--gm);
+  margin: 4px 0 20px;
+}
+
+.order-summary__features {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding-top: 20px;
+  border-top: 1px solid var(--gl);
+}
+
+.order-summary__features li {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--gd);
+}
+
+.order-summary__check {
+  color: var(--gold-dark);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.order-summary__change {
+  display: inline-block;
+  margin-top: 22px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gm);
+  transition: color var(--transition);
+}
+
+.order-summary__change:hover {
+  color: var(--navy);
+}
+
+.order-summary__help {
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid var(--gl);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 13px;
+}
+
+.order-summary__help p {
+  color: var(--gm);
+  margin-bottom: 3px;
+}
+
+.order-summary__help a {
+  color: var(--gold-dark);
+  font-weight: 600;
+}
+
+.order-summary__help a:hover {
+  text-decoration: underline;
+}
+
+/* ── Form extras ── */
+
+.order-field-hint {
+  font-size: 12px;
+  color: var(--gm);
+}
+
+/* Restates the amount immediately above the pay button, so the figure being
+   authorised is the last thing read before the tap. */
+.order-total {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding-top: 16px;
+  border-top: 1px solid var(--gl);
+  font-size: 14px;
+  color: var(--gd);
+}
+
+.order-total strong {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: var(--gold-dark);
+}
+
+/* ── Payment result states ── */
+
+.order-result {
+  background: var(--white);
+  border: 1.5px solid var(--gl);
+  border-radius: 16px;
+  padding: 44px 34px;
+  text-align: center;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
+}
+
+.order-result--paid {
+  border-color: rgba(29, 158, 117, 0.4);
+}
+
+.order-result__icon {
+  width: 52px;
+  height: 52px;
+  margin: 0 auto 18px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(29, 158, 117, 0.12);
+  color: var(--teal);
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.order-result__spinner {
+  width: 40px;
+  height: 40px;
+  margin: 0 auto 20px;
+  border-radius: 50%;
+  border: 3px solid var(--gl);
+  border-top-color: var(--gold);
+  animation: order-spin 0.9s linear infinite;
+}
+
+@keyframes order-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .order-result__spinner {
+    animation: none;
+  }
+}
+
+.order-result__title {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--dark);
+  margin-bottom: 10px;
+}
+
+.order-result__body {
+  font-size: 14.5px;
+  line-height: 1.7;
+  color: var(--gd);
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.order-result__hint {
+  margin-top: 18px;
+  font-size: 13px;
+  color: var(--gm);
+}
+
+.order-result__ref,
+.order-result__meta {
+  margin-top: 20px;
+  font-size: 12.5px;
+  color: var(--gm);
+}
+
+.order-result__meta {
+  display: flex;
+  justify-content: center;
+  gap: 28px;
+  padding-top: 18px;
+  border-top: 1px solid var(--gl);
+}
+
+.order-result__meta dt {
+  color: var(--gm);
+  margin-bottom: 3px;
+}
+
+.order-result__meta dd {
+  color: var(--dark);
+  font-weight: 700;
+}
+
+/* ── Package picker (no ?pkg, or an unknown one) ── */
+
+.order-picker {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+  text-align: center;
+}
+
+.order-picker__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-top: 32px;
+}
+
+.order-picker__card {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  background: var(--white);
+  border: 1.5px solid var(--gl);
+  border-radius: 14px;
+  padding: 24px 22px;
+  text-align: left;
+  transition: border-color var(--transition), box-shadow var(--transition), transform var(--transition);
+}
+
+.order-picker__card:hover {
+  border-color: var(--gold);
+  box-shadow: 0 8px 28px rgba(244, 168, 51, 0.16);
+  transform: translateY(-2px);
+}
+
+.order-picker__name {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--dark);
+}
+
+.order-picker__tier,
+.order-picker__timeline {
+  font-size: 12px;
+  color: var(--gm);
+}
+
+.order-picker__price {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: var(--gold-dark);
+  margin-top: 8px;
+}
+
+.order-picker__alt {
+  margin-top: 28px;
+  font-size: 14px;
+  color: var(--gm);
+}
+
+.order-picker__alt a {
+  color: var(--gold-dark);
+  font-weight: 600;
+}
+
+.order-picker__alt a:hover {
+  text-decoration: underline;
+}
+
+/* ── Responsive ── */
+
+@media (max-width: 860px) {
+  .order-layout {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  /* Stacked, the summary is above the form and scrolls away with it. */
+  .order-summary {
+    position: static;
+  }
+}

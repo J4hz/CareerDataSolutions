@@ -5,7 +5,10 @@ export default function PackageCard({ pkg, variant = 'card' }) {
   const accent = isData ? 'var(--teal)' : 'var(--gold)';
   const badgeBg = isData ? 'var(--teal)' : 'var(--gold)';
   const badgeColor = isData ? 'var(--white)' : 'var(--navy)';
-  const contactPath = isData ? '/data/contact' : '/career/contact';
+  // Career packages are purchasable, so the CTA goes to checkout with the
+  // package preselected. The data track has no checkout yet — every /data/*
+  // route still renders ComingSoon (see src/App.jsx).
+  const contactPath = isData ? '/data/contact' : `/career/order?pkg=${pkg.id}`;
 
   if (variant === 'list') {
     const trackPillBg = isData ? 'rgba(29,158,117,0.10)' : 'rgba(244,168,51,0.12)';

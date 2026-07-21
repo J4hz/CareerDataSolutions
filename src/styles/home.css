@@ -341,8 +341,11 @@
    translated into the site's own card vocabulary. */
 .paths {
   background: var(--off);
-  /* Tighter top padding so the cards sit closer to the trust bar above. */
+  /* Tighter top padding so the cards sit closer to the trust bar above, and
+     a tighter bottom so the cards run into the testimonials — both sections
+     share the same background, so a wide gap just reads as dead space. */
   padding-top: 56px;
+  padding-bottom: 40px;
 }
 
 .paths__header {
@@ -395,7 +398,7 @@
   display: block;
   text-align: center;
   font-size: 0.72rem;
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   margin-bottom: 14px;
@@ -1051,7 +1054,7 @@
    scrolls edge to edge outside the container. */
 .testimonials-auto {
   overflow: hidden;
-  padding: 60px 0;
+  padding: 36px 0 40px;
 }
 
 .testimonials__header {
@@ -1083,7 +1086,7 @@
 /* ── HOME FAQ ── */
 .home-faq {
   background: var(--white);
-  padding: 60px 0;
+  padding: 40px 0 60px;
 }
 
 .home-faq__header {
@@ -1096,6 +1099,12 @@
   font-weight: 800;
   letter-spacing: -0.025em;
   margin-bottom: 16px;
+}
+
+/* With the subtext gone the h2 is last, so its 16px would stack onto the
+   header's 48px and push the columns down. */
+.home-faq__header h2:last-child {
+  margin-bottom: 0;
 }
 
 .home-faq__header p {
@@ -1116,9 +1125,10 @@
 .home-faq__col-label {
   font-family: var(--font-body);
   font-size: 0.72rem;
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+  text-align: center;
   margin-bottom: 4px;
 }
 
