@@ -8,18 +8,17 @@
    gold and the same component inside .theme-data goes teal. Here that
    would be wrong: there is a single About page, reached from both
    tracks, and it should not appear to belong to whichever one you
-   arrived from. So teal and gold are named directly and the page renders
-   identically on both routes.
+   arrived from.
 
-   The two colours are placed where they carry meaning rather than as
-   decoration:
-     · the pivot paragraph  — teal on the businesses half, gold on the
-       professionals half, since that sentence is the split itself
-     · the two vertical rules — a teal-to-gold gradient, tying the halves
-     · the stat numbers — teal, because they are data-side numbers
+   So the page is MONOCHROME: white and grey on navy, with hierarchy
+   carried by brightness and weight rather than hue. Neither teal nor
+   gold appears anywhere below.
 
-   "The founder" eyebrow is deliberately neutral: it belongs to neither
-   track, and tinting it would have meant picking a side arbitrarily.
+   The single exception is the stat numbers, which take var(--cta), the
+   same orange as the booking buttons. That colour is already the site's
+   one track-independent accent, so it is the only one that can be used
+   here without implying a track. Being the lone colour on the page, it
+   also puts the eye exactly where the proof is.
    ───────────────────────────────────────────────────────────── */
 
 .about-sec {
@@ -37,8 +36,8 @@
   align-items: start;
 }
 
-/* Shared gradient rule for the two vertical bars. Drawn as a pseudo-element
-   rather than border-image, which cannot be applied to a single edge. */
+/* Shared rule for the two vertical bars. A plain light bar rather than a
+   tinted one, so nothing on the page reads as a track colour. */
 .about-sec__credentials::before,
 .about-sec__pull-quote::before {
   content: '';
@@ -47,7 +46,7 @@
   top: 0;
   bottom: 0;
   border-radius: 2px;
-  background: linear-gradient(180deg, var(--teal) 0%, var(--gold) 100%);
+  background: rgba(255, 255, 255, 0.28);
 }
 
 /* ── Photo column ── */
@@ -131,22 +130,15 @@
   margin: 0 0 20px;
 }
 
-/* The two-track sentence: brighter than the surrounding body copy, with
-   each half in its own track colour. */
+/* The two-track sentence. It carries by being brighter and heavier than the
+   body copy around it, not by hue. */
 .about-sec__pivot {
   font-size: 0.97rem;
   line-height: 1.75;
   font-weight: 600;
+  color: var(--white);
   max-width: 620px;
   margin: 0 0 20px;
-}
-
-.about-sec__pivot--data {
-  color: var(--teal);
-}
-
-.about-sec__pivot--career {
-  color: var(--gold);
 }
 
 /* ── Proof block ── */
@@ -176,12 +168,14 @@
   margin: 0;
 }
 
+/* The only colour on the page. var(--cta) is the booking orange, the site's
+   one accent that belongs to neither track. */
 .about-sec__stat-num {
   font-family: var(--font-display);
   font-size: 1.9rem;
   font-weight: 700;
   line-height: 1.1;
-  color: var(--teal);
+  color: var(--cta);
 }
 
 .about-sec__stat-label {

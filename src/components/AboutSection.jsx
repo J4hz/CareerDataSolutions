@@ -6,9 +6,9 @@ import '../styles/about-section.css';
  *
  * Unlike the rest of the site, this section does NOT take var(--accent) from
  * the surrounding shell. There is one About page and it belongs to both
- * tracks, so it carries teal and gold together and renders identically on
- * either route. The pivot paragraph is where that is most literal: the
- * businesses half is teal, the professionals half is gold.
+ * tracks, so tinting it teal or gold would make it look like it belonged to
+ * whichever track you arrived from. It is monochrome instead, with the stat
+ * numbers in the booking orange as the single point of colour.
  *
  * The photo panel is a placeholder monogram. When the real founder photo
  * lands in src/assets/, replace the .about-sec__monogram div with an <img>.
@@ -48,12 +48,9 @@ export default function AboutSection() {
             </p>
           ))}
 
-          {/* The only paragraph naming both tracks, so it is the one that
-              shows both colours. */}
-          <p className="about-sec__pivot">
-            <span className="about-sec__pivot--data">{about.pivot.data}</span>{' '}
-            <span className="about-sec__pivot--career">{about.pivot.career}</span>
-          </p>
+          {/* Names both tracks. Carried by weight and brightness rather than
+              colour, so neither track appears to own the page. */}
+          <p className="about-sec__pivot">{about.pivot}</p>
 
           {about.bioAfter.map((para) => (
             <p key={para.slice(0, 32)} className="about-sec__body">

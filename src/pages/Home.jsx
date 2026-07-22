@@ -42,7 +42,7 @@ export default function Home() {
           glow and track-coloured CTA. Teal glow anchors the left, gold the
           right, so the split reads before a single word is. */}
       <section className="hero" aria-labelledby="hero-heading">
-        <span className="hero__wm" aria-hidden="true">13</span>
+        <span className="hero__wm" aria-hidden="true">13+</span>
         <div className="hero__inner">
           <div className="hero__head">
             {/* One sentence, not two: the kicker plus the h1 below make the
