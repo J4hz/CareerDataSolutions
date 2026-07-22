@@ -304,6 +304,18 @@
   flex-shrink: 0;
 }
 
+/* Lead-in: it names the shape of the business rather than being one of the
+   two services, so it reads brighter and carries no tick. */
+.trust-bar__item--lead {
+  color: var(--white);
+  font-weight: 700;
+}
+
+/* One tick per track, so the strip repeats the colour split used in the
+   hero headline and the path cards below it. */
+.trust-bar__check--data   { color: var(--teal); }
+.trust-bar__check--career { color: var(--gold); }
+
 /* ── SERVICES OVERVIEW ── */
 .services-overview {
   background: var(--off);
@@ -1142,6 +1154,25 @@
   margin: 0;
 }
 
+/* Centred under its column to line up with the label above it. fit-content
+   keeps the click target on the text rather than spanning the whole column. */
+.home-faq__more {
+  display: block;
+  width: fit-content;
+  margin: 20px auto 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: opacity var(--transition);
+}
+
+.home-faq__more:hover {
+  opacity: 0.75;
+  text-decoration: underline;
+}
+
+.home-faq__more--data   { color: var(--teal); }
+.home-faq__more--career { color: var(--gold-dark); }
+
 @media (max-width: 768px) {
   .home-faq__grid {
     grid-template-columns: 1fr;
@@ -1227,17 +1258,105 @@
   flex-wrap: wrap;
 }
 
-.cta-sec__career-link {
-  font-size: 13px;
-  color: rgba(255,255,255,0.45);
-  text-decoration: none;
-  margin-top: 16px;
-  display: inline-block;
-  transition: color 0.2s;
+/* ── Booking dropdown ──
+   Mirrors the navbar's menu (see navbar.css) so the same action behaves the
+   same way in both places; the classes are separate because the trigger here
+   is a large CTA button rather than a nav pill. */
+
+.cta-section__book {
+  position: relative;
 }
 
-.cta-sec__career-link:hover {
-  color: rgba(255,255,255,0.75);
+.cta-section__book-btn {
+  gap: 8px;
+}
+
+/* Points up at rest, because that is where the menu appears. */
+.cta-section__caret {
+  transform: rotate(180deg);
+  transition: transform var(--transition);
+}
+
+.cta-section__caret.is-open {
+  transform: rotate(0deg);
+}
+
+/* Opens UPWARD. .cta-section sets overflow:hidden to clip its "CDS"
+   watermark, so a menu dropping below the button would be cut off by the
+   band's own edge. */
+.cta-section__book-menu {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 232px;
+  background: var(--white);
+  border: 1px solid var(--gl);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  padding: 8px;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: left;
+  animation: cta-book-in 0.16s ease;
+}
+
+@keyframes cta-book-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 6px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+.cta-section__book-title {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gm);
+  padding: 6px 10px 4px;
+}
+
+.cta-section__book-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--gd);
+  transition: background var(--transition), color var(--transition);
+}
+
+/* Track swatch, same as the navbar menu. */
+.cta-section__book-item::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.cta-section__book-item--data::before   { background: var(--teal); }
+.cta-section__book-item--career::before { background: var(--gold); }
+
+.cta-section__book-item:hover {
+  background: var(--off);
+  color: var(--navy);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cta-section__book-menu {
+    animation: none;
+  }
 }
 
 /* ── RESPONSIVE ── */

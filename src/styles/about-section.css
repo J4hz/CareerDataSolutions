@@ -1,16 +1,33 @@
 /* ─────────────────────────────────────────────────────────────
    The shared founder section on /career/about and /data/about.
 
-   Ported from the reference file's .about styles, translated into the
-   site's tokens. Every accent below is var(--accent), supplied by the
-   layout shell — gold in .theme-career, teal in .theme-data. Nothing
-   else may differ between the two routes.
+   ── Colour note ──
+
+   This is the ONE section that does not read var(--accent) from the
+   layout shell. Everywhere else, a component inside .theme-career goes
+   gold and the same component inside .theme-data goes teal. Here that
+   would be wrong: there is a single About page, reached from both
+   tracks, and it should not appear to belong to whichever one you
+   arrived from. So teal and gold are named directly and the page renders
+   identically on both routes.
+
+   The two colours are placed where they carry meaning rather than as
+   decoration:
+     · the pivot paragraph  — teal on the businesses half, gold on the
+       professionals half, since that sentence is the split itself
+     · the two vertical rules — a teal-to-gold gradient, tying the halves
+     · the stat numbers — teal, because they are data-side numbers
+
+   "The founder" eyebrow is deliberately neutral: it belongs to neither
+   track, and tinting it would have meant picking a side arbitrarily.
    ───────────────────────────────────────────────────────────── */
 
 .about-sec {
   background: var(--navy-950);
   color: var(--paper);
-  padding: 160px 0 96px; /* clears the fixed navbar */
+  /* The fixed navbar is 68px (see navbar.css), so the top padding must stay
+     above that. 112px leaves ~44px of clear space under it. */
+  padding: 112px 0 96px;
 }
 
 .about-sec__grid {
@@ -18,6 +35,19 @@
   grid-template-columns: 0.8fr 1.2fr;
   gap: 64px;
   align-items: start;
+}
+
+/* Shared gradient rule for the two vertical bars. Drawn as a pseudo-element
+   rather than border-image, which cannot be applied to a single edge. */
+.about-sec__credentials::before,
+.about-sec__pull-quote::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  border-radius: 2px;
+  background: linear-gradient(180deg, var(--teal) 0%, var(--gold) 100%);
 }
 
 /* ── Photo column ── */
@@ -28,75 +58,145 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 3 / 4;
   border-radius: var(--radius-md);
-  border: 1px solid rgba(255,255,255, 0.12);
-  background: linear-gradient(165deg, var(--navy-900) 0%, var(--navy-800) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: linear-gradient(160deg, var(--navy-800) 0%, var(--navy-950) 100%);
   font-family: var(--font-display);
-  font-weight: 800;
+  font-weight: 600;
   font-size: clamp(4rem, 8vw, 6rem);
   letter-spacing: 4px;
-  color: rgba(255,255,255, 0.18);
+  color: rgba(255, 255, 255, 0.2);
   user-select: none;
 }
 
 .about-sec__credentials {
-  margin-top: 18px;
-  font-size: 11.5px;
-  font-weight: 500;
-  color: rgba(255,255,255, 0.65);
-  line-height: 1.9;
-  letter-spacing: 0.02em;
-  border-left: 2px solid var(--accent);
-  padding-left: 12px;
+  position: relative;
+  margin-top: 20px;
+  padding-left: 18px;
+}
+
+.about-sec__credentials::before {
+  width: 2px;
+}
+
+.about-sec__credentials p {
+  margin: 0 0 6px;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.62);
+  line-height: 1.6;
+}
+
+.about-sec__credential-name {
+  color: var(--white) !important;
+  font-weight: 600;
 }
 
 /* ── Copy column ── */
 
-.about-sec__copy .eyebrow {
-  color: var(--accent);
+.about-sec__eyebrow {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+  margin-bottom: 20px;
 }
 
 .about-sec__pull-quote {
+  position: relative;
   font-family: var(--font-display);
-  font-size: clamp(1.25rem, 2.4vw, 1.4rem);
+  font-size: clamp(1.35rem, 2.6vw, 1.75rem);
   font-weight: 600;
-  line-height: 1.4;
-  margin: 20px 0 28px;
-  padding: 22px 0 22px 24px;
-  border-left: 3px solid var(--accent);
+  line-height: 1.35;
+  margin: 0 0 32px;
+  padding: 4px 0 4px 22px;
   color: var(--white);
-  max-width: 560px;
+  max-width: 620px;
+}
+
+.about-sec__pull-quote::before {
+  width: 3px;
 }
 
 .about-sec__body {
-  color: rgba(255,255,255, 0.78);
+  color: rgba(255, 255, 255, 0.72);
   font-size: 0.97rem;
   line-height: 1.75;
-  max-width: 560px;
+  max-width: 620px;
+  margin: 0 0 20px;
 }
 
-.about-sec__body + .about-sec__body {
-  margin-top: 16px;
+/* The two-track sentence: brighter than the surrounding body copy, with
+   each half in its own track colour. */
+.about-sec__pivot {
+  font-size: 0.97rem;
+  line-height: 1.75;
+  font-weight: 600;
+  max-width: 620px;
+  margin: 0 0 20px;
 }
 
-.about-sec__mission {
-  margin-top: 26px;
-  padding: 16px 18px;
-  background: var(--accent-soft);
-  border: 1px solid var(--accent-glow);
+.about-sec__pivot--data {
+  color: var(--teal);
+}
+
+.about-sec__pivot--career {
+  color: var(--gold);
+}
+
+/* ── Proof block ── */
+
+.about-sec__stat-box {
+  margin-top: 8px;
+  max-width: 620px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: var(--radius-sm);
-  font-size: 0.9rem;
-  line-height: 1.65;
-  color: var(--paper);
-  max-width: 560px;
+  background: rgba(255, 255, 255, 0.02);
+  padding: 24px 28px;
+}
+
+.about-sec__stat-quote {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0 0 20px;
+}
+
+.about-sec__stat-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  margin: 0;
+}
+
+.about-sec__stat-num {
+  font-family: var(--font-display);
+  font-size: 1.9rem;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--teal);
+}
+
+.about-sec__stat-label {
+  margin: 4px 0 0;
+  font-size: 12px;
+  letter-spacing: 0.03em;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.45);
 }
 
 /* ── Responsive ── */
 
 @media (max-width: 860px) {
   .about-sec {
-    padding: 130px 0 64px;
+    padding: 96px 0 64px;
   }
 
   .about-sec__grid {
@@ -106,5 +206,19 @@
 
   .about-sec__monogram {
     max-width: 320px;
+  }
+}
+
+@media (max-width: 560px) {
+  .about-sec__stat-box {
+    padding: 20px;
+  }
+
+  .about-sec__stat-row {
+    gap: 10px;
+  }
+
+  .about-sec__stat-num {
+    font-size: 1.4rem;
   }
 }

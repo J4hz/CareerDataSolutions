@@ -310,12 +310,23 @@
   border: 1.5px solid var(--gl);
   border-radius: 8px;
   font-size: 0.95rem;
+  /* Stated explicitly so all three controls compute the same height. Left to
+     the browser, a select sizes from its own font metrics and ends up a pixel
+     or two off the inputs above and below it. */
+  line-height: 1.4;
   color: var(--dark);
   background: var(--white);
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
   font-family: var(--font-body);
   box-sizing: border-box;
+}
+
+/* Native selects are vertically centred by the platform and ignore the
+   padding above on some browsers; a fixed height keeps them level with the
+   text inputs regardless. */
+.contact-form-card__field select {
+  height: 46px;
 }
 
 .contact-form-card__field input:focus,

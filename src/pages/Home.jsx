@@ -7,12 +7,14 @@ import CTASection from '../components/CTASection';
 import '../styles/home.css';
 import '../styles/button.css';
 
+/* The strip under the hero. It used to list five capabilities and payment
+   methods; it now states what the business is. The lead-in names the shape,
+   then the two services each carry their own track colour so the split reads
+   before the words do. */
 const trustItems = [
-  'Excel and Power BI visualization expert',
-  'ATS-optimized CV writing',
-  'LinkedIn profile optimization',
-  'Local KES & international USD pricing',
-  'M-Pesa · Payoneer · Bank transfer',
+  { text: 'One company, two services', lead: true },
+  { text: 'Data analytics for businesses', track: 'data' },
+  { text: 'Career advancement for professionals', track: 'career' },
 ];
 
 /* Copy for the hidden stats bar. Restore alongside the markup further down.
@@ -116,13 +118,23 @@ export default function Home() {
         ref={trustRef}
         className={`trust-bar fade-up${trustInView ? ' is-visible' : ''}`}
         role="list"
-        aria-label="Service highlights"
+        aria-label="What CareerDataSolutions does"
       >
         <div className="trust-bar__inner">
-          {trustItems.map((item) => (
-            <div key={item} className="trust-bar__item" role="listitem">
-              <span className="trust-bar__check" aria-hidden="true">✓</span>
-              {item}
+          {trustItems.map(({ text, track, lead }) => (
+            <div
+              key={text}
+              className={`trust-bar__item${lead ? ' trust-bar__item--lead' : ''}`}
+              role="listitem"
+            >
+              {/* The lead-in introduces the two services rather than being one
+                  of them, so it takes no tick. */}
+              {!lead && (
+                <span className={`trust-bar__check trust-bar__check--${track}`} aria-hidden="true">
+                  ✓
+                </span>
+              )}
+              {text}
             </div>
           ))}
         </div>
@@ -140,8 +152,10 @@ export default function Home() {
       >
         <div className="container">
           <div className="paths__header">
-            <span className="eyebrow" style={{ color: 'var(--ink-soft)' }}>What we do</span>
-            <h2 id="paths-heading">Tell us which problem you have</h2>
+            {/* A category label, not a restatement of the heading below it —
+                same job as "Client results" and "Questions" further down. */}
+            <span className="eyebrow" style={{ color: 'var(--ink-soft)' }}>Services</span>
+            <h2 id="paths-heading">What we do</h2>
             <p className="paths__subtext">
               Everything at this stage splits based on your needs. Pick your lane
               and skip straight to what matters to you.
@@ -239,14 +253,24 @@ export default function Home() {
             <h2 id="home-faq-heading">Frequently asked questions</h2>
           </div>
 
+          {/* Only two questions per side fit here; each column ends with a
+              link to that track's services page, where the full FAQ lives.
+              The two links are worded differently on purpose, so they are
+              still distinguishable when read out of context. */}
           <div className="home-faq__grid">
             <div className="home-faq__col theme-data">
               <p className="home-faq__col-label home-faq__col-label--data">Data services</p>
               <FaqAccordion items={dataFaqs.slice(0, 2)} />
+              <Link to="/data/services" className="home-faq__more home-faq__more--data">
+                More data questions →
+              </Link>
             </div>
             <div className="home-faq__col theme-career">
               <p className="home-faq__col-label home-faq__col-label--career">Career services</p>
               <FaqAccordion items={careerFaqs.slice(0, 2)} />
+              <Link to="/career/services" className="home-faq__more home-faq__more--career">
+                More career questions →
+              </Link>
             </div>
           </div>
         </div>

@@ -4,16 +4,22 @@
 //
 // ── Who is allowed to declare an order paid ──────────────────
 //
-// With the stub provider this endpoint settles the order itself, so the whole
-// flow can be exercised without a real rail.
+// It depends on the rail, so the decision lives with the provider as
+// settlesOnStatusCheck (see api/_lib/payments.js).
 //
-// With a real provider it does NOT. It reports status only, and the emails are
-// sent from api/pay-callback.js, which verifies the provider's signature first.
-// The difference matters: this endpoint's input is a token the client holds,
-// and a client must never be able to talk itself into a paid order.
+// Stub and Daraja set it: checkStatus() asks the provider server-to-server —
+// Daraja via its STK Query API — so the answer is authoritative and this
+// endpoint may settle the order and send the emails.
+//
+// Signature-callback providers do not: this endpoint reports status only, and
+// api/pay-callback.js settles after verifying the signature.
+//
+// What is never authoritative is the request itself. The token below is held by
+// the client, so it is only trusted to say *which* order is being asked about;
+// whether it was paid always comes from the provider.
 
 import { verifyOrderToken, markPaid } from './_lib/orders.js';
-import { checkStatus, isStubProvider } from './_lib/payments.js';
+import { checkStatus, settlesOnStatusCheck } from './_lib/payments.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
@@ -30,7 +36,7 @@ export default async function handler(req, res) {
   try {
     const result = await checkStatus({ providerRef: order.providerRef });
 
-    if (result.status === 'paid' && isStubProvider()) {
+    if (result.status === 'paid' && settlesOnStatusCheck()) {
       await markPaid({ order, receipt: result.receipt });
     }
 

@@ -119,7 +119,7 @@ const row = (label, value) => `
  *
  * `safe` values are already escaped by the caller (api/order.js).
  */
-export async function createOrder({ id, pkg, safe, cv }) {
+export async function createOrder({ id, pkg, safe, cv, amountKES, promoApplied }) {
   const resend = resendClient();
   const configuredFrom = process.env.NOTIFY_FROM || NOTIFY_FROM;
 
@@ -127,7 +127,9 @@ export async function createOrder({ id, pkg, safe, cv }) {
     from: configuredFrom,
     to: process.env.NOTIFY_EMAIL || CONTACT_EMAIL,
     replyTo: safe.email,
-    subject: cleanHeader(`Order ${id} — AWAITING PAYMENT — ${pkg.name} — ${safe.name}`),
+    subject: cleanHeader(
+      `Order ${id} · AWAITING PAYMENT · ${pkg.name}${promoApplied ? ' · PROMO' : ''} · ${safe.name}`
+    ),
     attachments: cv ? [{ filename: cv.filename, content: cv.buffer.toString('base64') }] : [],
     html: `
       <div style="font-family:sans-serif;max-width:560px;">
@@ -137,11 +139,16 @@ export async function createOrder({ id, pkg, safe, cv }) {
             An M-Pesa prompt has been sent. You will get a second email if it is paid.
           </div>
         </div>
-        <h2 style="color:#0B1F3A;margin:0 0 16px;">New order — ${pkg.name}</h2>
+        <h2 style="color:#0B1F3A;margin:0 0 16px;">New order · ${pkg.name}</h2>
         <table style="width:100%;border-collapse:collapse;">
           ${row('Order ref', id)}
           ${row('Package', `${pkg.name} (${pkg.tier})`)}
-          ${row('Amount', money(pkg.amountKES))}
+          ${row(
+            'Amount',
+            promoApplied
+              ? `${money(amountKES)} <span style="color:#B45309;font-weight:600;">(PROMO CODE · list price ${money(pkg.amountKES)})</span>`
+              : money(amountKES)
+          )}
           ${row('Name', safe.name)}
           ${row('Email', safe.email)}
           ${row('M-Pesa phone', safe.phone)}
@@ -172,6 +179,49 @@ export async function createOrder({ id, pkg, safe, cv }) {
 }
 
 /**
+ * A confirmed M-Pesa payment that could not be tied to an order.
+ *
+ * Daraja's callback echoes CheckoutRequestID, amount, phone and receipt, but
+ * not the AccountReference and not our order token — so with no store there is
+ * nothing to join on. See the note at the top of api/pay-callback.js.
+ *
+ * Normally harmless: the browser poll has usually already confirmed the same
+ * payment and receipted the customer, making this a duplicate you can ignore.
+ * It earns its place when the customer closed the tab mid-payment, which is the
+ * one case where nothing else would tell you the money arrived.
+ */
+export async function notifyUnmatchedPayment({ providerRef, receipt, amount, phone }) {
+  const resend = resendClient();
+  const from = process.env.NOTIFY_FROM || NOTIFY_FROM;
+
+  const { error } = await resend.emails.send({
+    from,
+    to: process.env.NOTIFY_EMAIL || CONTACT_EMAIL,
+    subject: cleanHeader(`M-Pesa payment received · ${receipt || providerRef}`),
+    html: `
+      <div style="font-family:sans-serif;max-width:560px;">
+        <div style="background:#DCFCE7;border-left:4px solid #1D9E75;padding:12px 16px;margin-bottom:24px;">
+          <strong style="color:#166534;font-size:14px;">M-Pesa confirmed a payment</strong>
+        </div>
+        <table style="width:100%;border-collapse:collapse;">
+          ${row('Receipt', receipt || 'n/a')}
+          ${row('Amount', amount ? money(amount) : 'n/a')}
+          ${row('Paid by', phone ? String(phone) : 'n/a')}
+          ${row('Checkout ID', providerRef || 'n/a')}
+        </table>
+        <p style="margin-top:24px;font-size:13px;color:#6B7280;line-height:1.6;">
+          Match this to the "AWAITING PAYMENT" email with the same phone number to
+          find the order and the CV.<br /><br />
+          If the customer stayed on the page, they have already had their receipt
+          and you will have a "PAID" email for this order too, in which case this
+          message is a duplicate and can be ignored.
+        </p>
+      </div>`,
+  });
+  if (error) console.error('Unmatched payment notification error:', error);
+}
+
+/**
  * Confirm a paid order: tells you, then receipts the customer.
  *
  * The customer receipt is attempted from the configured sender only, never the
@@ -189,7 +239,7 @@ export async function markPaid({ order, receipt }) {
     from: configuredFrom,
     to: owner,
     replyTo: order.email,
-    subject: cleanHeader(`PAID — Order ${order.id} — ${order.packageName} — ${order.name}`),
+    subject: cleanHeader(`PAID · Order ${order.id} · ${order.packageName} · ${order.name}`),
     html: `
       <div style="font-family:sans-serif;max-width:560px;">
         <div style="background:#DCFCE7;border-left:4px solid #1D9E75;padding:12px 16px;margin-bottom:24px;">
@@ -217,12 +267,12 @@ export async function markPaid({ order, receipt }) {
       from: configuredFrom,
       to: order.email,
       replyTo: owner,
-      subject: cleanHeader(`Payment confirmed — ${order.packageName} · CareerDataSolutions`),
+      subject: cleanHeader(`Payment confirmed · ${order.packageName} · CareerDataSolutions`),
       html: `
         <div style="font-family:Arial,Helvetica,sans-serif;max-width:560px;margin:0 auto;color:#0F172A;">
           <div style="height:4px;background:#C89A44;border-radius:2px;margin-bottom:28px;"></div>
           <h1 style="color:#0B1F3A;font-size:22px;margin:0 0 16px;">
-            Thanks, ${firstName} — payment received.
+            Thanks, ${firstName}, payment received.
           </h1>
           <p style="font-size:15px;line-height:1.7;color:#334155;margin:0 0 16px;">
             Your <strong>${order.packageName}</strong> order is confirmed and your CV is with us.

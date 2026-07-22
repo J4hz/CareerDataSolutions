@@ -136,22 +136,25 @@ export default function ContactCareer() {
               Let's work on your career.
             </h1>
 
+            {/* The free step delivers the CALL, not a written analysis. A
+                written assessment is the paid deliverable, so promising one
+                for free gives away the product and removes the reason to
+                book. Findings are walked through live instead. */}
             <p className="contact-page__sub">
               Send your CV and tell us where you want to go.
-              We will come back to you within one business day
-              with an honest assessment, a clear recommendation,
-              and a link to book your free discovery call.
+              Within one business day we will send you a link to
+              book your free discovery call, where we walk you
+              through what is holding your CV back.
             </p>
 
             <div className="contact-expect">
               {[
                 "Upload your current CV, even if you think it needs work.",
                 "Tell us your target role, market, and experience level.",
-                "We review and respond within one business day with exactly what we recommend.",
+                "We review it and send your booking link, usually within one business day.",
               ].map((text, i) => (
                 <div key={i} className="contact-expect__item">
-                  <div className="contact-expect__num
-                                  contact-expect__num--gold">
+                  <div className="contact-expect__num contact-expect__num--gold">
                     {i + 1}
                   </div>
                   <p className="contact-expect__text">{text}</p>
@@ -167,9 +170,9 @@ export default function ContactCareer() {
               {[
                 "We review your CV against your target role and market",
                 "We identify the exact gaps holding you back",
-                "You receive a written assessment within 1 business day",
-                "Your assessment includes a link to book your free discovery call",
-                "No obligation to purchase; the review is free",
+                "You get a link to book your free discovery call within 1 business day",
+                "On the call we walk you through what we found and what we recommend",
+                "No obligation to purchase; the review and the call are free",
               ].map((item, i) => (
                 <div key={i} className="contact-next-card__item">
                   <span className="contact-next-card__dot" />
@@ -220,9 +223,9 @@ export default function ContactCareer() {
                   CV received.
                 </h2>
                 <p className="contact-career-success__body">
-                  We have your CV and details. Expect a written
-                  assessment in your inbox within one business day,
-                  along with a link to book your free discovery call.
+                  We have your CV and details. Within one business day
+                  you will get a link to book your free discovery call,
+                  where we walk you through what we found.
                   Check your spam folder if you do not hear from us.
                 </p>
                 <p className="contact-career-success__email">
@@ -300,8 +303,7 @@ export default function ContactCareer() {
                   <label>What role are you targeting?</label>
                   <input
                     type="text"
-                    placeholder="e.g. Finance Manager, Nurse UK,
-                                 Marketing Director"
+                    placeholder="e.g. Finance Manager, Nurse UK, Marketing Director"
                     value={formData.targetRole}
                     onChange={e => setFormData(p => ({
                       ...p, targetRole: e.target.value }))}
@@ -362,8 +364,7 @@ export default function ContactCareer() {
                   <label>What are your career goals?</label>
                   <textarea
                     rows={3}
-                    placeholder="Where do you want your career
-                                 to be in the next few years?"
+                    placeholder="Where do you want your career to be in the next few years?"
                     value={formData.careerGoals}
                     onChange={e => setFormData(p => ({
                       ...p, careerGoals: e.target.value }))}
@@ -435,8 +436,7 @@ export default function ContactCareer() {
                   <label>Anything else we should know?</label>
                   <textarea
                     rows={3}
-                    placeholder="Current situation, urgency,
-                                 specific concerns..."
+                    placeholder="Current situation, urgency, specific concerns..."
                     value={formData.message}
                     onChange={e => setFormData(p => ({
                       ...p, message: e.target.value }))}
@@ -448,8 +448,7 @@ export default function ContactCareer() {
 
                 <button
                   type="submit"
-                  className="contact-form-card__submit
-                             contact-form-card__submit--gold"
+                  className="contact-form-card__submit contact-form-card__submit--gold"
                   disabled={submitting}
                 >
                   {submitting ? 'Sending...' : 'Send CV for review →'}

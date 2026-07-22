@@ -1,15 +1,9 @@
 import { memo, useState, useEffect, useCallback, useRef } from 'react';
 import { NavLink, Link } from 'react-router-dom';
+/* Shared with the closing CTA band's dropdown — see src/data/booking.js. */
+import { BOOK_OPTIONS } from '../data/booking';
 import logoPng from '../assets/logo.png';
 import '../styles/navbar.css';
-
-/* The two things a visitor can book. The dropdown exists because "Book a
-   discovery call" is ambiguous on the neutral shell — this makes the visitor
-   name their track up front, so they land on the right contact page. */
-const BOOK_OPTIONS = [
-  { to: '/data/contact',   label: 'Data Services',   track: 'data' },
-  { to: '/career/contact', label: 'Career Services', track: 'career' },
-];
 
 /**
  * One structural navbar for all three shells; the `track` prop only changes

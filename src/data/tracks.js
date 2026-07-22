@@ -87,8 +87,10 @@ export const careerTrack = {
   buttonClass: 'btn--accent',
 
   eyebrow: 'Career advancement services',
-  title: 'We turn your job search',
-  titleAccent: 'into a job offer.',
+  // Split so the payoff lands on its own line in gold — ServiceLanding.jsx
+  // renders titleAccent as the coloured second line.
+  title: 'We turn your potential',
+  titleAccent: 'into real career growth.',
   intro:
     'CV and LinkedIn optimisation, interview coaching, and job search strategy, every step, covered.',
 
@@ -96,7 +98,7 @@ export const careerTrack = {
   secondaryCta: { label: 'Book a consultation', to: '/career/contact' },
 
   stats: [
-    { num: '1 day', label: 'Turnaround on your free CV assessment' },
+    { num: '1 day', label: 'Turnaround on your free CV review' },
     { num: 'Free', label: 'Honest review before you pay anything' },
   ],
 

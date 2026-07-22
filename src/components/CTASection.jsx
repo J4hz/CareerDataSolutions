@@ -1,5 +1,6 @@
-import { memo } from 'react';
-import { NavLink } from 'react-router-dom';
+import { memo, useEffect, useRef, useState } from 'react';
+import { NavLink, Link } from 'react-router-dom';
+import { BOOK_OPTIONS } from '../data/booking';
 import { WHATSAPP_URL, CONTACT_EMAIL } from '../config';
 
 /* "clear" stays white in every variant; the track noun carries the colour —
@@ -18,18 +19,41 @@ const HEADLINES = {
 };
 
 /**
- * Closing CTA band. Track-aware: inside a themed shell the primary button
- * goes to that track's contact page and takes the shell's accent; the
- * neutral version keeps the old behavior (data call first, career link
- * underneath).
+ * Closing CTA band.
+ *
+ * Outside the career shell the primary action is a booking, and "Book a
+ * discovery call" does not say which kind — so it opens the same two-way
+ * dropdown the navbar uses, sharing its options from src/data/booking.js.
+ * That replaced the "Submitting a CV for career services?" link that used to
+ * sit under the buttons: the menu now offers the career route directly, so
+ * the footnote was saying the same thing twice.
+ *
+ * Inside the career shell the action is a free CV review rather than a
+ * booking, so it stays a single link on the track accent.
  */
 const CTASection = memo(function CTASection({ track = null }) {
   const key = track ?? 'neutral';
-  const contactTo = track === 'career' ? '/career/contact' : '/data/contact';
-  const primaryLabel = track === 'career' ? 'Get a free CV review' : 'Book a discovery call';
-  /* The booking CTA takes the orange; the career shell's CV review is not a
-     booking, so it stays on the track accent. */
-  const primaryClass = track === 'career' ? 'btn--accent' : 'btn--cta';
+  const isBooking = track !== 'career';
+
+  const [bookOpen, setBookOpen] = useState(false);
+  const bookRef = useRef(null);
+
+  // Close on outside click or Escape, matching the navbar dropdown.
+  useEffect(() => {
+    if (!bookOpen) return undefined;
+    const onDown = (e) => {
+      if (bookRef.current && !bookRef.current.contains(e.target)) setBookOpen(false);
+    };
+    const onKey = (e) => {
+      if (e.key === 'Escape') setBookOpen(false);
+    };
+    document.addEventListener('mousedown', onDown);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('mousedown', onDown);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [bookOpen]);
 
   return (
     <section className="cta-section" aria-labelledby="cta-heading">
@@ -41,9 +65,56 @@ const CTASection = memo(function CTASection({ track = null }) {
           what's possible and what it would cost.
         </p>
         <div className="cta-section__actions">
-          <NavLink to={contactTo} className={`btn ${primaryClass} btn--lg btn--pulse`}>
-            {primaryLabel}
-          </NavLink>
+          {isBooking ? (
+            <div className="cta-section__book" ref={bookRef}>
+              <button
+                type="button"
+                className="btn btn--cta btn--lg btn--pulse cta-section__book-btn"
+                aria-haspopup="menu"
+                aria-expanded={bookOpen}
+                onClick={() => setBookOpen((v) => !v)}
+              >
+                Book a discovery call
+                <svg
+                  className={`cta-section__caret${bookOpen ? ' is-open' : ''}`}
+                  width="12"
+                  height="12"
+                  viewBox="0 0 12 12"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M2.5 4.5 6 8l3.5-3.5"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.6"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </button>
+              {bookOpen && (
+                <div className="cta-section__book-menu" role="menu">
+                  <span className="cta-section__book-title">Book a call for</span>
+                  {BOOK_OPTIONS.map((o) => (
+                    <Link
+                      key={o.to}
+                      to={o.to}
+                      role="menuitem"
+                      className={`cta-section__book-item cta-section__book-item--${o.track}`}
+                      onClick={() => setBookOpen(false)}
+                    >
+                      {o.label}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+          ) : (
+            <NavLink to="/career/contact" className="btn btn--accent btn--lg btn--pulse">
+              Get a free CV review
+            </NavLink>
+          )}
+
           <a
             href={WHATSAPP_URL}
             target="_blank"
@@ -59,11 +130,6 @@ const CTASection = memo(function CTASection({ track = null }) {
             {CONTACT_EMAIL}
           </a>
         </div>
-        {track !== 'career' && (
-          <NavLink to="/career/contact" className="cta-sec__career-link">
-            Submitting a CV for career services? Start here →
-          </NavLink>
-        )}
       </div>
     </section>
   );

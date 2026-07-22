@@ -29,13 +29,20 @@ export default function CareerOrder() {
 
   const [form, setForm] = useState({ name: '', email: '', phone: '', message: '' });
   const [errors, setErrors] = useState({});
+
+  /* Promo code. The code itself lives only on the server (TEST_PROMO_CODE);
+     this just sends what was typed and shows the answer. api/order.js prices
+     the charge independently, so `amountKES` here is display only. */
+  const [promo, setPromo] = useState({ code: '', applied: false, amountKES: null, checking: false });
   const [status, setStatus] = useState('idle'); // idle | submitting | awaiting | paid | failed
   const [session, setSession] = useState(null); // { orderId, token }
   const [receipt, setReceipt] = useState(null);
 
+  // setErrors is stable, but it is listed so the React Compiler's inferred
+  // dependencies match the declared ones and it can still optimize this file.
   const setCvError = useCallback(
     (msg) => setErrors((prev) => ({ ...prev, cv: msg })),
-    []
+    [setErrors]
   );
   const { cvFile, inputRef, selectFile, handleDrop, openPicker, clearFile, toBase64 } =
     useCvUpload(setCvError);
@@ -91,6 +98,46 @@ export default function CareerOrder() {
     };
   }, [status, session]);
 
+  const money = (n) => `KES ${Number(n).toLocaleString('en-KE')}`;
+  const chargedKES = promo.applied ? promo.amountKES : pkg?.amountKES;
+
+  const applyPromo = async () => {
+    const code = promo.code.trim();
+    if (!code) return;
+    setPromo((p) => ({ ...p, checking: true }));
+    setErrors((e) => ({ ...e, promo: null }));
+    try {
+      const res = await fetch('/api/promo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code, packageId: pkg.id }),
+      });
+      // A transport failure must not read as "wrong code". /api/* does not
+      // exist under `npm run dev` (Vite alone serves no functions), so without
+      // this an unreachable endpoint looks exactly like a rejected code.
+      if (!res.ok) {
+        console.error(`/api/promo returned ${res.status}. Functions do not run under 'npm run dev'.`);
+        setPromo((p) => ({ ...p, checking: false }));
+        setErrors((e) => ({
+          ...e,
+          promo: 'Could not check that code right now. Please try again.',
+        }));
+        return;
+      }
+
+      const body = await res.json().catch(() => ({}));
+      if (body.valid) {
+        setPromo((p) => ({ ...p, applied: true, amountKES: body.amountKES, checking: false }));
+      } else {
+        setPromo((p) => ({ ...p, applied: false, amountKES: null, checking: false }));
+        setErrors((e) => ({ ...e, promo: 'That code is not valid.' }));
+      }
+    } catch {
+      setPromo((p) => ({ ...p, checking: false }));
+      setErrors((e) => ({ ...e, promo: 'Could not check that code. Please try again.' }));
+    }
+  };
+
   const validate = () => {
     const e = {};
     if (!form.name.trim()) e.name = 'Name is required';
@@ -121,6 +168,8 @@ export default function CareerOrder() {
         body: JSON.stringify({
           packageId: pkg.id,
           ...form,
+          // Sent as typed. The server re-checks it and decides the price.
+          promoCode: promo.applied ? promo.code.trim() : undefined,
           cvBase64,
           cvName: cvFile.name,
           cvType: cvFile.type,
@@ -134,7 +183,8 @@ export default function CareerOrder() {
         return;
       }
 
-      setSession({ orderId: body.orderId, token: body.token });
+      // The server's amount is authoritative; show what was actually charged.
+      setSession({ orderId: body.orderId, token: body.token, amountKES: body.amountKES });
       setStatus('awaiting');
     } catch (err) {
       console.error('Order error:', err);
@@ -244,7 +294,8 @@ export default function CareerOrder() {
               <div className="order-result__spinner" aria-hidden="true" />
               <h2 className="order-result__title">Check your phone.</h2>
               <p className="order-result__body">
-                We sent an M-Pesa request for <strong>{pkg.priceKES}</strong> to{' '}
+                We sent an M-Pesa request for{' '}
+                <strong>{money(session?.amountKES ?? chargedKES)}</strong> to{' '}
                 <strong>{form.phone}</strong>. Enter your PIN to complete the order.
               </p>
               <p className="order-result__hint" role="status" aria-live="polite">
@@ -347,9 +398,64 @@ export default function CareerOrder() {
                 />
               </div>
 
+              {/* Promo code. Validated server-side; the code is never in this
+                  bundle. See api/_lib/promo.js. */}
+              <div className="contact-form-card__field">
+                <label htmlFor="order-promo">
+                  Promo code <span className="field-optional">Optional</span>
+                </label>
+                <div className="order-promo">
+                  <input
+                    id="order-promo"
+                    type="text"
+                    placeholder="Enter code"
+                    value={promo.code}
+                    disabled={promo.applied}
+                    onChange={(e) => setPromo((p) => ({ ...p, code: e.target.value }))}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        applyPromo();
+                      }
+                    }}
+                    className={errors.promo ? 'field-error' : ''}
+                  />
+                  {promo.applied ? (
+                    <button
+                      type="button"
+                      className="order-promo__btn"
+                      onClick={() => {
+                        setPromo({ code: '', applied: false, amountKES: null, checking: false });
+                        setErrors((e) => ({ ...e, promo: null }));
+                      }}
+                    >
+                      Remove
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      className="order-promo__btn"
+                      onClick={applyPromo}
+                      disabled={promo.checking || !promo.code.trim()}
+                    >
+                      {promo.checking ? '...' : 'Apply'}
+                    </button>
+                  )}
+                </div>
+                {errors.promo && <span className="field-error-msg">{errors.promo}</span>}
+                {promo.applied && (
+                  <span className="order-promo__ok">Code applied.</span>
+                )}
+              </div>
+
               <div className="order-total">
                 <span>Total</span>
-                <strong>{pkg.priceKES}</strong>
+                <strong>
+                  {promo.applied && (
+                    <s className="order-total__was">{pkg.priceKES}</s>
+                  )}
+                  {money(chargedKES)}
+                </strong>
               </div>
 
               <button
@@ -357,7 +463,9 @@ export default function CareerOrder() {
                 className="contact-form-card__submit contact-form-card__submit--gold"
                 disabled={status === 'submitting'}
               >
-                {status === 'submitting' ? 'Sending...' : `Pay ${pkg.priceKES} via M-Pesa →`}
+                {status === 'submitting'
+                  ? 'Sending...'
+                  : `Pay ${money(chargedKES)} via M-Pesa →`}
               </button>
 
               <p className="contact-form-card__note">

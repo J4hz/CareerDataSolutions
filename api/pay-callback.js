@@ -1,38 +1,54 @@
 // Webhook the payment provider POSTs to when an STK push settles.
 //
-// This is the ONLY place a real payment may be declared paid — the browser's
-// status poll reports, it does not decide (see api/order-status.js).
+// ── What this is for with Daraja ─────────────────────────────
 //
-// ── Not wired up yet ─────────────────────────────────────────
+// It is the safety net, not the main path. The customer's browser confirms
+// payment by polling api/order-status.js, which asks Daraja's STK Query API
+// directly — that is authoritative and it sends both emails.
 //
-// PAYMENT_PROVIDER defaults to "stub", which has no callback; this endpoint
-// exists so the real rail is a matter of filling in two marked spots rather
-// than designing the flow under time pressure. Until then it verifies the
-// signature and returns 200 without doing anything.
+// This endpoint matters when the browser is gone: the tab was closed, the phone
+// died, the customer walked away mid-PIN. Without it a completed payment would
+// leave no trace beyond the earlier "awaiting payment" email.
 //
-// ── Wiring a real provider ───────────────────────────────────
+// ── Why it cannot settle the order by itself ─────────────────
 //
-// 1. Set PAY_WEBHOOK_SECRET in Vercel to the signing secret the provider gives
-//    you, and point their webhook at https://<domain>/api/pay-callback.
-// 2. Fill in SIGNATURE_HEADER and parseCallback() below for that provider's
-//    payload shape.
-// 3. The order token has to reach the callback: send it as the provider's
-//    metadata / account-reference field in api/_lib/payments.js so it comes
-//    back here. Providers that only echo a short reference need the KV store
-//    described in api/_lib/orders.js instead.
+// Daraja's callback echoes CheckoutRequestID, the amount, the payer's phone and
+// the receipt — but NOT the AccountReference, and it has no metadata field big
+// enough for our signed order token. So there is no way to map a callback back
+// to an order without storing the CheckoutRequestID when the push goes out.
 //
-// Body parsing is off because the signature is computed over the raw bytes —
-// re-serializing parsed JSON does not reliably reproduce them. Same reason and
-// same shape as api/cal-webhook.js.
+// Rather than guess (matching on phone and amount would eventually pair the
+// wrong two orders), this emails you everything Daraja provided, to reconcile
+// against the "AWAITING PAYMENT" email carrying the same phone number. At this
+// volume that is a handful of seconds. Adding the KV store described in
+// api/_lib/orders.js is what removes the manual step — the callback would then
+// look up the order and send the customer their receipt automatically.
+//
+// Providers that DO round-trip metadata (IntaSend, Paystack) return the token,
+// and the branch below settles the order in full.
+//
+// ── Authenticating the callback ──────────────────────────────
+//
+// Daraja does not sign callbacks — there is no HMAC to check, so the URL itself
+// is the credential. Set MPESA_CALLBACK_SECRET and register the callback as
+//   https://<domain>/api/pay-callback?k=<that secret>
+// The secret never appears in the page, only in Safaricom's config and yours.
+// Safaricom also publishes IP ranges you can allowlist upstream for a second
+// layer. Signed providers use PAY_WEBHOOK_SECRET and the HMAC path instead.
+//
+// Body parsing is off because an HMAC has to be computed over the raw bytes —
+// re-serializing parsed JSON does not reliably reproduce them. Same shape as
+// api/cal-webhook.js.
 
 import crypto from 'node:crypto';
-import { verifyOrderToken, markPaid } from './_lib/orders.js';
+import { verifyOrderToken, markPaid, notifyUnmatchedPayment } from './_lib/orders.js';
+import { activeProviderName } from './_lib/payments.js';
 
 export const config = {
   api: { bodyParser: false },
 };
 
-/** Header the provider signs the body with. Set per provider. */
+/** Header a signing provider puts its HMAC in. Unused by Daraja. */
 const SIGNATURE_HEADER = 'x-payment-signature';
 
 async function readRawBody(req) {
@@ -43,30 +59,37 @@ async function readRawBody(req) {
   return Buffer.concat(chunks);
 }
 
-function isValidSignature(rawBody, signature, secret) {
-  if (!signature || !secret) return false;
-  const expected = crypto.createHmac('sha256', secret).update(rawBody).digest('hex');
-  const expectedBuf = Buffer.from(expected, 'utf8');
-  const signatureBuf = Buffer.from(signature, 'utf8');
-  // Length first: timingSafeEqual throws rather than returning false when the
-  // two buffers differ in size.
-  if (expectedBuf.length !== signatureBuf.length) return false;
-  return crypto.timingSafeEqual(expectedBuf, signatureBuf);
+/** Constant-time compare of two strings of any length. */
+function safeEqual(a, b) {
+  const bufA = Buffer.from(String(a ?? ''), 'utf8');
+  const bufB = Buffer.from(String(b ?? ''), 'utf8');
+  // Length check first: timingSafeEqual throws when the buffers differ in size.
+  if (bufA.length === 0 || bufA.length !== bufB.length) return false;
+  return crypto.timingSafeEqual(bufA, bufB);
 }
 
-/**
- * Reduce a provider payload to { paid, token, receipt }.
- *
- * Left generic on purpose — fill this in for the chosen provider. Daraja nests
- * the result under Body.stkCallback with ResultCode 0 for success and the
- * receipt inside CallbackMetadata.Item; IntaSend and Paystack send a flat
- * object with a state/status string.
- */
-function parseCallback(event) {
+function hasValidHmac(rawBody, signature, secret) {
+  if (!signature || !secret) return false;
+  const expected = crypto.createHmac('sha256', secret).update(rawBody).digest('hex');
+  return safeEqual(signature, expected);
+}
+
+/** Pull the fields out of Daraja's stkCallback envelope. */
+function parseDaraja(event) {
+  const cb = event?.Body?.stkCallback;
+  if (!cb) return null;
+
+  // CallbackMetadata is present only on success, as a list of {Name, Value}.
+  const items = cb.CallbackMetadata?.Item ?? [];
+  const value = (name) => items.find((i) => i.Name === name)?.Value ?? null;
+
   return {
-    paid: event?.status === 'paid' || event?.ResultCode === 0,
-    token: event?.metadata?.token ?? event?.token,
-    receipt: event?.receipt ?? event?.mpesa_receipt ?? null,
+    paid: Number(cb.ResultCode) === 0,
+    resultDesc: cb.ResultDesc,
+    providerRef: cb.CheckoutRequestID,
+    receipt: value('MpesaReceiptNumber'),
+    amount: value('Amount'),
+    phone: value('PhoneNumber'),
   };
 }
 
@@ -75,10 +98,16 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
+  const provider = activeProviderName();
+  const isDaraja = provider === 'daraja';
   const rawBody = await readRawBody(req);
 
-  if (!isValidSignature(rawBody, req.headers[SIGNATURE_HEADER], process.env.PAY_WEBHOOK_SECRET)) {
-    return res.status(401).json({ error: 'Invalid signature' });
+  const authorized = isDaraja
+    ? safeEqual(req.query?.k, process.env.MPESA_CALLBACK_SECRET)
+    : hasValidHmac(rawBody, req.headers[SIGNATURE_HEADER], process.env.PAY_WEBHOOK_SECRET);
+
+  if (!authorized) {
+    return res.status(401).json({ error: 'Unauthorized' });
   }
 
   let event;
@@ -88,25 +117,41 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Invalid JSON' });
   }
 
-  const { paid, token, receipt } = parseCallback(event);
-
-  // Anything that is not a settled payment is acknowledged and dropped —
-  // returning an error would make the provider retry a callback that is not
-  // going to become interesting.
-  if (!paid) return res.status(200).json({ ok: true, skipped: true });
-
-  const order = verifyOrderToken(token);
-  if (!order) {
-    console.error('Pay callback carried no verifiable order token.');
-    return res.status(200).json({ ok: true, skipped: true });
-  }
+  // Daraja expects this exact acknowledgement shape, and retries without it.
+  const ack = isDaraja ? { ResultCode: 0, ResultDesc: 'Accepted' } : { ok: true };
 
   try {
-    await markPaid({ order, receipt });
-    return res.status(200).json({ ok: true });
+    if (isDaraja) {
+      const result = parseDaraja(event);
+      if (!result) return res.status(400).json({ error: 'Unrecognized callback' });
+
+      // Cancellations and timeouts arrive here too. They are already reflected
+      // in the customer's browser by the status poll, so acknowledge and stop.
+      if (!result.paid) {
+        console.log(`M-Pesa push not completed (${result.providerRef}): ${result.resultDesc}`);
+        return res.status(200).json(ack);
+      }
+
+      await notifyUnmatchedPayment(result);
+      return res.status(200).json(ack);
+    }
+
+    // Signed providers: the token round-trips, so the order can be settled here.
+    const token = event?.metadata?.token ?? event?.token;
+    const paid = event?.status === 'paid';
+    if (!paid) return res.status(200).json(ack);
+
+    const order = verifyOrderToken(token);
+    if (!order) {
+      console.error('Pay callback carried no verifiable order token.');
+      return res.status(200).json(ack);
+    }
+
+    await markPaid({ order, receipt: event?.receipt ?? null });
+    return res.status(200).json(ack);
   } catch (err) {
     console.error('Pay callback error:', err);
-    // A 500 asks most providers to retry, which is what we want if the emails
+    // A 500 asks most providers to retry, which is what we want if the email
     // failed to send.
     return res.status(500).json({ error: 'Failed to record payment' });
   }

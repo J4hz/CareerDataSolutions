@@ -18,6 +18,7 @@ import { packages } from '../src/data/packages.js';
 import { cleanText, isValidEmail, validateCvUpload } from './_lib/sanitize.js';
 import { createOrder, newOrderId, signOrder } from './_lib/orders.js';
 import { normalizeMsisdn, requestStkPush } from './_lib/payments.js';
+import { resolveAmount } from './_lib/promo.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -28,7 +29,8 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'Server is not configured to take orders yet.' });
   }
 
-  const { packageId, name, email, phone, message, cvBase64, cvName, cvType } = req.body ?? {};
+  const { packageId, name, email, phone, message, promoCode, cvBase64, cvName, cvType } =
+    req.body ?? {};
 
   if (!packageId || !name || !email || !phone || !cvBase64) {
     return res.status(400).json({ error: 'Please complete every field and attach your CV.' });
@@ -69,19 +71,24 @@ export default async function handler(req, res) {
 
   const id = newOrderId();
 
+  // The charged amount is decided HERE, from the package plus the server-held
+  // promo code. api/promo.js only told the browser what to display; it has no
+  // say in what is billed.
+  const { amountKES, promoApplied } = resolveAmount(pkg, promoCode);
+
   try {
     // The CV reaches the inbox before any payment is attempted, so a failed or
     // abandoned payment never costs us the submission.
-    const stored = await createOrder({ id, pkg, safe, cv });
+    const stored = await createOrder({ id, pkg, safe, cv, amountKES, promoApplied });
     if (!stored.ok) {
       return res.status(502).json({ error: 'We could not save your order. Please try again.' });
     }
 
     const push = await requestStkPush({
-      amount: pkg.amountKES,
+      amount: amountKES,
       phone: msisdn,
       reference: id,
-      description: `${pkg.name} — CareerDataSolutions`,
+      description: `${pkg.name} · CareerDataSolutions`,
     });
 
     if (!push.ok) {
@@ -98,7 +105,8 @@ export default async function handler(req, res) {
       id,
       packageId: pkg.id,
       packageName: pkg.name,
-      amountKES: pkg.amountKES,
+      amountKES,
+      promoApplied,
       timeline: pkg.timeline,
       name: safe.name,
       email: email.trim(),
@@ -110,7 +118,8 @@ export default async function handler(req, res) {
       orderId: id,
       status: push.status,
       token,
-      amountKES: pkg.amountKES,
+      amountKES,
+      promoApplied,
     });
   } catch (err) {
     console.error('Order error:', err);

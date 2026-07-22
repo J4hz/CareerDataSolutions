@@ -77,7 +77,7 @@ export default async function handler(req, res) {
       from: fromAddress,
       to:   process.env.NOTIFY_EMAIL || CONTACT_EMAIL,
       replyTo: email,
-      subject: cleanHeader(`New CV submission: ${name} — ${targetRole}`),
+      subject: cleanHeader(`New CV submission: ${name} · ${targetRole}`),
       attachments: [{
         filename: cv.filename,
         content:  cv.buffer.toString('base64'),
@@ -85,7 +85,7 @@ export default async function handler(req, res) {
       html: `
         <div style="font-family:sans-serif;max-width:560px;">
           <h2 style="color:#0B1F3A;">
-            New CV submission — Career Services
+            New CV submission · Career Services
           </h2>
           <table style="width:100%;border-collapse:collapse;">
             <tr>
@@ -160,7 +160,7 @@ export default async function handler(req, res) {
               Once you have reviewed the CV
             </div>
             <div style="font-size:13px;color:#334155;line-height:1.6;">
-              Send this booking link with your assessment:<br />
+              Send this booking link to the applicant:<br />
               <a href="${CALENDLY_URL}" style="color:#96702B;">${CALENDLY_URL}</a>
             </div>
           </div>
@@ -208,12 +208,12 @@ export default async function handler(req, res) {
           from:    configuredFrom,
           to:      toAddress,
           replyTo: ownerAddress,
-          subject: cleanHeader("We've received your CV — CareerDataSolutions"),
+          subject: cleanHeader("We've received your CV · CareerDataSolutions"),
           html: `
             <div style="font-family:Arial,Helvetica,sans-serif;max-width:560px;margin:0 auto;color:#0F172A;">
               <div style="height:4px;background:#C89A44;border-radius:2px;margin-bottom:28px;"></div>
               <h1 style="color:#0B1F3A;font-size:22px;margin:0 0 16px;">
-                Thanks, ${firstName} — we've got your CV.
+                Thanks, ${firstName}, we've got your CV.
               </h1>
               <p style="font-size:15px;line-height:1.7;color:#334155;margin:0 0 16px;">
                 This is a quick confirmation that your CV and details reached
@@ -222,11 +222,10 @@ export default async function handler(req, res) {
               <p style="font-size:15px;line-height:1.7;color:#334155;margin:0 0 16px;">
                 <strong style="color:#0B1F3A;">What happens next:</strong> we will review
                 your CV against your target role${safe.targetRole ? ` (${safe.targetRole})` : ''}
-                and market, then send you an honest written assessment within one
-                business day. That email will include a link to book your free discovery
-                call, so we can talk it through once you have read it. If the problem is
-                not your CV, we will tell you that too — there is no obligation to buy
-                anything.
+                and market, then send you a link to book your free discovery call within
+                one business day. On the call we walk you through exactly what we found
+                and what we would recommend. If the problem is not your CV, we will tell
+                you that too, and there is no obligation to buy anything.
               </p>
               <p style="font-size:15px;line-height:1.7;color:#334155;margin:0 0 24px;">
                 Questions in the meantime? Just reply to this email, or message us on

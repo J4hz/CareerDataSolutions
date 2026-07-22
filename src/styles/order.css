@@ -161,6 +161,65 @@
   font-weight: 800;
   letter-spacing: -0.5px;
   color: var(--gold-dark);
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+/* List price kept visible beside the discounted one, so the total is never
+   just a smaller number with no explanation. */
+.order-total__was {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--gm);
+  text-decoration: line-through;
+}
+
+/* ── Promo code ── */
+
+.order-promo {
+  display: flex;
+  gap: 8px;
+}
+
+.order-promo input {
+  flex: 1;
+  min-width: 0;
+}
+
+.order-promo input:disabled {
+  background: var(--off);
+  color: var(--gm);
+}
+
+.order-promo__btn {
+  flex-shrink: 0;
+  padding: 0 18px;
+  border: 1.5px solid var(--gl);
+  border-radius: 8px;
+  background: var(--white);
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--navy);
+  cursor: pointer;
+  transition: border-color var(--transition), background var(--transition);
+}
+
+.order-promo__btn:hover:not(:disabled) {
+  border-color: var(--gold);
+  background: var(--gold-soft);
+}
+
+.order-promo__btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.order-promo__ok {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--teal);
 }
 
 /* ── Payment result states ── */

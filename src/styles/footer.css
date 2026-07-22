@@ -32,7 +32,17 @@
   line-height: 1.65;
   color: rgba(255,255,255,0.55);
   max-width: 280px;
+  font-weight: 600;
+  /* A line each. Flex rather than display:block on the spans so the two stay
+     one paragraph for selection and screen readers. */
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  align-items: flex-start;
 }
+
+.footer__tagline--data   { color: var(--teal); }
+.footer__tagline--career { color: var(--gold); }
 
 /* Sits under the tagline, one step quieter so the tagline still leads. */
 .footer__location {

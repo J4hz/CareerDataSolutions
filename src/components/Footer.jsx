@@ -40,8 +40,12 @@ const Footer = memo(function Footer({ track = null }) {
               }}
             />
           </div>
+          {/* One line each, taking its own track colour, so the split reads
+              here the same way it does in the hero headline and the service
+              columns below. Stacked, so no separator is needed. */}
           <p className="footer__tagline">
-            We turn data into decisions, and careers into direction.
+            <span className="footer__tagline--data">Data-Driven Decisions</span>
+            <span className="footer__tagline--career">Career-Defining Growth</span>
           </p>
           {/* Hyphen, not an em dash: the site is deliberately em-dash free. */}
           <p className="footer__location">
@@ -58,7 +62,6 @@ const Footer = memo(function Footer({ track = null }) {
             <li><Link to="/data/services">Dashboards and reporting</Link></li>
             <li><Link to="/data/services">Business performance analysis</Link></li>
             <li><Link to="/data/services">Data-driven forecasting and planning</Link></li>
-            <li><Link to="/data/packages">Packages &amp; pricing</Link></li>
           </ul>
         </div>
 
