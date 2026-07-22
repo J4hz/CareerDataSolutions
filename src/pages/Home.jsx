@@ -49,8 +49,8 @@ export default function Home() {
                 hero exactly two sentences. Both accent spans are kept so the
                 data and career halves stay colour-coded. */}
             <p className="hero__kicker">
-              <span className="hero__kicker--data">Precision for your data,</span>{' '}
-              <span className="hero__kicker--career">clarity for your career.</span>
+              <span className="hero__kicker--data">Data-Driven Decisions.</span>{' '}
+              <span className="hero__kicker--career">Career-Defining Growth.</span>
             </p>
 
             {/* Each clause is its own line: the data half above, the career
@@ -61,7 +61,7 @@ export default function Home() {
                 We turn <span className="hero__hl hero__hl--data">data</span> into decisions,
               </span>
               <span className="hero__title-line">
-                and <span className="hero__hl hero__hl--career">careers</span> into direction.
+                and potential into <span className="hero__hl hero__hl--career">career</span> growth.
               </span>
             </h1>
           </div>
