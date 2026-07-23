@@ -4,6 +4,7 @@ import ProcessSteps from './ui/ProcessSteps';
 import FaqAccordion from './FaqAccordion';
 import TestimonialCard from './ui/TestimonialCard';
 import PackageCard from './ui/PackageCard';
+import DataFlowViz from './ui/DataFlowViz';
 import { testimonials } from '../data/testimonials';
 import { dataPackages, careerPackages } from '../data/packages';
 import '../styles/packages.css';
@@ -27,35 +28,47 @@ export default function ServiceLanding({ track }) {
     '--lp-accent-glow': track.accentGlow,
   };
 
+  // Show this track's own client results. Below two, a filtered grid reads as
+  // "we have one happy client" rather than as focus, so the full set is shown
+  // instead — remove the fallback once each track has two of its own.
+  const ownTestimonials = testimonials.filter((t) => t.track === track.id);
+  const shownTestimonials = ownTestimonials.length >= 2 ? ownTestimonials : testimonials;
+
   return (
     <main className="lp" style={accentVars} data-track={track.id}>
-      {/* HERO */}
+      {/* HERO — one centred column on both tracks. Where the track brings a
+          visual (track.showHeroViz) it sits below the copy rather than beside
+          it, so the headline is centred the same way on every service page. */}
       <section className="lp-hero" aria-labelledby="lp-heading">
         <div className="container lp-hero__inner">
-          <h1 id="lp-heading" className="lp-hero__title">
-            {track.title}
-            <br />
-            <span className="lp-hero__title-accent">{track.titleAccent}</span>
-          </h1>
-          <p className="lp-hero__intro">{track.intro}</p>
+          <div className="lp-hero__copy">
+            <h1 id="lp-heading" className="lp-hero__title">
+              {track.title}
+              <br />
+              <span className="lp-hero__title-accent">{track.titleAccent}</span>
+            </h1>
+            <p className="lp-hero__intro">{track.intro}</p>
 
-          <div className="lp-hero__actions">
-            <Link to={track.primaryCta.to} className={`btn btn--lg ${track.buttonClass}`}>
-              {track.primaryCta.label} →
-            </Link>
-            <Link to={track.secondaryCta.to} className="btn btn--lg btn--ghost">
-              {track.secondaryCta.label}
-            </Link>
+            <div className="lp-hero__actions">
+              <Link to={track.primaryCta.to} className={`btn btn--lg ${track.buttonClass}`}>
+                {track.primaryCta.label} →
+              </Link>
+              <Link to={track.secondaryCta.to} className="btn btn--lg btn--ghost">
+                {track.secondaryCta.label}
+              </Link>
+            </div>
+
+            <dl className="lp-hero__stats">
+              {track.stats.map((stat) => (
+                <div key={stat.label} className="lp-hero__stat">
+                  <dt className="lp-hero__stat-num">{stat.num}</dt>
+                  <dd className="lp-hero__stat-label">{stat.label}</dd>
+                </div>
+              ))}
+            </dl>
           </div>
 
-          <dl className="lp-hero__stats">
-            {track.stats.map((stat) => (
-              <div key={stat.label} className="lp-hero__stat">
-                <dt className="lp-hero__stat-num">{stat.num}</dt>
-                <dd className="lp-hero__stat-label">{stat.label}</dd>
-              </div>
-            ))}
-          </dl>
+          {track.showHeroViz && <DataFlowViz />}
         </div>
       </section>
 
@@ -64,6 +77,9 @@ export default function ServiceLanding({ track }) {
         <div className="container">
           <span className="eyebrow lp-eyebrow">Scope</span>
           <h2 id="lp-deliverables-heading">{track.deliverablesTitle}</h2>
+          {track.deliverablesIntro && (
+            <p className="lp-section__intro">{track.deliverablesIntro}</p>
+          )}
 
           <div className="lp-deliverables__grid">
             {track.deliverables.map((item) => (
@@ -82,14 +98,30 @@ export default function ServiceLanding({ track }) {
       {track.showPackages && (
         <section className="section lp-packages" aria-labelledby="lp-packages-heading">
           <div className="container">
-            <span className="eyebrow lp-eyebrow">Pricing</span>
+            <span className="eyebrow lp-eyebrow">{track.packagesEyebrow ?? 'Pricing'}</span>
             <h2 id="lp-packages-heading">{track.packagesTitle}</h2>
+            {track.packagesIntro && (
+              <p className="lp-section__intro">{track.packagesIntro}</p>
+            )}
+
+            {/* Framing callout: on the data track the numbers below are
+                starting points, and saying so before the cards is the
+                difference between a quote and a broken promise. */}
+            {track.packagesNote && (
+              <p className="lp-packages__note">
+                <strong>{track.packagesNote.lead}</strong> {track.packagesNote.body}
+              </p>
+            )}
 
             <div className="packages-page__grid">
               {(track.id === 'career' ? careerPackages : dataPackages).map((pkg) => (
                 <PackageCard key={pkg.id} pkg={pkg} />
               ))}
             </div>
+
+            {track.packagesFine && (
+              <p className="lp-packages__fine">{track.packagesFine}</p>
+            )}
           </div>
         </section>
       )}
@@ -127,23 +159,27 @@ export default function ServiceLanding({ track }) {
           <span className="eyebrow lp-eyebrow">Client results</span>
           <h2 id="lp-testimonials-heading">What clients say</h2>
           <div className="lp-testimonials__grid">
-            {testimonials.map((t) => (
+            {shownTestimonials.map((t) => (
               <TestimonialCard key={t.id} testimonial={t} />
             ))}
           </div>
         </div>
       </section>
 
-      {/* PROCESS */}
-      <section className="section lp-process" aria-labelledby="lp-process-heading">
-        <div className="container">
-          <span className="eyebrow lp-eyebrow">How it works</span>
-          <h2 id="lp-process-heading">{track.processTitle}</h2>
-          <div className="lp-process__steps">
-            <ProcessSteps steps={track.process} accentColor={track.accent} />
+      {/* PROCESS — opt-in per track via track.showProcess (see
+          src/data/tracks.js). Currently on for data and off for career; the
+          career copy is left intact there so it can be switched back on. */}
+      {track.showProcess && (
+        <section className="section lp-process" aria-labelledby="lp-process-heading">
+          <div className="container">
+            <span className="eyebrow lp-eyebrow">How it works</span>
+            <h2 id="lp-process-heading">{track.processTitle}</h2>
+            <div className="lp-process__steps">
+              <ProcessSteps steps={track.process} accentColor={track.accent} />
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* FAQ — content in data/faqs.js; the matching FAQPage JSON-LD is
           emitted per-route by src/seo/schema.js from the same data. */}

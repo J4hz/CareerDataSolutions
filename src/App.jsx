@@ -7,14 +7,15 @@ import Seo from './components/Seo';
 
 const Home           = lazy(() => import('./pages/Home'));
 const CareerServices = lazy(() => import('./pages/CareerServices'));
+const DataServices   = lazy(() => import('./pages/DataServices'));
 const Packages      = lazy(() => import('./pages/Packages'));
 const About         = lazy(() => import('./pages/About'));
 // Restore alongside the /blog routes below to bring the blog back.
 // const Blog       = lazy(() => import('./pages/Blog'));
 // const BlogPost   = lazy(() => import('./pages/BlogPost'));
 const ContactCareer = lazy(() => import('./pages/ContactCareer'));
+const ContactData   = lazy(() => import('./pages/ContactData'));
 const CareerOrder   = lazy(() => import('./pages/CareerOrder'));
-const ComingSoon    = lazy(() => import('./pages/ComingSoon'));
 const NotFound      = lazy(() => import('./pages/NotFound'));
 
 function ScrollToTop() {
@@ -54,6 +55,12 @@ export default function App() {
         <Routes>
           <Route element={<SiteLayout />}>
             <Route path="/"           element={<Home />} />
+            {/* Neutral About. The homepage links here rather than into one of
+                the two tracks: a visitor reading about Kabiru has not chosen a
+                lane yet, and sending them into the gold or teal shell picks one
+                for them. Same page as /career/about and /data/about; passing a
+                null track gives the closing CTA its two-way booking menu. */}
+            <Route path="/about"      element={<About track={null} />} />
             {/* Blog ("Insights") is hidden from the live site. The pages and
                 posts still exist (pages/Blog.jsx, pages/BlogPost.jsx,
                 data/blog.js); uncomment these two routes, restore the nav
@@ -78,12 +85,15 @@ export default function App() {
             <Route path="order"     element={<CareerOrder />} />
           </Route>
 
-          {/* Data track is temporarily "coming soon": every /data/* path
-              renders the same placeholder, so all data links across the site
-              land there. Restore the individual routes to bring it back. */}
+          {/* Data track, mirroring the career routes above. It spent a while
+              behind a single "coming soon" placeholder; pages/ComingSoon.jsx
+              is still on disk if a section ever needs to go back behind one. */}
           <Route path="/data" element={<DataLayout />}>
-            <Route index      element={<ComingSoon />} />
-            <Route path="*"   element={<ComingSoon />} />
+            <Route index            element={<Navigate to="/data/services" replace />} />
+            <Route path="services"  element={<DataServices />} />
+            <Route path="packages"  element={<Packages track="data" />} />
+            <Route path="about"     element={<About track="data" />} />
+            <Route path="contact"   element={<ContactData />} />
           </Route>
 
           {/* Legacy routes from before the split */}
@@ -91,7 +101,6 @@ export default function App() {
           <Route path="/data-services"   element={<Navigate to="/data/services" replace />} />
           <Route path="/career-services" element={<Navigate to="/career/services" replace />} />
           <Route path="/packages"        element={<Navigate to="/" replace />} />
-          <Route path="/about"           element={<Navigate to="/data/about" replace />} />
           <Route path="/contact"         element={<Navigate to="/data/contact" replace />} />
           <Route path="/contact/data"    element={<Navigate to="/data/contact" replace />} />
           <Route path="/contact/career"  element={<Navigate to="/career/contact" replace />} />

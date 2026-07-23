@@ -168,7 +168,7 @@ export default function Home() {
               <span className="path-card__eyebrow">For Businesses</span>
               <h3 className="path-card__title">Turn scattered data into a dashboard you actually check</h3>
               <ul className="path-card__list">
-                <li>Custom Power BI and Excel dashboards built from your existing sales, operations, HR, or finance data</li>
+                <li>Custom Power BI and Excel dashboards built from your existing data (e.g. sales, operations, HR or finance)</li>
                 <li>We clean and structure messy or scattered data as part of the engagement, so you don't need it "ready" first</li>
                 <li>Single-department builds in 5–10 business days; multi-source builds in 2–4 weeks</li>
                 <li>Live, visual reporting that replaces "we think" with "we know"</li>

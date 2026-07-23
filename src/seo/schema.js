@@ -97,11 +97,11 @@ const dataService = () =>
     description:
       'Power BI dashboard design, Excel workflow automation and operational analytics for organizations, built for adoption by teams, not just for reporting.',
     offers: [
-      'Power BI dashboard design and build',
-      'Excel workflow automation and data digitization',
-      'Healthcare and operations data reporting',
+      'Custom Power BI dashboard design and build',
+      'Excel automation and recurring reporting',
+      'Data cleaning and structuring across multiple sources',
+      'Forecasting and business performance analysis',
       'KPI tracking and executive dashboards',
-      'Claims and payment process analytics',
     ],
   });
 
@@ -163,6 +163,9 @@ function blogPosting(post) {
 
 /** Human-readable trail for a path, used to build the BreadcrumbList. */
 const BREADCRUMB_LABELS = {
+  // Neutral About sits directly under Home: it belongs to no track, so the
+  // trackRoot lookup below finds nothing to nest it under.
+  '/about':           'About',
   '/data/services':   'Data Services',
   '/data/packages':   'Data Packages & Pricing',
   '/data/about':      'About',

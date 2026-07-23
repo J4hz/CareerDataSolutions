@@ -14,9 +14,10 @@ import '../styles/footer.css';
  * the layout's theme class handles the accent colour.
  */
 const Footer = memo(function Footer({ track = null }) {
-  // Neutral shell has no About of its own; it hands off to the data side,
-  // mirroring the /about → /data/about redirect in vercel.json.
-  const aboutTo = track === 'career' ? '/career/about' : '/data/about';
+  // Inside a track shell About stays in that shell, so the accent does not
+  // change under the visitor mid-session. On the neutral shell it goes to the
+  // neutral /about, which is where the homepage nav points too.
+  const aboutTo = track ? `/${track}/about` : '/about';
   const contactTo = track === 'career' ? '/career/contact' : '/data/contact';
 
   return (
@@ -62,6 +63,7 @@ const Footer = memo(function Footer({ track = null }) {
             <li><Link to="/data/services">Dashboards and reporting</Link></li>
             <li><Link to="/data/services">Business performance analysis</Link></li>
             <li><Link to="/data/services">Data-driven forecasting and planning</Link></li>
+            <li><Link to="/data/packages">Scope tiers &amp; pricing</Link></li>
           </ul>
         </div>
 

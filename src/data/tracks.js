@@ -25,39 +25,67 @@ export const dataTrack = {
   buttonClass: 'btn--cta',
 
   eyebrow: 'Data Services',
-  title: 'Your data already knows.',
-  titleAccent: 'Make it say it out loud.',
+  title: 'We turn your scattered data',
+  titleAccent: 'into decisions you can act on.',
   intro:
-    'Power BI dashboards, Excel automation and operational reporting for organizations that are collecting plenty of data and deciding on none of it. Built by someone who spent 12 years inside operations, so the dashboard speaks your team\'s language on day one, and actually gets opened on a Monday morning.',
+    'Power BI dashboards, Excel automation and reporting systems built from the data you already have. It does not need to be "ready" first, and it does not need to live in one place. Built by someone who spent 12 years inside operations, so the dashboard speaks your team\'s language on day one and actually gets opened on a Monday morning.',
 
   primaryCta: { label: 'Book a free discovery call', to: '/data/contact' },
-  secondaryCta: { label: 'See packages & pricing', to: '/data/packages' },
+  secondaryCta: { label: 'See scope tiers & pricing', to: '/data/packages' },
 
+  /* Two stats, not three: the hero runs beside the source-data visual on this
+     track (showHeroViz below), so the row has half the width it does on the
+     career page. */
   stats: [
-    { num: '7', label: 'Departments dashboarded' },
-    { num: '12', label: 'Years of operational data experience' },
-    { num: '30 min', label: 'Free discovery call, no obligation' },
+    { num: '5–10 days', label: 'Turnaround on a single-department dashboard' },
+    { num: 'Free', label: 'Discovery call before you commit to anything' },
   ],
+
+  /* HIDDEN FOR NOW. Set back to true to bring back the animated "scattered
+     points to ordered bars" panel that sits below the hero copy. The
+     component (components/ui/DataFlowViz.jsx) and its styles (.lp-viz* in
+     src/styles/landing.css) are untouched, so this flag is the only switch.
+     Data track only either way: it is a literal picture of what the service
+     does, and would mean nothing on the career page. */
+  showHeroViz: false,
 
   deliverablesTitle: 'What you get',
+  deliverablesIntro:
+    'Four things every engagement is built around, whichever tier fits your situation.',
   deliverables: [
     {
-      title: 'Power BI dashboard design & build',
-      body: 'Multi-department dashboards designed around the three or four decisions you actually make every week, not around everything the data could theoretically show.',
+      title: 'Custom Power BI dashboards',
+      body: 'Built from your existing data (e.g. sales, operations, HR or finance). Live and interactive, not a static export you have to re-request every week.',
     },
     {
-      title: 'Excel workflow automation',
-      body: 'The recurring workbook that eats two days of someone\'s week, rebuilt to run itself. Data digitization for anything still living on paper.',
+      title: 'Excel automation & reporting',
+      body: 'The manual weekly report, rebuilt so it updates itself. Less time copying and pasting, more time using the numbers.',
     },
     {
-      title: 'Healthcare & operations reporting',
-      body: 'Claims backlogs, procurement bottlenecks, bed occupancy, throughput. Domain-specific reporting from someone who has worked the operational side of it.',
+      title: 'Data cleaning & structuring',
+      body: 'Messy, scattered or multi-source data sorted, standardized and connected as part of the engagement. You do not need clean data to start.',
     },
     {
-      title: 'KPI tracking & executive dashboards',
-      body: 'A single view a director can open on any device and immediately know whether this week is on track.',
+      title: 'Forecasting & performance analysis',
+      body: 'Historical data turned into forward-looking input for budgeting, staffing or planning decisions.',
     },
   ],
+
+  /* Cards come from src/data/packages.js and are shared with /data/packages,
+     so a price is never maintained in two places. The note and fine print are
+     the whole point of this block on the data side: these are scope tiers a
+     visitor self-selects into, not a menu they buy from. */
+  showPackages: true,
+  packagesEyebrow: 'Scope tiers',
+  packagesTitle: 'How the quoting actually works',
+  packagesIntro:
+    'Every engagement starts with a free discovery call, where we look at your real data before anything is quoted.',
+  packagesNote: {
+    lead: 'These are starting points, not fixed packages.',
+    body: 'Dashboard and automation work varies too much by data complexity to price sight-unseen. The tiers below help you self-select. You get an exact quote and timeline after the discovery call, before any work begins.',
+  },
+  packagesFine:
+    'After the discovery call you receive a written scope and fixed price for the agreed deliverables before work starts, so there are no surprise costs mid-project. If requirements expand after that point (new data sources, additional views), that is scoped and quoted separately rather than folded into the original price.',
 
   audienceTitle: 'This is for you if',
   audience: [
@@ -67,15 +95,19 @@ export const dataTrack = {
     'A previous dashboard was built, delivered, and never opened again',
   ],
 
-  processTitle: 'How a data engagement runs',
+  /* Process block is hidden on /data/services too, matching the career page.
+     Set showProcess back to true to restore it; the five steps are untouched
+     in src/data/process.js. */
+  showProcess: false,
+  processTitle: 'Five steps, start to finish',
   process: dataProcess,
 
-  faqTitle: 'Data analytics, answered',
+  faqTitle: 'Data services, answered',
   faqs: dataFaqs,
 
-  closingTitle: 'Start with a conversation, not a contract.',
+  closingTitle: 'Stop reporting from memory. See it live.',
   closingBody:
-    'A free 30-minute discovery call to map what data you already have and what decisions it should be driving. If a dashboard is not the right answer, we will tell you that.',
+    'Book a free 30-minute discovery call. No commitment: we map out exactly what is possible with your data and what it would cost. If a dashboard is not the right answer, we will tell you that.',
 };
 
 export const careerTrack = {
@@ -138,6 +170,9 @@ export const careerTrack = {
     'Recruiters are not finding you on LinkedIn and you do not know why',
   ],
 
+  /* Process block is hidden on /career/services — set showProcess back to
+     true to restore it. The copy below is kept deliberately. */
+  showProcess: false,
   processTitle: 'How a career engagement runs',
   process: careerProcess,
 

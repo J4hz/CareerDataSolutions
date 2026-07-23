@@ -19,14 +19,15 @@ import '../styles/navbar.css';
    'Insights' } entry here, plus the routes in App.jsx and the entries in
    seo/meta.js and seo/schema.js, to bring it back.
 
-   About sits on the neutral shell too, pointing at the career copy since
-   /data/* currently renders the "coming soon" placeholder. The About page
-   content is identical on both tracks; only the accent differs. */
+   About sits on the neutral shell too, pointing at the neutral /about rather
+   than into a track: a visitor who has not picked a lane should not be handed
+   one by a link about the founder. The page content is identical on all three
+   routes; only the accent and the closing CTA differ. */
 const LINKS = {
   neutral: [
     { to: '/data/services',   label: 'Data Services' },
     { to: '/career/services', label: 'Career Services' },
-    { to: '/career/about',    label: 'About' },
+    { to: '/about',           label: 'About' },
   ],
   data: [
     { to: '/data/services', label: 'Services' },

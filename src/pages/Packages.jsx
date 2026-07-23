@@ -6,15 +6,23 @@ import '../styles/packages.css';
 const COPY = {
   data: {
     trackLabel: 'Data Analytics',
-    sectionTitle: 'Dashboard and automation packages',
+    heading: 'Scope tiers built for every stage',
+    sectionTitle: 'Dashboard and automation scope tiers',
     intro:
-      'Local KES pricing for Kenya. USD rates for international and Upwork projects. Every dashboard package includes clear timelines and revision rounds.',
+      'Local KES pricing for Kenya. USD rates for international and Upwork projects. These are starting points rather than fixed packages: dashboard work varies too much by data complexity to price sight-unseen.',
+    // Data work is quoted, not bought off the page, so the closing line talks
+    // about how the number gets fixed rather than how it gets paid.
+    note:
+      'Every engagement starts with a free discovery call. After it you receive a written scope and a fixed price for the agreed deliverables, before any work begins. If requirements expand later, that is scoped and quoted separately rather than folded into the original price.',
   },
   career: {
     trackLabel: 'Career Services',
+    heading: 'Packages built for every stage',
     sectionTitle: 'CV, LinkedIn, and coaching packages',
     intro:
       'Local KES pricing for Kenya. USD rates for international clients. Every package includes clear timelines and revision rounds.',
+    note:
+      'All packages include clear timelines, defined revision rounds, and delivery via email. Payment accepted via M-Pesa, Payoneer, and bank transfer.',
   },
 };
 
@@ -32,7 +40,7 @@ export default function Packages({ track = 'data' }) {
       <section className="packages-page__hero" aria-labelledby="packages-page-heading">
         <div className="container">
           <span className="eyebrow" style={{ color: 'rgba(255,255,255,0.65)' }}>Pricing</span>
-          <h1 id="packages-page-heading">Packages built for every stage</h1>
+          <h1 id="packages-page-heading">{copy.heading}</h1>
           <p>{copy.intro}</p>
         </div>
       </section>
@@ -51,10 +59,7 @@ export default function Packages({ track = 'data' }) {
             </div>
           </div>
 
-          <p className="packages-page__note">
-            All packages include clear timelines, defined revision rounds, and delivery
-            via email. Payment accepted via M-Pesa, Payoneer, and bank transfer.
-          </p>
+          <p className="packages-page__note">{copy.note}</p>
         </div>
       </section>
 

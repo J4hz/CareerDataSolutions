@@ -116,11 +116,11 @@ export default function ContactCareer() {
       <div className="container">
 
         {/* The data/career switcher was removed: this page is reached from the
-            career booking CTA, so the visitor has already chosen their track
-            and the data side is still "coming soon". With only one option left
-            the control was not a choice, and the "Career Services" tab said the
-            same thing as the eyebrow directly below it. The .contact-switcher*
-            styles stay in contact.css for ContactData.jsx. */}
+            career booking CTA, so the visitor has already chosen their track,
+            and the "Career Services" tab said the same thing as the eyebrow
+            directly below it. /data/contact dropped it for the same reason
+            when it became a real intake page, so the .contact-switcher* rules
+            in contact.css are now unused by either track. */}
 
         {/* Two column grid */}
         <div className="contact-page__inner">

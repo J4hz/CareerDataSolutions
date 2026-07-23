@@ -5,7 +5,6 @@
     { "source": "/data-services",   "destination": "/data/services",   "permanent": true },
     { "source": "/career-services", "destination": "/career/services", "permanent": true },
     { "source": "/packages",        "destination": "/",                "permanent": true },
-    { "source": "/about",           "destination": "/data/about",      "permanent": true },
     { "source": "/contact",         "destination": "/data/contact",    "permanent": true },
     { "source": "/contact/data",    "destination": "/data/contact",    "permanent": true },
     { "source": "/contact/career",  "destination": "/career/contact",  "permanent": true },

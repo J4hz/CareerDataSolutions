@@ -1,3 +1,110 @@
+/* ── PACKAGE CARD ───────────────────────────────────────────────
+   Styles for ui/PackageCard.jsx. They live here, not in home.css, because
+   this is the stylesheet every page that renders a package card imports:
+   pages/Packages.jsx and the packages block in components/ServiceLanding.jsx.
+   ─────────────────────────────────────────────────────────────── */
+
+.pkg-card {
+  border-radius: 14px;
+  border: 1.5px solid var(--gl);
+  background: var(--white);
+  padding: 28px 24px 24px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  transition: border-color 0.22s, box-shadow 0.22s, transform 0.22s;
+}
+
+.pkg-card--data:not(.pkg-card--featured):hover {
+  border-color: var(--teal);
+  box-shadow: 0 8px 32px rgba(29,158,117,0.12);
+  transform: translateY(-2px);
+}
+
+.pkg-card--career:not(.pkg-card--featured):hover {
+  border-color: var(--gold);
+  box-shadow: 0 8px 32px rgba(244,168,51,0.12);
+  transform: translateY(-2px);
+}
+
+.pkg-card__features {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--gd);
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.pkg-card__feature {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  line-height: 1.5;
+}
+
+.pkg-card__check {
+  color: var(--teal);
+  font-weight: 700;
+  flex-shrink: 0;
+  font-size: 13px;
+}
+
+/* The tick follows its card's track. Gold-dark rather than gold: plain gold
+   on white is too light to read at 13px. */
+.pkg-card--career .pkg-card__check {
+  color: var(--gold-dark);
+}
+
+.pkg-card__divider {
+  border: none;
+  border-top: 1px solid var(--gl);
+  margin: 0 0 16px;
+}
+
+.pkg-card__cta {
+  width: 100%;
+  padding: 11px 18px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 13px;
+  text-align: center;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+  transition: all 0.2s;
+  border: none;
+  cursor: pointer;
+}
+
+.pkg-card__cta--data:hover {
+  background: var(--teal2) !important;
+  transform: translateY(-1px);
+}
+
+.pkg-card__cta--career:hover {
+  background: var(--gold2) !important;
+  transform: translateY(-1px);
+}
+
+/* Small uppercase qualifier above the price, for tiers that are quoted
+   rather than sold ("Starting at"). Absent on the career packages, whose
+   prices are exact. */
+.pkg-row__price-prefix {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--gm);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 2px;
+}
+
 .packages-page__hero {
   background: linear-gradient(155deg, var(--navy) 0%, var(--navy2) 100%);
   padding: 140px 0 80px;

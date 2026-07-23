@@ -2,74 +2,90 @@
 // shows. `amountKES` is the authoritative integer the server charges — api/order.js
 // looks the package up by id and reads it from here, so a tampered request body
 // cannot change what gets billed. Keep the two in step when a price changes.
+//
+// Only the CAREER packages carry an `amountKES`, because only they are bought
+// off the page. The data tiers are quoted, not sold: `pricePrefix` marks them
+// as starting points, the real number is fixed in writing after the discovery
+// call, and api/order.js refuses any id whose track is not 'career'.
 export const packages = [
 
   // ── DATA ANALYTICS ──────────────────────────────────────
+  // Scope tiers, not fixed packages. Dashboard work varies too much by data
+  // complexity to price sight-unseen, so these exist to let a visitor
+  // self-select before the call. See track.packagesNote in data/tracks.js for
+  // the framing that runs above the cards.
 
   {
-    id: 'insight-starter',
+    id: 'starter-dashboard',
     track: 'data',
     trackLabel: 'Data Analytics',
-    tier: 'Micro Enterprise',
-    name: 'Insight Starter',
-    audience: '1–10 staff',
-    priceKES: 'KES 20,000',
-    amountKES: 20000,
-    priceUSD: '$155 USD',
-    timeline: '5–7 business days',
+    tier: 'Single department',
+    name: 'Starter Dashboard',
+    audience: 'Sales, HR, or operations',
+    pricePrefix: 'Starting at',
+    priceKES: 'KES 12,000',
+    amountKES: null,
+    priceUSD: '$95 USD',
+    timeline: '5–10 business days',
     features: [
-      '1 department dashboard (Excel or Power BI)',
-      'Basic data cleaning and preparation',
-      'Up to 5 KPIs tracked',
-      'Summary insights report',
+      '1 Power BI dashboard',
+      'Up to 2 data sources',
+      'Basic data cleaning included',
       '1 revision round',
+      '30-min walkthrough call',
     ],
     featured: false,
     badge: null,
   },
 
   {
-    id: 'analytics-pro',
+    id: 'growth-dashboard',
     track: 'data',
     trackLabel: 'Data Analytics',
-    tier: 'Small Enterprise',
-    name: 'Analytics Pro',
-    audience: '11–50 staff',
-    priceKES: 'KES 45,000',
-    amountKES: 45000,
-    priceUSD: '$350 USD',
+    tier: 'Multi-department',
+    name: 'Growth Dashboard',
+    audience: 'Multi-source reporting across teams',
+    pricePrefix: 'Starting at',
+    priceKES: 'KES 22,000',
+    amountKES: null,
+    priceUSD: '$175 USD',
     timeline: '2–3 weeks',
     features: [
-      '2–3 department Power BI dashboards',
-      'Full data audit and cleaning',
-      'KPI framework design (up to 15 KPIs)',
-      'Recommendations and insights report',
-      'Excel automation for 1 workflow',
+      'Multiple linked dashboards',
+      'Up to 5 data sources',
+      'Full data cleaning and structuring',
       '2 revision rounds',
+      '45-min training session',
+      '30 days of post-delivery support',
     ],
-    featured: true,
-    badge: 'Most popular',
-    badgeTrack: 'data',
+    // No badge and no featured treatment: the three tiers are scope brackets a
+    // visitor self-selects into, so singling one out pushes a choice that only
+    // their data can actually make.
+    featured: false,
+    badge: null,
   },
 
   {
-    id: 'enterprise-suite',
+    id: 'automation-partner',
     track: 'data',
     trackLabel: 'Data Analytics',
-    tier: 'Medium Enterprise',
-    name: 'Enterprise Suite',
-    audience: '51–250 staff',
-    priceKES: 'KES 90,000',
-    amountKES: 90000,
-    priceUSD: '$700 USD',
-    timeline: '3–5 weeks',
+    tier: 'Ongoing reporting',
+    name: 'Automation Partner',
+    audience: 'Monthly retainer',
+    pricePrefix: 'Starting at',
+    priceKES: 'KES 35,000/mo',
+    amountKES: null,
+    // No USD equivalent is published for the retainer: it is quoted per
+    // engagement after the discovery call. PackageCard drops the separator
+    // when this is null.
+    priceUSD: null,
+    timeline: 'Build: 3–4 weeks, then ongoing',
     features: [
-      '4–7 department Power BI dashboards',
-      'End-to-end data architecture review',
-      'Full KPI framework and executive dashboard',
-      'Advanced Excel automation',
-      'Monthly reporting templates',
-      '3 revision rounds',
+      'Dashboards plus Excel/Power Query automation',
+      'Data sources scoped at discovery',
+      'Monthly refresh and maintenance',
+      'Priority turnaround on requests',
+      'Quarterly strategy review call',
     ],
     featured: false,
     badge: null,

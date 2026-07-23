@@ -34,12 +34,12 @@ export const staticRoutes = {
   '/data/services': {
     title: `Data Services · Power BI Dashboards & Analytics Automation | ${SITE_NAME}`,
     description:
-      'Power BI dashboards, Excel automation and operational analytics for organizations in Kenya and beyond, built by an analyst with 12 years inside EMS operations. Book a free discovery call.',
+      'Power BI dashboards, Excel automation and operational analytics for organizations in Kenya and beyond. Free discovery call, quote confirmed in writing before work begins.',
   },
   '/data/packages': {
-    title: `Data Packages & Pricing · Power BI Dashboards | ${SITE_NAME}`,
+    title: `Data Scope Tiers & Pricing · Power BI Dashboards | ${SITE_NAME}`,
     description:
-      'Transparent packages for Power BI dashboard builds and analytics automation, from single-department dashboards to multi-department enterprise suites, in KES and USD.',
+      'Scope tiers for Power BI dashboard builds and analytics automation, from a single-department starter dashboard to an ongoing automation retainer, in KES and USD.',
   },
   '/data/about': {
     title: `About Kabiru Nyabwengi · ${SITE_NAME} | Nairobi, Kenya`,
@@ -49,7 +49,7 @@ export const staticRoutes = {
   '/data/contact': {
     title: `Book a Discovery Call · Data Services | ${SITE_NAME}`,
     description:
-      'Book a free 30-minute discovery call to scope a Power BI dashboard or analytics automation project for your organization.',
+      'Tell us what you are trying to see and where your data sits, and book a free 30-minute discovery call to scope a Power BI dashboard or analytics automation project.',
   },
 
   // ── Career track ──
@@ -86,6 +86,14 @@ export const staticRoutes = {
   },
 
   // ── Neutral ──
+  // The homepage's About link. Same page as the two track About routes; this
+  // is the one a visitor who has not chosen a lane lands on.
+  '/about': {
+    title: `About Kabiru Nyabwengi · ${SITE_NAME} | Nairobi, Kenya`,
+    description:
+      'CareerDataSolutions is led by Kabiru Nyabwengi, whose years of EMS operations experience ground both the Power BI analytics and the career strategy work the consultancy delivers.',
+  },
+
   // The '/blog' entry is removed while Insights is hidden, so the blog is
   // left out of the prerender and the sitemap. Restore it alongside the
   // routes in App.jsx:

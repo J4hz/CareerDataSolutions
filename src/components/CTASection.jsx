@@ -2,6 +2,8 @@ import { memo, useEffect, useRef, useState } from 'react';
 import { NavLink, Link } from 'react-router-dom';
 import { BOOK_OPTIONS } from '../data/booking';
 import { WHATSAPP_URL, CONTACT_EMAIL } from '../config';
+import '../styles/cta-section.css';
+import '../styles/button.css';
 
 /* "clear" stays white in every variant; the track noun carries the colour —
    data teal, career gold. Inside a themed shell var(--accent) already

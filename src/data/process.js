@@ -2,27 +2,27 @@ export const dataProcess = [
   {
     step: 1,
     title: "Discovery call",
-    description: "Free 30-min call to map data sources and decision needs",
+    description: "What data you have, and what decisions you are actually trying to make with it",
   },
   {
     step: 2,
-    title: "Data audit",
-    description: "Review current structure, identify gaps and opportunities",
+    title: "Data access & scoping",
+    description: "Connect or share source data; scope, price and timeline confirmed once it is assessed",
   },
   {
     step: 3,
-    title: "Dashboard build",
-    description: "Design & build in Power BI or Excel in your team's language",
+    title: "Build",
+    description: "Dashboard or automation constructed against the agreed scope",
   },
   {
     step: 4,
-    title: "Handover & training",
-    description: "Walk your team through and ensure full adoption",
+    title: "Review & revise",
+    description: "Walkthrough of the first version, refined until it is right",
   },
   {
     step: 5,
-    title: "Ongoing support",
-    description: "Optional retainer for updates, new reports, advisory",
+    title: "Delivery & handover",
+    description: "Plus a short training session so your team can actually use it",
   },
 ];
 

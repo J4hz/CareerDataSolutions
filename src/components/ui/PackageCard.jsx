@@ -6,9 +6,14 @@ export default function PackageCard({ pkg, variant = 'card' }) {
   const badgeBg = isData ? 'var(--teal)' : 'var(--gold)';
   const badgeColor = isData ? 'var(--white)' : 'var(--navy)';
   // Career packages are purchasable, so the CTA goes to checkout with the
-  // package preselected. The data track has no checkout yet — every /data/*
-  // route still renders ComingSoon (see src/App.jsx).
+  // package preselected. Data tiers are quoted rather than sold: the price on
+  // the card is a starting point, the real one is fixed in writing after the
+  // discovery call, so the CTA books the call instead of taking money.
   const contactPath = isData ? '/data/contact' : `/career/order?pkg=${pkg.id}`;
+  const ctaLabel = isData ? 'Book a discovery call' : 'Get this package';
+  // The retainer publishes no USD equivalent, so the separator would otherwise
+  // dangle in front of the timeline.
+  const priceMeta = [pkg.priceUSD, pkg.timeline].filter(Boolean).join(' · ');
 
   if (variant === 'list') {
     const trackPillBg = isData ? 'rgba(29,158,117,0.10)' : 'rgba(244,168,51,0.12)';
@@ -47,14 +52,15 @@ export default function PackageCard({ pkg, variant = 'card' }) {
 
         {/* Price + CTA */}
         <div className="pkg-row__side">
+          {pkg.pricePrefix && <div className="pkg-row__price-prefix">{pkg.pricePrefix}</div>}
           <div className="pkg-row__kes" style={{ color: accent }}>{pkg.priceKES}</div>
-          <div className="pkg-row__usd">{pkg.priceUSD} · {pkg.timeline}</div>
+          <div className="pkg-row__usd">{priceMeta}</div>
           <Link
             to={contactPath}
             className="pkg-row__cta"
             style={{ background: isData ? 'var(--teal)' : 'var(--gold)', color: isData ? '#fff' : 'var(--navy)' }}
           >
-            Get this package
+            {ctaLabel}
           </Link>
         </div>
       </article>
@@ -108,11 +114,16 @@ export default function PackageCard({ pkg, variant = 'card' }) {
       </p>
 
       <div style={{ marginBottom: '18px' }}>
+        {pkg.pricePrefix && (
+          <div style={{ fontSize: '11px', fontWeight: 600, color: 'var(--gm)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '2px' }}>
+            {pkg.pricePrefix}
+          </div>
+        )}
         <div style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '28px', letterSpacing: '-1px', color: accent, marginBottom: '2px' }}>
           {pkg.priceKES}
         </div>
         <div style={{ fontSize: '12px', color: 'var(--gm)' }}>
-          {pkg.priceUSD} · {pkg.timeline}
+          {priceMeta}
         </div>
       </div>
 
@@ -135,7 +146,7 @@ export default function PackageCard({ pkg, variant = 'card' }) {
           color: isData ? '#fff' : 'var(--navy)',
         }}
       >
-        Get this package
+        {ctaLabel}
       </Link>
     </article>
   );

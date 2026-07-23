@@ -44,9 +44,15 @@
   background: var(--lp-accent);
 }
 
+/* Centred on both tracks: the headline, the intro, the buttons and the stats
+   row all sit on the page's centre line. Was scoped to the career track while
+   the data side was still hidden. */
 .lp-hero__inner {
   position: relative;
   max-width: 860px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
 }
 
 .lp-hero__eyebrow {
@@ -114,54 +120,185 @@
   max-width: 210px;
 }
 
-/* ── Career hero: centred ─────────────────────────────────────
-   Scoped to the career track only. The data track keeps the original
-   left-aligned hero, so restoring /data/services does not inherit a
-   layout decision that was made for the career page. Drop the
-   [data-track="career"] qualifier to apply it to both. */
+/* ── Hero visual: scattered points to ordered bars ────────────
+   Sits below the centred hero copy on tracks that set showHeroViz. A navy
+   panel on a navy hero, so it is defined by a hairline border and a faint
+   accent wash rather than by contrast against the background. */
 
-.lp[data-track='career'] .lp-hero__inner {
-  margin-left: auto;
-  margin-right: auto;
-  text-align: center;
+.lp-viz {
+  position: relative;
+  overflow: hidden;
+  max-width: 720px;
+  margin: 44px auto 0;
+  padding: 28px 26px 22px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.04);
 }
+
+.lp-viz::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(420px 200px at 100% 0%, var(--lp-accent-glow), transparent 62%);
+  pointer-events: none;
+}
+
+.lp-viz__head,
+.lp-viz__stage,
+.lp-viz__caption {
+  position: relative;
+  z-index: 1;
+}
+
+.lp-viz__head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.lp-viz__stage {
+  position: relative;
+  height: 210px;
+}
+
+.lp-viz__dots,
+.lp-viz__bars {
+  position: absolute;
+  inset: 0;
+}
+
+/* One 8s loop, two layers, opposite phases: the points hold, dissolve, and
+   the bars hold in their place before it resets. */
+.lp-viz__dots {
+  animation: lp-viz-dots 8s ease-in-out infinite;
+}
+
+.lp-viz__bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  animation: lp-viz-bars 8s ease-in-out infinite;
+}
+
+.lp-viz__dot {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.42);
+}
+
+.lp-viz__bar-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: 100%;
+}
+
+.lp-viz__bar {
+  border-radius: 6px 6px 2px 2px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.34), var(--lp-accent));
+}
+
+.lp-viz__bar-label {
+  margin-top: 8px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.lp-viz__caption {
+  margin-top: 16px;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+@keyframes lp-viz-dots {
+  0%, 35% { opacity: 1; }
+  45%, 90% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes lp-viz-bars {
+  0%, 35% { opacity: 0; }
+  45%, 90% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* Freeze on the resolved frame: the point of the animation is the "after",
+   and a loop running beside body copy is what this setting exists to stop. */
+@media (prefers-reduced-motion: reduce) {
+  .lp-viz__dots {
+    animation: none;
+    opacity: 0;
+  }
+
+  .lp-viz__bars {
+    animation: none;
+    opacity: 1;
+  }
+}
+
+/* ── Centred page ─────────────────────────────────────────────
+   Both tracks. These were scoped to [data-track="career"] while the data
+   side was hidden; the two service pages now share one alignment, which is
+   the point of them sharing one component. */
 
 /* The intro and stat labels are width-capped, so they need auto margins
    of their own; text-align alone would leave the block off-centre. */
-.lp[data-track='career'] .lp-hero__intro {
+.lp-hero__intro {
   margin-left: auto;
   margin-right: auto;
 }
 
-.lp[data-track='career'] .lp-hero__actions {
+.lp-hero__actions {
   justify-content: center;
 }
 
-.lp[data-track='career'] .lp-hero__stats {
+.lp-hero__stats {
   justify-content: center;
 }
 
-.lp[data-track='career'] .lp-hero__stat-label {
+.lp-hero__stat-label {
   margin-left: auto;
   margin-right: auto;
 }
 
 /* Section headings centred to match the hero. Scoped to the eyebrow and h2
    sitting directly in a section's container, so the cards and lists below
-   them keep their own alignment. The process and FAQ heads are already
-   centred by their own rules; this picks up deliverables, packages and
-   testimonials. The eyebrow is inline-block, so it has to become a block
-   before text-align can reach it. */
-.lp[data-track='career'] .section > .container > .lp-eyebrow,
-.lp[data-track='career'] .section > .container > h2 {
+   them keep their own alignment. The FAQ head is already centred by its own
+   rule; this picks up deliverables, packages and testimonials. The eyebrow is
+   inline-block, so it has to become a block before text-align can reach it. */
+.lp .section > .container > .lp-eyebrow,
+.lp .section > .container > h2 {
   display: block;
+  text-align: center;
+}
+
+/* The standfirst under a centred heading centres with it. Long blocks below
+   (the pricing note, the fine print) stay left-aligned for readability and
+   are centred as blocks instead. */
+.lp .section > .container > .lp-section__intro {
+  margin-left: auto;
+  margin-right: auto;
   text-align: center;
 }
 
 /* Card headings follow the section heading above them. The body copy stays
    left-aligned — it runs to several lines, and centred ragged-both-edges
    paragraphs are harder to read. */
-.lp[data-track='career'] .lp-card__title {
+.lp-card__title {
   text-align: center;
 }
 
@@ -175,6 +312,17 @@
   font-size: clamp(1.6rem, 3vw, 2.1rem);
   letter-spacing: -0.02em;
   margin-bottom: 40px;
+}
+
+/* Optional standfirst under a section heading. The h2 above it carries a
+   40px bottom margin for the sections that have no intro, so this pulls
+   back up into it rather than the heading changing shape per section. */
+.lp-section__intro {
+  max-width: 640px;
+  margin: -30px auto 34px;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--gm);
 }
 
 /* ── Deliverables ─────────────────────────────────────────── */
@@ -253,6 +401,32 @@
    testimonials below flip to --off for the same reason. */
 .lp-packages {
   background: var(--white);
+}
+
+/* Tinted callout above the tier cards: reads as a caveat attached to the
+   prices rather than as body copy that happens to sit near them. Borderless,
+   so the tint alone carries it. */
+.lp-packages__note {
+  padding: 20px 24px;
+  margin-bottom: 34px;
+  border-radius: var(--radius-md);
+  background: var(--lp-accent-soft);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--gd);
+}
+
+.lp-packages__note strong {
+  color: var(--navy);
+}
+
+.lp-packages__fine {
+  max-width: 760px;
+  margin: 28px auto 0;
+  text-align: center;
+  font-size: 0.86rem;
+  line-height: 1.7;
+  color: var(--gm);
 }
 
 .lp-testimonials {
@@ -443,6 +617,18 @@
 
   .lp-hero__stats {
     gap: 28px;
+  }
+
+  .lp-viz {
+    padding: 22px 18px 18px;
+  }
+
+  .lp-viz__stage {
+    height: 170px;
+  }
+
+  .lp-packages__note {
+    padding: 18px 20px;
   }
 
   .lp-cta {
