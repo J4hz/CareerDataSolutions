@@ -141,6 +141,32 @@
   text-align: center;
 }
 
+/* The same photograph each service hero carries, so a visitor moving from
+   /data/services to /data/packages stays on one visual. The navy gradient
+   becomes a scrim over the photo; the flat gradient above is kept as the
+   fallback if the image fails. Alphas mirror landing.css — 0.93 top / 0.90
+   bottom — and clear AA for the faintest text here (the eyebrow and intro,
+   white at 0.65 alpha). See the fuller note in landing.css. rgba values are
+   #0B1F3A / #143255, i.e. --navy / --navy2. */
+.theme-career .packages-page__hero,
+.theme-data .packages-page__hero {
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+
+.theme-career .packages-page__hero {
+  background-image:
+    linear-gradient(155deg, rgba(11, 31, 58, 0.93) 0%, rgba(20, 50, 85, 0.90) 100%),
+    url('../assets/hero-career.jpg');
+}
+
+.theme-data .packages-page__hero {
+  background-image:
+    linear-gradient(155deg, rgba(11, 31, 58, 0.93) 0%, rgba(20, 50, 85, 0.90) 100%),
+    url('../assets/hero-data.jpg');
+}
+
 .packages-page__hero h1 {
   font-size: clamp(2rem, 4vw, 3rem);
   font-weight: 800;

@@ -168,6 +168,38 @@ export default function ContactCareer() {
                 only has once they have submitted, so the email is where it
                 actually gets read. */}
 
+            {/* Direct channels at the foot of the copy column, the way the
+                order summary carries its help block. When the columns stack on
+                mobile, the whole copy column (this included) sits above the
+                form, matching /career/order. */}
+            <div className="contact-alts">
+              {/* WhatsApp */}
+              <a
+                href={WHATSAPP_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="contact-alt-card contact-alt-card--wa"
+              >
+                <div className="contact-alt-icon" style={{ background: 'var(--whatsapp)' }}>W</div>
+                <div>
+                  <div className="contact-alt-card__label">Chat on WhatsApp</div>
+                  <div className="contact-alt-card__sub">Quick questions or get started now</div>
+                </div>
+              </a>
+
+              {/* Email */}
+              <a
+                href={`mailto:${CONTACT_EMAIL}`}
+                className="contact-alt-card"
+              >
+                <div className="contact-alt-icon" style={{ background: 'var(--navy)' }}>@</div>
+                <div>
+                  <div className="contact-alt-card__label">{CONTACT_EMAIL}</div>
+                  <div className="contact-alt-card__sub">Usually responds within a few hours</div>
+                </div>
+              </a>
+            </div>
+
           </div>
 
           {/* RIGHT COLUMN */}
@@ -420,37 +452,6 @@ export default function ContactCareer() {
 
               </form>
             )}
-          </div>
-
-          {/* Direct channels, deliberately after the form: .contact-page__inner
-              is a single-column stack, so this is the last thing on the page
-              for anyone who scrolled past the form without filling it in. */}
-          <div className="contact-alts">
-            {/* WhatsApp */}
-            <a
-              href={WHATSAPP_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="contact-alt-card contact-alt-card--wa"
-            >
-              <div className="contact-alt-icon" style={{ background: 'var(--whatsapp)' }}>W</div>
-              <div>
-                <div className="contact-alt-card__label">Chat on WhatsApp</div>
-                <div className="contact-alt-card__sub">Quick questions or get started now</div>
-              </div>
-            </a>
-
-            {/* Email */}
-            <a
-              href={`mailto:${CONTACT_EMAIL}`}
-              className="contact-alt-card"
-            >
-              <div className="contact-alt-icon" style={{ background: 'var(--navy)' }}>@</div>
-              <div>
-                <div className="contact-alt-card__label">{CONTACT_EMAIL}</div>
-                <div className="contact-alt-card__sub">Usually responds within a few hours</div>
-              </div>
-            </a>
           </div>
 
         </div>

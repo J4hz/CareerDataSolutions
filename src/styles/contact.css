@@ -7,11 +7,18 @@
 
 .contact-page__inner {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 64px;
-  max-width: 1000px;
+  /* Copy left, form right — the same split as /career/order, whose form is
+     the wider column while the context beside it is reference material once
+     the visitor starts typing. The form column is given more room than the
+     order page's (0.7fr vs 1fr, on a wider container) because the contact
+     forms have longer field labels and full-width selects, which read
+     cramped at the order page's width. Stacks to one column at 860px. */
+  grid-template-columns: minmax(0, 0.7fr) minmax(0, 1fr);
+  gap: 56px;
+  max-width: 1080px;
   margin: 0 auto;
   padding: 0 24px 80px;
+  align-items: start;
 }
 
 /* ── Left column ── */
@@ -66,9 +73,15 @@
 }
 
 /* ── Alt contact cards ── */
+/* Sits at the foot of the left column, mirroring the help block at the foot
+   of the order summary on /career/order. The rule above the cards sets it off
+   from the numbered steps the way a section break would. */
 .contact-alts {
   display: flex;
   flex-direction: column;
+  margin-top: 32px;
+  padding-top: 28px;
+  border-top: 1px solid var(--gl);
 }
 
 .contact-alt-card {
@@ -136,13 +149,18 @@
 }
 
 /* ── Responsive ── */
-@media (max-width: 768px) {
+/* Stack at the same 860px the order layout uses, so the two pages break at the
+   same width. Stacked, the copy column sits above the form — contact cards
+   and all — exactly as the order summary sits above the payment form on
+   /career/order. */
+@media (max-width: 860px) {
   .contact-page__inner {
+    grid-template-columns: 1fr;
     gap: 40px;
   }
 
   .contact-page__right {
-    min-height: 500px;
+    min-height: 0;
   }
 }
 
@@ -221,15 +239,11 @@
   margin-bottom: 10px;
 }
 
-/* Contact header centred on both tracks, matching the centred section
-   headings on the service pages. Scoped to the left column so the gold
-   eyebrow on the order summary (/career/order) keeps its own alignment. */
-.theme-career .contact-page__left .contact-eyebrow,
-.theme-career .contact-page__left .contact-page__h1,
-.theme-data .contact-page__left .contact-eyebrow,
-.theme-data .contact-page__left .contact-page__h1 {
-  text-align: center;
-}
+/* The header used to be centred, from when the whole page was a single
+   stacked column. In the two-column layout the left column reads as a
+   left-aligned block beside the form, so the eyebrow and h1 align left with
+   the copy below them — no rule needed; this note marks where the centring
+   was removed. */
 
 /* ── DATA TRACK FORM ─────────────────────────
    /data/contact renders inside DataLayout's .theme-data wrapper, so the
