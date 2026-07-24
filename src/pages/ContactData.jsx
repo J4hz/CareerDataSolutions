@@ -17,17 +17,14 @@ import '../styles/contact.css';
 
 const EXPECT_ITEMS = [
   'Tell us what you want to see that you cannot see today.',
-  'Say where the data lives and roughly what state it is in.',
+  'Mention where the data lives and roughly what state it is in.',
   'We send you a link to book your free 30-minute discovery call.',
 ];
 
-const NEXT_ITEMS = [
-  'We map your data sources against the decisions you are trying to make',
-  'We flag anything that will affect scope or timeline before the call',
-  'You get a link to book your free discovery call within 1 business day',
-  'On the call we walk through what is possible and what it would cost',
-  'No obligation. Quotes follow the discovery call, never the other way around',
-];
+// The "what happens after you submit" list that used to sit here now lives in
+// the confirmation email instead — see the welcome send in api/notify-data.js.
+// It answers a question the visitor only has once they have submitted, so the
+// email is where it actually gets read.
 
 export default function ContactData() {
   const [formData, setFormData] = useState({
@@ -123,41 +120,6 @@ export default function ContactData() {
                   <p className="contact-expect__text">{text}</p>
                 </div>
               ))}
-            </div>
-
-            <div className="contact-next-card">
-              <p className="contact-next-card__title">
-                What happens after you submit
-              </p>
-              {NEXT_ITEMS.map((item) => (
-                <div key={item} className="contact-next-card__item">
-                  <span className="contact-next-card__dot" />
-                  <span>{item}</span>
-                </div>
-              ))}
-            </div>
-
-            <div className="contact-alts">
-              <a
-                href={WHATSAPP_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="contact-alt-card contact-alt-card--wa"
-              >
-                <div className="contact-alt-icon" style={{ background: 'var(--whatsapp)' }}>W</div>
-                <div>
-                  <div className="contact-alt-card__label">Chat on WhatsApp</div>
-                  <div className="contact-alt-card__sub">Quick questions or get started now</div>
-                </div>
-              </a>
-
-              <a href={`mailto:${CONTACT_EMAIL}`} className="contact-alt-card">
-                <div className="contact-alt-icon" style={{ background: 'var(--navy)' }}>@</div>
-                <div>
-                  <div className="contact-alt-card__label">{CONTACT_EMAIL}</div>
-                  <div className="contact-alt-card__sub">Usually responds within a few hours</div>
-                </div>
-              </a>
             </div>
 
           </div>
@@ -337,6 +299,33 @@ export default function ContactData() {
               </form>
             )}
           </div>
+
+          {/* Direct channels, deliberately after the form: .contact-page__inner
+              is a single-column stack, so this is the last thing on the page
+              for anyone who scrolled past the form without filling it in. */}
+          <div className="contact-alts">
+            <a
+              href={WHATSAPP_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="contact-alt-card contact-alt-card--wa"
+            >
+              <div className="contact-alt-icon" style={{ background: 'var(--whatsapp)' }}>W</div>
+              <div>
+                <div className="contact-alt-card__label">Chat on WhatsApp</div>
+                <div className="contact-alt-card__sub">Quick questions or get started now</div>
+              </div>
+            </a>
+
+            <a href={`mailto:${CONTACT_EMAIL}`} className="contact-alt-card">
+              <div className="contact-alt-icon" style={{ background: 'var(--navy)' }}>@</div>
+              <div>
+                <div className="contact-alt-card__label">{CONTACT_EMAIL}</div>
+                <div className="contact-alt-card__sub">Usually responds within a few hours</div>
+              </div>
+            </a>
+          </div>
+
         </div>
       </div>
     </main>

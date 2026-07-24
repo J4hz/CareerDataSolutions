@@ -34,7 +34,7 @@ export const credentials = [
   "SQL",
   "ATS Optimization",
   "LinkedIn Strategy",
-  "EMS Operations",
+  "Emergency Medical Services Operations",
   "Data Storytelling",
 ];
 

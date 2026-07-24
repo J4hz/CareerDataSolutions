@@ -17,7 +17,7 @@ export const posts = [
     body: `
 Most healthcare organizations in Kenya generate enormous volumes of data every single day: patient records, billing cycles, claims submissions, procurement logs, staff attendance, bed occupancy rates. And most of it sits in spreadsheets nobody reads, or systems nobody built reports from.
 
-I've seen this pattern repeatedly across my years in EMS operations. The data exists. The decision-makers exist. The gap is the bridge between them.
+I've seen this pattern repeatedly across my years in Emergency Medical Services operations. The data exists. The decision-makers exist. The gap is the bridge between them.
 
 **Why the data goes unused**
 

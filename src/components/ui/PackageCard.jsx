@@ -11,9 +11,12 @@ export default function PackageCard({ pkg, variant = 'card' }) {
   // discovery call, so the CTA books the call instead of taking money.
   const contactPath = isData ? '/data/contact' : `/career/order?pkg=${pkg.id}`;
   const ctaLabel = isData ? 'Book a discovery call' : 'Get this package';
-  // The retainer publishes no USD equivalent, so the separator would otherwise
-  // dangle in front of the timeline.
-  const priceMeta = [pkg.priceUSD, pkg.timeline].filter(Boolean).join(' · ');
+  // Both currencies read as one price on a single line, USD first, with the
+  // timeline dropped to the line below. Every tier publishes both today; the
+  // fallback keeps a card readable if a future one ships without a USD price,
+  // by promoting KES to the lead slot with nothing trailing it.
+  const priceLead = pkg.priceUSD || pkg.priceKES;
+  const priceTrail = pkg.priceUSD ? pkg.priceKES : null;
 
   if (variant === 'list') {
     const trackPillBg = isData ? 'rgba(29,158,117,0.10)' : 'rgba(244,168,51,0.12)';
@@ -53,8 +56,16 @@ export default function PackageCard({ pkg, variant = 'card' }) {
         {/* Price + CTA */}
         <div className="pkg-row__side">
           {pkg.pricePrefix && <div className="pkg-row__price-prefix">{pkg.pricePrefix}</div>}
-          <div className="pkg-row__kes" style={{ color: accent }}>{pkg.priceKES}</div>
-          <div className="pkg-row__usd">{priceMeta}</div>
+          <div className="pkg-row__price" style={{ color: accent }}>
+            <span className="pkg-row__price-part">{priceLead}</span>
+            {priceTrail && (
+              <>
+                {' / '}
+                <span className="pkg-row__price-part">{priceTrail}</span>
+              </>
+            )}
+          </div>
+          <div className="pkg-row__timeline">{pkg.timeline}</div>
           <Link
             to={contactPath}
             className="pkg-row__cta"
@@ -119,11 +130,21 @@ export default function PackageCard({ pkg, variant = 'card' }) {
             {pkg.pricePrefix}
           </div>
         )}
-        <div style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '28px', letterSpacing: '-1px', color: accent, marginBottom: '2px' }}>
-          {pkg.priceKES}
+        {/* Both currencies at one size in one colour, so the pair reads as a
+            single price rather than a headline with a footnote. Sized in
+            packages.css, where a media query can hold the longest string — the
+            retainer's two /mo figures — on one line in a third-width card. */}
+        <div className="pkg-card__price" style={{ color: accent }}>
+          <span className="pkg-card__price-part">{priceLead}</span>
+          {priceTrail && (
+            <>
+              {' / '}
+              <span className="pkg-card__price-part">{priceTrail}</span>
+            </>
+          )}
         </div>
         <div style={{ fontSize: '12px', color: 'var(--gm)' }}>
-          {priceMeta}
+          {pkg.timeline}
         </div>
       </div>
 

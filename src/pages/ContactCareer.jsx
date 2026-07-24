@@ -162,53 +162,11 @@ export default function ContactCareer() {
               ))}
             </div>
 
-            {/* What happens next card */}
-            <div className="contact-next-card">
-              <p className="contact-next-card__title">
-                What happens after you submit
-              </p>
-              {[
-                "We review your CV against your target role and market",
-                "We identify the exact gaps holding you back",
-                "You get a link to book your free discovery call within 1 business day",
-                "On the call we walk you through what we found and what we recommend",
-                "No obligation to purchase; the review and the call are free",
-              ].map((item, i) => (
-                <div key={i} className="contact-next-card__item">
-                  <span className="contact-next-card__dot" />
-                  <span>{item}</span>
-                </div>
-              ))}
-            </div>
-
-            {/* Prefer to reach out directly */}
-            <div className="contact-alts">
-              {/* WhatsApp */}
-              <a
-                href={WHATSAPP_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="contact-alt-card contact-alt-card--wa"
-              >
-                <div className="contact-alt-icon" style={{ background: 'var(--whatsapp)' }}>W</div>
-                <div>
-                  <div className="contact-alt-card__label">Chat on WhatsApp</div>
-                  <div className="contact-alt-card__sub">Quick questions or get started now</div>
-                </div>
-              </a>
-
-              {/* Email */}
-              <a
-                href={`mailto:${CONTACT_EMAIL}`}
-                className="contact-alt-card"
-              >
-                <div className="contact-alt-icon" style={{ background: 'var(--navy)' }}>@</div>
-                <div>
-                  <div className="contact-alt-card__label">{CONTACT_EMAIL}</div>
-                  <div className="contact-alt-card__sub">Usually responds within a few hours</div>
-                </div>
-              </a>
-            </div>
+            {/* The "what happens after you submit" card that used to sit here
+                now lives in the welcome email instead — see the confirmation
+                send in api/notify-career.js. It answers a question the visitor
+                only has once they have submitted, so the email is where it
+                actually gets read. */}
 
           </div>
 
@@ -463,6 +421,38 @@ export default function ContactCareer() {
               </form>
             )}
           </div>
+
+          {/* Direct channels, deliberately after the form: .contact-page__inner
+              is a single-column stack, so this is the last thing on the page
+              for anyone who scrolled past the form without filling it in. */}
+          <div className="contact-alts">
+            {/* WhatsApp */}
+            <a
+              href={WHATSAPP_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="contact-alt-card contact-alt-card--wa"
+            >
+              <div className="contact-alt-icon" style={{ background: 'var(--whatsapp)' }}>W</div>
+              <div>
+                <div className="contact-alt-card__label">Chat on WhatsApp</div>
+                <div className="contact-alt-card__sub">Quick questions or get started now</div>
+              </div>
+            </a>
+
+            {/* Email */}
+            <a
+              href={`mailto:${CONTACT_EMAIL}`}
+              className="contact-alt-card"
+            >
+              <div className="contact-alt-icon" style={{ background: 'var(--navy)' }}>@</div>
+              <div>
+                <div className="contact-alt-card__label">{CONTACT_EMAIL}</div>
+                <div className="contact-alt-card__sub">Usually responds within a few hours</div>
+              </div>
+            </a>
+          </div>
+
         </div>
       </div>
     </main>

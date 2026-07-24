@@ -45,7 +45,7 @@ function organization() {
     image: OG_IMAGE_URL,
     email: CONTACT_EMAIL,
     description:
-      'CareerDataSolutions builds Power BI dashboards and ATS-optimized career documents from Nairobi, Kenya, grounded in 12 years of EMS operational experience.',
+      'CareerDataSolutions builds Power BI dashboards and ATS-optimized career documents from Nairobi, Kenya, grounded in 12 years of Emergency Medical Services operational experience.',
     founder: {
       '@type': 'Person',
       name: 'Kabiru Nyabwengi',

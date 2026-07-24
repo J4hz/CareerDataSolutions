@@ -19,6 +19,42 @@ import { Resend } from 'resend';
 import { CALENDLY_URL, CONTACT_EMAIL, NOTIFY_FROM, SITE_DOMAIN, WHATSAPP_URL } from '../src/config.js';
 import { cleanText, cleanHeader, isValidEmail, validateCvUpload } from './_lib/sanitize.js';
 
+// Moved here off /career/contact, where it sat above the form and answered a
+// question nobody has until after they have submitted. The welcome email below
+// is where it gets read. `role` is the already-escaped safe.targetRole, folded
+// into the first line so the list keeps the personalisation the prose had.
+const nextSteps = (role) => [
+  `We review your CV against your target role${role ? ` (${role})` : ''} and market`,
+  'We identify the exact gaps holding you back',
+  'You get a link to book your free discovery call within 1 business day',
+  'On the call we walk you through what we found and what we recommend',
+  'No obligation to purchase; the review and the call are free',
+];
+
+// Table-based so Outlook keeps the bullet aligned with wrapped text; a flex or
+// list-style layout is not reliable across email clients.
+const nextStepsBlock = (role, accent) => `
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0"
+         style="width:100%;border-collapse:separate;border:1px solid #E5E7EB;
+                border-radius:10px;margin:0 0 24px;">
+    <tr>
+      <td style="padding:18px 20px;">
+        <div style="font-size:13px;font-weight:700;color:#0B1F3A;margin-bottom:14px;">
+          What happens after you submit
+        </div>
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:100%;">
+          ${nextSteps(role).map((item) => `
+            <tr>
+              <td style="padding:0 8px 10px 0;vertical-align:top;line-height:1.6;
+                         font-size:14px;color:${accent};font-weight:700;">&bull;</td>
+              <td style="padding:0 0 10px;font-size:14px;line-height:1.6;color:#334155;">
+                ${item}</td>
+            </tr>`).join('')}
+        </table>
+      </td>
+    </tr>
+  </table>`;
+
 export default async function handler(req, res) {
   if (!process.env.RESEND_API_KEY) {
     console.error('RESEND_API_KEY is not configured');
@@ -219,14 +255,7 @@ export default async function handler(req, res) {
                 This is a quick confirmation that your CV and details reached
                 CareerDataSolutions. There is nothing else you need to do right now.
               </p>
-              <p style="font-size:15px;line-height:1.7;color:#334155;margin:0 0 16px;">
-                <strong style="color:#0B1F3A;">What happens next:</strong> we will review
-                your CV against your target role${safe.targetRole ? ` (${safe.targetRole})` : ''}
-                and market, then send you a link to book your free discovery call within
-                one business day. On the call we walk you through exactly what we found
-                and what we would recommend. If the problem is not your CV, we will tell
-                you that too, and there is no obligation to buy anything.
-              </p>
+              ${nextStepsBlock(safe.targetRole, '#C89A44')}
               <p style="font-size:15px;line-height:1.7;color:#334155;margin:0 0 24px;">
                 Questions in the meantime? Just reply to this email, or message us on
                 <a href="${WHATSAPP_URL}" style="color:#96702B;">WhatsApp</a>.

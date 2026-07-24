@@ -60,6 +60,36 @@
   color: var(--gold-dark);
 }
 
+/* Price line: USD first, then KES after a slash, both at one size so the pair
+   reads as a single price. The size is set here rather than inline because it
+   has to react to the card width — the three-across grid squeezes hardest
+   just above the 900px breakpoint. Each figure is nowrap, so if it ever does
+   wrap the break lands on the slash and never inside "KES 160,000". */
+.pkg-card__price {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 18px;
+  letter-spacing: -0.5px;
+  line-height: 1.3;
+  margin-bottom: 4px;
+}
+
+.pkg-card__price-part {
+  white-space: nowrap;
+}
+
+/* The grid is still three across down to 900px, so cards are at their
+   narrowest just above that edge; below it they go two across and get roomy
+   again. Measured against the longest of the three prices: 18px holds one
+   line down to a 302px card (~1001px viewport), and 16px covers the rest of
+   the band down to the 268px card at the 901px edge. */
+@media (max-width: 1000px) and (min-width: 901px) {
+  .pkg-card__price {
+    font-size: 16px;
+    letter-spacing: -0.3px;
+  }
+}
+
 .pkg-card__divider {
   border: none;
   border-top: 1px solid var(--gl);
@@ -329,15 +359,24 @@
   justify-content: center;
 }
 
-.pkg-row__kes {
+/* Both currencies on one line at one size — USD first, KES after a slash —
+   with the timeline on the line below. See PackageCard.jsx for the fallback
+   that promotes KES to the lead slot when a tier has no USD price. */
+.pkg-row__price {
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: 1.2rem;
+  font-size: 1.05rem;
   letter-spacing: -0.5px;
-  line-height: 1.1;
+  line-height: 1.3;
 }
 
-.pkg-row__usd {
+/* Each figure held together, so a forced break lands on the slash and never
+   inside "KES 160,000". */
+.pkg-row__price-part {
+  white-space: nowrap;
+}
+
+.pkg-row__timeline {
   font-size: 0.75rem;
   color: var(--gm);
   margin-bottom: 12px;
@@ -369,7 +408,7 @@
   .pkg-row__main  { grid-column: 1; grid-row: 1; border-right: none; border-bottom: 1px solid var(--gl); }
   .pkg-row__features { grid-column: 2; grid-row: 1; border-left: none; }
   .pkg-row__side  { grid-column: 1 / -1; grid-row: 2; flex-direction: row; align-items: center; gap: 16px; border-left: none; border-top: 1px solid var(--gl); }
-  .pkg-row__usd   { margin-bottom: 0; }
+  .pkg-row__timeline { margin-bottom: 0; }
   .pkg-row__cta   { margin-left: auto; }
 }
 

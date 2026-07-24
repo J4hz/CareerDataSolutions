@@ -27,7 +27,7 @@ export const staticRoutes = {
   '/': {
     title: `${SITE_NAME} · Power BI Dashboards & Career Services | Nairobi, Kenya`,
     description:
-      'CareerDataSolutions builds Power BI dashboards and ATS-optimized CVs from Nairobi, Kenya. Grounded in 12 years of EMS operational experience, working with clients locally and internationally.',
+      'CareerDataSolutions builds Power BI dashboards and ATS-optimized CVs from Nairobi, Kenya. Grounded in 12 years of Emergency Medical Services operational experience, working with clients locally and internationally.',
   },
 
   // ── Data track ──
@@ -44,7 +44,7 @@ export const staticRoutes = {
   '/data/about': {
     title: `About Kabiru Nyabwengi · ${SITE_NAME} | Nairobi, Kenya`,
     description:
-      'CareerDataSolutions is led by Kabiru Nyabwengi, whose years of EMS operations experience ground both the Power BI analytics and the career strategy work the consultancy delivers.',
+      'CareerDataSolutions is led by Kabiru Nyabwengi, whose years of Emergency Medical Services operations experience ground both the Power BI analytics and the career strategy work the consultancy delivers.',
   },
   '/data/contact': {
     title: `Book a Discovery Call · Data Services | ${SITE_NAME}`,
@@ -66,7 +66,7 @@ export const staticRoutes = {
   '/career/about': {
     title: `About Kabiru Nyabwengi · ${SITE_NAME} | Nairobi, Kenya`,
     description:
-      'CareerDataSolutions is led by Kabiru Nyabwengi, whose years of EMS operations experience ground both the career strategy and the Power BI analytics work the consultancy delivers.',
+      'CareerDataSolutions is led by Kabiru Nyabwengi, whose years of Emergency Medical Services operations experience ground both the career strategy and the Power BI analytics work the consultancy delivers.',
   },
   '/career/contact': {
     title: `Submit Your CV · Career Services | ${SITE_NAME}`,
@@ -91,7 +91,7 @@ export const staticRoutes = {
   '/about': {
     title: `About Kabiru Nyabwengi · ${SITE_NAME} | Nairobi, Kenya`,
     description:
-      'CareerDataSolutions is led by Kabiru Nyabwengi, whose years of EMS operations experience ground both the Power BI analytics and the career strategy work the consultancy delivers.',
+      'CareerDataSolutions is led by Kabiru Nyabwengi, whose years of Emergency Medical Services operations experience ground both the Power BI analytics and the career strategy work the consultancy delivers.',
   },
 
   // The '/blog' entry is removed while Insights is hidden, so the blog is

@@ -59,7 +59,7 @@ export const whyUs = [
     id: 1,
     icon: "chart",
     title: "Operational experience, not theory",
-    body: "12 years inside EMS operations means dashboards built for how organizations actually work, not how they're supposed to on paper.",
+    body: "12 years inside Emergency Medical Services operations means dashboards built for how organizations actually work, not how they're supposed to on paper.",
   },
   {
     id: 2,

@@ -17,15 +17,16 @@ export const packages = [
   //
   // THE NUMBERS. Set by the business, not derived from a rate card:
   //
-  //   Starter    5–10 business days      → KES 45,000 / $350
-  //   Growth     2–3 weeks               → KES 80,000 / $600
-  //   Automation build, then ongoing     → KES 55,000/mo
+  //   Starter    5–10 business days      → KES 90,000 / $700
+  //   Growth     3–6 weeks               → KES 160,000 / $1,250
+  //   Automation build, then ongoing     → KES 60,000 / $450, per month
   //
   // For reference when they next move: costed against the timelines above,
-  // Starter works out near KES 2,000/hr and Growth nearer KES 1,450/hr, both
-  // under a full Nairobi BI consultant rate of KES 2,500–3,000/hr. They are
-  // entry positions for the local SME market, so raising Growth is the first
-  // move if the tiers ever need to converge on that rate.
+  // Starter works out near KES 4,000/hr, comfortably above a full Nairobi BI
+  // consultant rate of KES 2,500–3,000/hr. Growth lands nearer KES 1,600/hr,
+  // well under it — widening its window to 3–6 weeks spreads the same fee over
+  // roughly twice the days. Growth is the tier to revisit first if the two
+  // ever need to converge on one rate.
   //
   // USD is a conversion at ~130 KES/USD rounded to the nearest $50, on the
   // same basis for every tier, so an overseas client and a local one are
@@ -35,13 +36,13 @@ export const packages = [
     id: 'starter-dashboard',
     track: 'data',
     trackLabel: 'Data Analytics',
-    tier: 'Single department',
+    tier: '2–3 departments',
     name: 'Starter Dashboard',
-    audience: 'Sales, HR, or operations',
+    audience: 'Operations, Finance, Sales',
     pricePrefix: 'Starting at',
-    priceKES: 'KES 45,000',
+    priceKES: 'KES 90,000',
     amountKES: null,
-    priceUSD: '$350 USD',
+    priceUSD: '$700 USD',
     timeline: '5–10 business days',
     features: [
       '1 Power BI dashboard',
@@ -58,14 +59,14 @@ export const packages = [
     id: 'growth-dashboard',
     track: 'data',
     trackLabel: 'Data Analytics',
-    tier: 'Multi-department',
+    tier: 'Multi-department (2–7)',
     name: 'Growth Dashboard',
     audience: 'Multi-source reporting across teams',
     pricePrefix: 'Starting at',
-    priceKES: 'KES 80,000',
+    priceKES: 'KES 160,000',
     amountKES: null,
-    priceUSD: '$600 USD',
-    timeline: '2–3 weeks',
+    priceUSD: '$1,250 USD',
+    timeline: '3–6 weeks',
     features: [
       'Multiple linked dashboards',
       'Up to 5 data sources',
@@ -88,13 +89,16 @@ export const packages = [
     tier: 'Ongoing reporting',
     name: 'Automation Partner',
     audience: 'Monthly retainer',
-    pricePrefix: 'Starting at',
-    priceKES: 'KES 55,000/mo',
+    // The cadence rides on the prefix, not on either figure. A "/mo" hung off
+    // one of the two currencies binds to that currency and reads as though the
+    // other is a one-off, and repeating it on both makes the longest price
+    // string on the page. Up here it covers the pair once and keeps them
+    // symmetric with the other tiers.
+    pricePrefix: 'Monthly, starting at',
+    priceKES: 'KES 60,000',
     amountKES: null,
-    // No USD equivalent is published for the retainer: it is quoted per
-    // engagement after the discovery call. PackageCard drops the separator
-    // when this is null.
-    priceUSD: null,
+    // Same ~130 KES/USD basis rounded to the nearest $50 as the other two tiers.
+    priceUSD: '$450 USD',
     timeline: 'Build: 3–4 weeks, then ongoing',
     features: [
       'Dashboards plus Excel/Power Query automation',

@@ -31,7 +31,7 @@ export const about = {
 
   /* Paragraphs before the two-track pivot below. */
   bioBefore: [
-    'Kabiru is the founder of CareerDataSolutions. With 13+ years of hands-on experience in EMS operations, where split-second decisions depend on accurate data and clear reporting, he saw the same gap repeat itself in two places: businesses drowning in data they couldn’t turn into decisions, and skilled professionals whose experience never made it past an applicant tracking system.',
+    'Kabiru is the founder of CareerDataSolutions. With 13+ years of hands-on experience in Emergency Medical Services operations, where split-second decisions depend on accurate data and clear reporting, he saw the same gap repeat itself in two places: businesses drowning in data they couldn’t turn into decisions, and skilled professionals whose experience never made it past an applicant tracking system.',
   ],
 
   /* The paragraph that names both tracks. Brighter and bolder than the body
@@ -60,7 +60,7 @@ export const about = {
   credentials: [
     'Kabiru Nyabwengi',
     'Founder, CareerDataSolutions',
-    '13+ years · EMS operations',
+    '13+ years · Emergency Medical Services operations',
     'Business intelligence analyst, healthcare analytics, career advancement strategist',
   ],
 };

@@ -19,7 +19,7 @@ const trustItems = [
 
 /* Copy for the hidden stats bar. Restore alongside the markup further down.
 const statsBar = [
-  { num: '13', label: 'Years of operational data experience in EMS', color: 'var(--teal)' },
+  { num: '13', label: 'Years of operational data experience in Emergency Medical Services', color: 'var(--teal)' },
   { num: '7', label: 'Departments dashboarded\nHR & Workforce · Finance · Operations & Logistics · Supply Chain · Sales & Marketing · Public Relations · Executive', color: 'var(--teal)' },
   { num: '2', label: 'Service specialities, one trusted consultancy', color: 'var(--gold)' },
 ];

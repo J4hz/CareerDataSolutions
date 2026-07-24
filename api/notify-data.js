@@ -40,6 +40,41 @@ const EXISTING_REPORT = {
   'first':        'No, this would be the first one',
 };
 
+// Moved here off /data/contact, where it sat above the form and answered a
+// question nobody has until after they have submitted. The confirmation email
+// below is where it gets read. Static strings — nothing here is user input.
+const NEXT_STEPS = [
+  'We map your data sources against the decisions you are trying to make',
+  'We flag anything that will affect scope or timeline before the call',
+  'You get a link to book your free discovery call within 1 business day',
+  'On the call we walk through what is possible and what it would cost',
+  'No obligation. Quotes follow the discovery call, never the other way around',
+];
+
+// Table-based so Outlook keeps the bullet aligned with wrapped text; a flex or
+// list-style layout is not reliable across email clients.
+const nextStepsBlock = (accent) => `
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0"
+         style="width:100%;border-collapse:separate;border:1px solid #E5E7EB;
+                border-radius:10px;margin:0 0 24px;">
+    <tr>
+      <td style="padding:18px 20px;">
+        <div style="font-size:13px;font-weight:700;color:#0B1F3A;margin-bottom:14px;">
+          What happens after you submit
+        </div>
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:100%;">
+          ${NEXT_STEPS.map((item) => `
+            <tr>
+              <td style="padding:0 8px 10px 0;vertical-align:top;line-height:1.6;
+                         font-size:14px;color:${accent};font-weight:700;">&bull;</td>
+              <td style="padding:0 0 10px;font-size:14px;line-height:1.6;color:#334155;">
+                ${item}</td>
+            </tr>`).join('')}
+        </table>
+      </td>
+    </tr>
+  </table>`;
+
 export default async function handler(req, res) {
   if (!process.env.RESEND_API_KEY) {
     console.error('RESEND_API_KEY is not configured');
@@ -165,14 +200,7 @@ export default async function handler(req, res) {
               This is a quick confirmation that your details reached
               CareerDataSolutions. There is nothing else you need to do right now.
             </p>
-            <p style="font-size:15px;line-height:1.7;color:#334155;margin:0 0 16px;">
-              <strong style="color:#0B1F3A;">What happens next:</strong> we will read
-              through what you are trying to see and where your data sits, then send
-              you a link to book your free 30-minute discovery call within one
-              business day. On the call we map out what is possible and what it would
-              cost. Nothing is quoted before we have looked at the real data, and
-              there is no obligation to buy anything.
-            </p>
+            ${nextStepsBlock('#1D9E75')}
             <p style="font-size:15px;line-height:1.7;color:#334155;margin:0 0 24px;">
               In a hurry? You can
               <a href="${CALENDLY_URL}" style="color:#17805E;">book a time directly</a>,
