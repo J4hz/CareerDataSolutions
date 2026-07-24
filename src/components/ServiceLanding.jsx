@@ -2,10 +2,10 @@ import { Link } from 'react-router-dom';
 import { WHATSAPP_URL, CONTACT_EMAIL } from '../config';
 import ProcessSteps from './ui/ProcessSteps';
 import FaqAccordion from './FaqAccordion';
-import TestimonialCard from './ui/TestimonialCard';
+// import TestimonialCard from './ui/TestimonialCard';  — restore with the testimonials section
 import PackageCard from './ui/PackageCard';
 import DataFlowViz from './ui/DataFlowViz';
-import { testimonials } from '../data/testimonials';
+// import { testimonials } from '../data/testimonials';  — restore with the testimonials section
 import { dataPackages, careerPackages } from '../data/packages';
 import '../styles/packages.css';
 import '../styles/landing.css';
@@ -28,11 +28,14 @@ export default function ServiceLanding({ track }) {
     '--lp-accent-glow': track.accentGlow,
   };
 
-  // Show this track's own client results. Below two, a filtered grid reads as
-  // "we have one happy client" rather than as focus, so the full set is shown
-  // instead — remove the fallback once each track has two of its own.
+  /* Restore with the testimonials section further down. Shows this track's own
+     client results; below two, a filtered grid reads as "we have one happy
+     client" rather than as focus, so the full set is shown instead — remove
+     the fallback once each track has two of its own.
+
   const ownTestimonials = testimonials.filter((t) => t.track === track.id);
   const shownTestimonials = ownTestimonials.length >= 2 ? ownTestimonials : testimonials;
+  */
 
   return (
     <main className="lp" style={accentVars} data-track={track.id}>
@@ -48,6 +51,35 @@ export default function ServiceLanding({ track }) {
               <span className="lp-hero__title-accent">{track.titleAccent}</span>
             </h1>
             <p className="lp-hero__intro">{track.intro}</p>
+
+            {/* The one claim that is about the person rather than the work.
+                Opt-in per track via track.heroNote.
+
+                heroNote.years draws the claim as well as stating it: one bar
+                per year, climbing to the present. On a page selling dashboards
+                the credential arrives as a chart, which is the only ornament
+                here that has any business being in this hero. */}
+            {track.heroNote && (
+              <div className="lp-hero__note">
+                {track.heroNote.years > 1 && (
+                  <span className="lp-hero__note-meter" aria-hidden="true">
+                    {Array.from({ length: track.heroNote.years }, (_, i) => {
+                      const t = i / (track.heroNote.years - 1);
+                      return (
+                        <span
+                          key={i}
+                          className="lp-hero__note-bar"
+                          style={{ height: `${26 + t * 74}%`, opacity: 0.3 + t * 0.7 }}
+                        />
+                      );
+                    })}
+                  </span>
+                )}
+                <p className="lp-hero__note-text">
+                  <strong>{track.heroNote.lead}</strong> {track.heroNote.body}
+                </p>
+              </div>
+            )}
 
             <div className="lp-hero__actions">
               <Link to={track.primaryCta.to} className={`btn btn--lg ${track.buttonClass}`}>
@@ -150,10 +182,13 @@ export default function ServiceLanding({ track }) {
       </section>
       */}
 
-      {/* TESTIMONIALS — sits between the deliverables and the process steps.
-          Reuses the site-wide testimonials in src/data/testimonials.js and the
-          shared TestimonialCard, so there is no track-specific copy to keep in
-          sync here. */}
+      {/* TESTIMONIALS — HIDDEN FROM THE LIVE SITE, along with the marquee on
+          the homepage (src/pages/Home.jsx). Uncomment to restore; the quotes
+          in src/data/testimonials.js, the shared TestimonialCard and the
+          .lp-testimonials* styles in src/styles/landing.css are untouched.
+          Restore the two imports and the shownTestimonials block at the top
+          of this file at the same time.
+
       <section className="section lp-testimonials" aria-labelledby="lp-testimonials-heading">
         <div className="container">
           <span className="eyebrow lp-eyebrow">Client results</span>
@@ -165,6 +200,7 @@ export default function ServiceLanding({ track }) {
           </div>
         </div>
       </section>
+      */}
 
       {/* PROCESS — opt-in per track via track.showProcess (see
           src/data/tracks.js). Currently on for data and off for career; the

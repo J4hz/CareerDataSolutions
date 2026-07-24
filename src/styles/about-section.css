@@ -51,22 +51,24 @@
 
 /* ── Photo column ── */
 
-/* Placeholder monogram panel standing in for the founder photo. Swap for
-   an <img> once the real asset exists (see components/AboutSection.jsx). */
-.about-sec__monogram {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* The founder photo. It is shot on black, and the section behind it is
+   --navy-950, so the two meet with no visible edge — the hairline border is
+   what gives the panel its shape. The source is 1047x1502 (a hair taller than
+   3:4), so the crop only takes a few percent off the frame; the offset keeps
+   it off the chin. */
+.about-sec__portrait {
+  display: block;
+  width: 100%;
+  /* height:auto is load-bearing: the width/height attributes on the <img>
+     (there to reserve the space before it loads) would otherwise pin the box
+     to 1502px and aspect-ratio would never get to compute it. */
+  height: auto;
   aspect-ratio: 3 / 4;
+  object-fit: cover;
+  object-position: 50% 22%;
   border-radius: var(--radius-md);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  background: linear-gradient(160deg, var(--navy-800) 0%, var(--navy-950) 100%);
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: clamp(4rem, 8vw, 6rem);
-  letter-spacing: 4px;
-  color: rgba(255, 255, 255, 0.2);
-  user-select: none;
+  background: var(--navy-950);
 }
 
 .about-sec__credentials {
@@ -198,7 +200,7 @@
     gap: 40px;
   }
 
-  .about-sec__monogram {
+  .about-sec__portrait {
     max-width: 320px;
   }
 }

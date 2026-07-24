@@ -28,7 +28,20 @@ export const dataTrack = {
   title: 'We turn your scattered data',
   titleAccent: 'into decisions you can act on.',
   intro:
-    'Power BI dashboards, Excel automation and reporting systems built from the data you already have. It does not need to be "ready" first, and it does not need to live in one place. Built by someone who spent 12 years inside operations, so the dashboard speaks your team\'s language on day one and actually gets opened on a Monday morning.',
+    'Power BI dashboards, Excel automation and reporting systems built from the data you already have. It does not need to be "ready" first, and it does not need to live in one place.',
+
+  /* The credibility line, pulled out of the intro so the claim stands on its
+     own instead of being the third sentence of a paragraph nobody finishes.
+     Rendered as a ruled note under the intro (.lp-hero__note); a track that
+     omits heroNote simply does not get the block. The figure is 13+ here and
+     everywhere else on the site — the intro used to say 12. */
+  heroNote: {
+    /* Drives the little bar ramp above the text: one bar per year, the last
+       one full height. Keep it in step with the figure in `lead`. */
+    years: 13,
+    lead: '13+ years inside business operations,',
+    body: 'not just behind a keyboard. That is the difference between a dashboard that gets demoed once and one that is still open on a Monday morning.',
+  },
 
   primaryCta: { label: 'Book a free discovery call', to: '/data/contact' },
   secondaryCta: { label: 'See scope tiers & pricing', to: '/data/packages' },

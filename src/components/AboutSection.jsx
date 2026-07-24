@@ -1,4 +1,5 @@
 import { about } from '../content/about';
+import founderPhoto from '../assets/kabiru.jpg';
 import '../styles/about-section.css';
 
 /**
@@ -10,18 +11,21 @@ import '../styles/about-section.css';
  * whichever track you arrived from. It is monochrome instead, with the stat
  * numbers in the booking orange as the single point of colour.
  *
- * The photo panel is a placeholder monogram. When the real founder photo
- * lands in src/assets/, replace the .about-sec__monogram div with an <img>.
+ * The photo is shot against black, which sits almost exactly on --navy-950
+ * behind it, so the panel needs no frame beyond the existing hairline.
  */
 export default function AboutSection() {
   return (
     <section className="about-sec" aria-labelledby="about-heading">
       <div className="container about-sec__grid">
         <div className="about-sec__photo">
-          {/* Placeholder for the founder photo — see note above. */}
-          <div className="about-sec__monogram" aria-hidden="true">
-            {about.monogram}
-          </div>
+          <img
+            src={founderPhoto}
+            alt="Kabiru Nyabwengi, founder of CareerDataSolutions"
+            className="about-sec__portrait"
+            width="1047"
+            height="1502"
+          />
           <div className="about-sec__credentials">
             {about.credentials.map((line, i) => (
               <p

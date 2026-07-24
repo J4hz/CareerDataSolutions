@@ -19,8 +19,8 @@
 // VOICE: third person, describing Kabiru as "he". The one exception is
 // "every service we offer" below, which is how the mockup words it.
 //
-// The founder photo is still a placeholder monogram. Drop the real asset
-// in src/assets/ and swap the panel in AboutSection.jsx.
+// The founder photo now lives at src/assets/kabiru.jpg and is imported
+// directly by AboutSection.jsx, so it is not repeated here.
 // ─────────────────────────────────────────────────────────────
 
 export const about = {
@@ -63,7 +63,4 @@ export const about = {
     '13+ years · EMS operations',
     'Business intelligence analyst, healthcare analytics, career advancement strategist',
   ],
-
-  /* Initials for the photo placeholder panel. */
-  monogram: 'KN',
 };

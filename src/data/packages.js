@@ -14,6 +14,22 @@ export const packages = [
   // complexity to price sight-unseen, so these exist to let a visitor
   // self-select before the call. See track.packagesNote in data/tracks.js for
   // the framing that runs above the cards.
+  //
+  // THE NUMBERS. Set by the business, not derived from a rate card:
+  //
+  //   Starter    5–10 business days      → KES 45,000 / $350
+  //   Growth     2–3 weeks               → KES 80,000 / $600
+  //   Automation build, then ongoing     → KES 55,000/mo
+  //
+  // For reference when they next move: costed against the timelines above,
+  // Starter works out near KES 2,000/hr and Growth nearer KES 1,450/hr, both
+  // under a full Nairobi BI consultant rate of KES 2,500–3,000/hr. They are
+  // entry positions for the local SME market, so raising Growth is the first
+  // move if the tiers ever need to converge on that rate.
+  //
+  // USD is a conversion at ~130 KES/USD rounded to the nearest $50, on the
+  // same basis for every tier, so an overseas client and a local one are
+  // quoted the same work at the same price. Re-round if the rate moves.
 
   {
     id: 'starter-dashboard',
@@ -23,9 +39,9 @@ export const packages = [
     name: 'Starter Dashboard',
     audience: 'Sales, HR, or operations',
     pricePrefix: 'Starting at',
-    priceKES: 'KES 12,000',
+    priceKES: 'KES 45,000',
     amountKES: null,
-    priceUSD: '$95 USD',
+    priceUSD: '$350 USD',
     timeline: '5–10 business days',
     features: [
       '1 Power BI dashboard',
@@ -46,9 +62,9 @@ export const packages = [
     name: 'Growth Dashboard',
     audience: 'Multi-source reporting across teams',
     pricePrefix: 'Starting at',
-    priceKES: 'KES 22,000',
+    priceKES: 'KES 80,000',
     amountKES: null,
-    priceUSD: '$175 USD',
+    priceUSD: '$600 USD',
     timeline: '2–3 weeks',
     features: [
       'Multiple linked dashboards',
@@ -73,7 +89,7 @@ export const packages = [
     name: 'Automation Partner',
     audience: 'Monthly retainer',
     pricePrefix: 'Starting at',
-    priceKES: 'KES 35,000/mo',
+    priceKES: 'KES 55,000/mo',
     amountKES: null,
     // No USD equivalent is published for the retainer: it is quoted per
     // engagement after the discovery call. PackageCard drops the separator

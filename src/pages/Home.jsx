@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { dataFaqs, careerFaqs } from '../data/faqs';
 import { useInView } from '../hooks/useInView';
-import TestimonialsMarquee from '../components/TestimonialsMarquee';
+// import TestimonialsMarquee from '../components/TestimonialsMarquee';  — restore with the testimonials section
 import FaqAccordion from '../components/FaqAccordion';
 import CTASection from '../components/CTASection';
 import '../styles/home.css';
@@ -29,7 +29,7 @@ export default function Home() {
   const [trustRef, trustInView] = useInView();
   const [servicesRef, servicesInView] = useInView();
   // const [statsRef, statsInView] = useInView();  — restore with the stats bar
-  const [testimonialsRef, testimonialsInView] = useInView();
+  // const [testimonialsRef, testimonialsInView] = useInView();  — restore with the testimonials section
   const [faqRef, faqInView] = useInView();
   const [ctaRef, ctaInView] = useInView();
 
@@ -218,8 +218,13 @@ export default function Home() {
       </div>
       */}
 
-      {/* TESTIMONIALS — an auto-scrolling wall of client results, in the slot
-          the old "why us" block used to hold. */}
+      {/* TESTIMONIALS — HIDDEN FROM THE LIVE SITE, along with the matching
+          block on both service pages (components/ServiceLanding.jsx).
+          Uncomment to restore; the marquee component, its styles and the
+          quotes in src/data/testimonials.js are all untouched. Restore the
+          testimonialsRef line in the hook list at the top of this file at the
+          same time, and the Testimonials link in components/Footer.jsx.
+
       <section
         ref={testimonialsRef}
         className={`section testimonials-auto fade-up${testimonialsInView ? ' is-visible' : ''}`}
@@ -238,6 +243,7 @@ export default function Home() {
         </div>
         <TestimonialsMarquee />
       </section>
+      */}
 
       {/* FAQ — two questions from each track, side by side. Each column is
           wrapped in its track theme, so the accordion accent reads teal for

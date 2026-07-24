@@ -83,7 +83,11 @@ const Footer = memo(function Footer({ track = null }) {
           <h3 className="footer__col-title">Company</h3>
           <ul>
             <li><Link to={aboutTo}>About Kabiru</Link></li>
+            {/* Testimonials link removed with the testimonials sections; the
+                #testimonials anchor it pointed at no longer exists. Restore
+                alongside the block in src/pages/Home.jsx.
             <li><Link to="/#testimonials">Testimonials</Link></li>
+            */}
             {/* Blog link removed with the Insights nav entries; restore
                 alongside the routes in App.jsx to bring the blog back. */}
           </ul>
