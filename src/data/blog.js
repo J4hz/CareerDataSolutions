@@ -4,7 +4,7 @@ export const posts = [
     slug: "/blog/healthcare-power-bi-kenya",
     category: "Data analytics",
     categoryColor: "teal",
-    headerBg: "linear-gradient(135deg, #0B1F3A 0%, #143255 100%)",
+    headerBg: "linear-gradient(135deg, var(--navy) 0%, var(--navy-800) 100%)",
     title:
       "Why Healthcare Organizations in Kenya Are Leaving Money on the Table. How a Power BI Dashboard Fixes It",
     excerpt:
@@ -58,7 +58,7 @@ If your organization is sitting on operational data that isn't driving decisions
     slug: "/blog/cv-not-getting-responses",
     category: "Career strategy",
     categoryColor: "gold",
-    headerBg: "linear-gradient(135deg, #0B1F3A 0%, #8A5A0F 100%)",
+    headerBg: "linear-gradient(135deg, var(--navy) 0%, var(--gold-deep) 100%)",
     title:
       "The 5 Reasons Your CV Isn't Getting Responses: What to Do About Each One",
     excerpt:

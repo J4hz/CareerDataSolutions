@@ -48,8 +48,12 @@ export default function Home() {
             {/* One sentence, not two: the kicker plus the h1 below make the
                 hero exactly two sentences. Both accent spans are kept so the
                 data and career halves stay colour-coded. */}
+            {/* The pipe divides the two halves the way the company does. It
+                takes the place of the full stop after "Decisions", since a
+                stop and a divider next to each other read as a typo. */}
             <p className="hero__kicker">
-              <span className="hero__kicker--data">Data-Driven Decisions.</span>{' '}
+              <span className="hero__kicker--data">Data-Driven Decisions</span>
+              <span className="hero__kicker-sep" aria-hidden="true">|</span>
               <span className="hero__kicker--career">Career-Defining Growth.</span>
             </p>
 

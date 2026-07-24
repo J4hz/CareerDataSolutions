@@ -401,12 +401,17 @@
 }
 
 /* ── Section groups ── */
+/* The group heading is centred over the cards on both tracks, matching the
+   centred section headings on the two /services pages. This used to be
+   scoped to .theme-career with the data track left-aligned; it is one page
+   grammar, so the exception is gone rather than mirrored. */
 .packages-page__track-label {
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 1.5px;
   text-transform: uppercase;
   margin-bottom: 6px;
+  text-align: center;
 }
 
 .packages-page__section-title {
@@ -415,13 +420,6 @@
   font-weight: 700;
   color: var(--dark);
   margin-bottom: 28px;
-}
-
-/* Career track only: the group heading is centred over the cards, matching
-   the centred headings on /career/services. The data track keeps its
-   left-aligned heading. */
-.theme-career .packages-page__track-label,
-.theme-career .packages-page__section-title {
   text-align: center;
 }
 

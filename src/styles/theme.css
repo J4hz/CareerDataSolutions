@@ -10,9 +10,17 @@
        Gold   #F4A833
        White  #FFFFFF
 
-   ONE exception, defined under "Booking / high-visibility CTA" below: the
-   orange used by the "Book a call" button. It is intentionally outside the
-   palette so the booking action stays constant across both track themes.
+   Every other colour on the site is one of those four, a darkened shade of
+   one, or one of them at reduced alpha. THREE colours are not, and all three
+   are declared under "NON-PALETTE COLOURS" at the bottom of this file so the
+   list stays checkable in one place:
+
+       --orange    the booking CTA, held constant across both track themes
+       --whatsapp  WhatsApp's own brand green, on WhatsApp buttons only
+       --error     form validation, which needs a signal colour of its own
+
+   Nothing else may introduce a raw hex. If a component needs a colour, it
+   takes a token from here.
 
    Neutral tokens (navy, paper, ink, line) are global and never themed.
    The two accents, gold for /career/* and teal for /data/*, are only
@@ -67,21 +75,59 @@
   --gold-soft: rgba(244, 168, 51, 0.14);
   --gold-glow: rgba(244, 168, 51, 0.24);
 
-  /* Booking / high-visibility CTA.
-     This orange is a deliberate exception to the four-colour palette above,
-     kept so the "Book a call" button reads as a single consistent action
-     across every shell rather than shifting with the track theme, and so it
-     stays distinct from the gold used for the career track. Navy text passes
-     on it, as with gold. */
-  --orange:      #E8823C;
-  --orange-dark: #D66E28;
-  --orange-soft: rgba(232, 130, 60, 0.16);
-  --orange-glow: rgba(232, 130, 60, 0.45);
+  /* ── NON-PALETTE COLOURS ──────────────────────────────────────
+     The only three colours on the site that are not the brand four or a
+     shade/alpha of them. Each is here because it is doing a job the palette
+     cannot do, and each is listed in the header comment at the top of this
+     file. Do not add a fourth without a reason of the same kind.
+     ───────────────────────────────────────────────────────────── */
+
+  /* 1. Booking / high-visibility CTA.
+     Held outside the palette so the "Book a call" button reads as a single
+     consistent action across every shell rather than shifting with the track
+     theme, and so it stays distinct from the gold used for the career track.
+
+     A burnt sienna / rust rather than a bright orange.
+
+     CONTRAST NOTE: --navy-950 on it is 5.3:1 and on the hover 4.6:1, both
+     passing AA for normal text. That is what .btn--cta and .navbar__cta--book
+     use. WHITE ON THIS ORANGE IS 3.6:1 AND FAILS — do not swap the button
+     text to white. Re-measure if the hue moves.
+
+     --orange-dark is the hover: same hue, deepened and slightly more
+     saturated rather than simply darkened. The lightness step is smaller than
+     the previous, brighter orange could take, because a muted hue this far
+     down the scale runs out of contrast against the navy button text quickly:
+     an ordinary 9% drop lands at 3.9:1 and fails. Do not darken it further
+     without re-measuring. */
+  --orange:      #E06030;
+  --orange-dark: #D9501C;
+  --orange-soft: rgba(224, 96, 48, 0.16);
+  --orange-glow: rgba(224, 96, 48, 0.45);
 
   --cta:       var(--orange);
   --cta-dark:  var(--orange-dark);
   --cta-soft:  var(--orange-soft);
   --cta-glow:  var(--orange-glow);
+
+  /* 2. WhatsApp.
+     WhatsApp's own brand green, not ours. It appears only on controls that
+     open WhatsApp, where recolouring it to a brand colour would make the
+     button harder to recognise for the thing it actually is. Was declared in
+     globals.css and hardcoded in five other places; it lives here now so the
+     palette audit has one list to check. */
+  --whatsapp:      #25D366;
+  --whatsapp-dark: #20C05C;
+
+  /* 3. Form validation errors.
+     A signal colour, and the palette has no red. Teal and gold both already
+     mean "this is fine" elsewhere on the page, so an error cannot borrow
+     either. Note this sits close to --orange, the booking CTA; if the two
+     ever appear in the same view, the error is the one that should move. */
+  --error:      #DC2626;
+  --error-soft: rgba(220, 38, 38, 0.10);
+  --error-line: rgba(220, 38, 38, 0.25);
+  --error-tint: rgba(220, 38, 38, 0.08);
 
   /* Default accent outside a themed shell (neutral pages lean teal,
      matching the site's historic primary). */

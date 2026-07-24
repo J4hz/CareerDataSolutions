@@ -18,7 +18,9 @@
   --gd:        var(--ink);
   --dark:      var(--navy-950);
   --footer-bg: var(--navy-950);
-  --whatsapp:  #25D366;
+  /* --whatsapp / --whatsapp-dark now live in theme.css, alongside the two
+     other non-palette colours, so every raw hex on the site is declared in
+     one file. */
 
   --font-display: 'Plus Jakarta Sans', sans-serif;
   --font-body:    'Inter', sans-serif;

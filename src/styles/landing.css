@@ -95,12 +95,14 @@
 
    Deliberately NOT the usual callout box: no icon, no pill, no rounded card,
    no rule down the side. The block is held together by a tint that fades out
-   to the right — so it dissolves into the hero instead of being fenced off —
-   and by the bar ramp above it, which is what actually anchors the left edge
-   now that no border does. The tint is accent-soft, the accent at 12% alpha,
-   and lands as a whisper over navy; anything stronger and the note starts
-   competing with the headline. */
+   to the right, so it dissolves into the hero instead of being fenced off,
+   and by the star sitting in its top-left corner. The tint is accent-soft,
+   the accent at 12% alpha, and lands as a whisper over navy; anything
+   stronger and the note starts competing with the headline. */
 .lp-hero__note {
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
   max-width: 580px;
   margin: 0 auto 34px;
   padding: 16px 22px 17px 20px;
@@ -113,23 +115,15 @@
   );
 }
 
-/* One bar per year of experience, climbing to full height at the present.
-   Thirteen bars at 3px wide come to ~87px, which is small enough to read as
-   a mark rather than as a chart demanding to be interpreted. Heights and
-   opacities are set per bar in ServiceLanding.jsx, since both are a function
-   of how many years there are. */
-.lp-hero__note-meter {
-  display: flex;
-  align-items: flex-end;
-  gap: 4px;
-  height: 22px;
-  margin-bottom: 13px;
-}
-
-.lp-hero__note-bar {
-  width: 3px;
-  border-radius: 1px 1px 0 0;
-  background: var(--lp-accent);
+/* Outline, not filled: a solid star beside a claim reads as a rating, which
+   this is not. Nudged down a couple of pixels so its centre sits on the first
+   line of text rather than on the line box. */
+.lp-hero__note-star {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  margin-top: 3px;
+  stroke: var(--lp-accent);
 }
 
 .lp-hero__note-text {

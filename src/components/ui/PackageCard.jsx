@@ -58,7 +58,7 @@ export default function PackageCard({ pkg, variant = 'card' }) {
           <Link
             to={contactPath}
             className="pkg-row__cta"
-            style={{ background: isData ? 'var(--teal)' : 'var(--gold)', color: isData ? '#fff' : 'var(--navy)' }}
+            style={{ background: isData ? 'var(--teal)' : 'var(--gold)', color: isData ? 'var(--white)' : 'var(--navy)' }}
           >
             {ctaLabel}
           </Link>
@@ -143,7 +143,7 @@ export default function PackageCard({ pkg, variant = 'card' }) {
         className={`pkg-card__cta pkg-card__cta--${pkg.track}`}
         style={{
           background: isData ? 'var(--teal)' : 'var(--gold)',
-          color: isData ? '#fff' : 'var(--navy)',
+          color: isData ? 'var(--white)' : 'var(--navy)',
         }}
       >
         {ctaLabel}

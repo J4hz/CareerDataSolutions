@@ -144,7 +144,7 @@ export default function ContactData() {
                 rel="noopener noreferrer"
                 className="contact-alt-card contact-alt-card--wa"
               >
-                <div className="contact-alt-icon" style={{ background: '#25D366' }}>W</div>
+                <div className="contact-alt-icon" style={{ background: 'var(--whatsapp)' }}>W</div>
                 <div>
                   <div className="contact-alt-card__label">Chat on WhatsApp</div>
                   <div className="contact-alt-card__sub">Quick questions or get started now</div>

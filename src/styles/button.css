@@ -49,12 +49,12 @@
 }
 
 .btn--whatsapp {
-  background: #25D366;
+  background: var(--whatsapp);
   color: var(--white);
 }
 
 .btn--whatsapp:hover {
-  background: #20c05c;
+  background: var(--whatsapp-dark);
   transform: translateY(-1px);
 }
 

@@ -36,11 +36,11 @@ export const dataTrack = {
      omits heroNote simply does not get the block. The figure is 13+ here and
      everywhere else on the site — the intro used to say 12. */
   heroNote: {
-    /* Drives the little bar ramp above the text: one bar per year, the last
-       one full height. Keep it in step with the figure in `lead`. */
-    years: 13,
     lead: '13+ years inside business operations,',
-    body: 'not just behind a keyboard. That is the difference between a dashboard that gets demoed once and one that is still open on a Monday morning.',
+    /* Wording from the original mockup. Its em dash before "so" is a comma
+       here: the site is deliberately em-dash free (same note in
+       components/Footer.jsx and src/content/about.js). */
+    body: 'not just behind a keyboard, so what gets built actually gets opened on a Monday morning.',
   },
 
   primaryCta: { label: 'Book a free discovery call', to: '/data/contact' },

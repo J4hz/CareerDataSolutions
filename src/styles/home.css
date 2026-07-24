@@ -88,6 +88,15 @@
 .hero__kicker--data   { color: var(--teal2); }
 .hero__kicker--career { color: var(--gold2); }
 
+/* Divider between the two halves. Dimmer than either side and given its own
+   margins rather than relying on a space in the JSX, so it reads as a rule
+   between two labels and belongs to neither track's colour. */
+.hero__kicker-sep {
+  margin: 0 10px;
+  color: rgba(255, 255, 255, 0.35);
+  font-weight: 400;
+}
+
 .hero__title {
   font-family: var(--font-display);
   font-weight: 700;

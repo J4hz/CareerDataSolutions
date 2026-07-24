@@ -53,28 +53,24 @@ export default function ServiceLanding({ track }) {
             <p className="lp-hero__intro">{track.intro}</p>
 
             {/* The one claim that is about the person rather than the work.
-                Opt-in per track via track.heroNote.
-
-                heroNote.years draws the claim as well as stating it: one bar
-                per year, climbing to the present. On a page selling dashboards
-                the credential arrives as a chart, which is the only ornament
-                here that has any business being in this hero. */}
+                Opt-in per track via track.heroNote. The star is the mark from
+                the original data-services mockup, kept as an outline so it
+                reads as a hallmark stamped beside the line rather than as a
+                rating. It replaced a bar-per-year ramp; see the git history
+                for that version. */}
             {track.heroNote && (
               <div className="lp-hero__note">
-                {track.heroNote.years > 1 && (
-                  <span className="lp-hero__note-meter" aria-hidden="true">
-                    {Array.from({ length: track.heroNote.years }, (_, i) => {
-                      const t = i / (track.heroNote.years - 1);
-                      return (
-                        <span
-                          key={i}
-                          className="lp-hero__note-bar"
-                          style={{ height: `${26 + t * 74}%`, opacity: 0.3 + t * 0.7 }}
-                        />
-                      );
-                    })}
-                  </span>
-                )}
+                <svg
+                  className="lp-hero__note-star"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M12 2l2.9 6.26L22 9.27l-5 4.87L18.2 21 12 17.77 5.8 21 7 14.14l-5-4.87 7.1-1.01z" />
+                </svg>
                 <p className="lp-hero__note-text">
                   <strong>{track.heroNote.lead}</strong> {track.heroNote.body}
                 </p>
