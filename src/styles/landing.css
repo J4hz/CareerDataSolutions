@@ -32,12 +32,19 @@
    in the same browsers the rest of the file targets. Values are #0B1F3A and
    #143255, i.e. --navy and --navy2.
 
-   Alphas are measured, not guessed — against the single brightest pixel in
-   each photo, the true worst case. Top is deeper (0.93) because the teal
-   headline sits there and, as large text, needs 3:1: it lands at 3.5 over
-   worst-case, where a flat 0.90 gave only 2.83. Bottom stays 0.90 for the
-   stat labels (white at 0.6 alpha, the faintest text on the hero), which
-   clear AA's 4.5 at 4.6. Gold on the career hero clears both bars already. */
+   0.87 top / 0.82 bottom is measured, not guessed: for every text element on
+   both heroes, contrast was checked against the brightest pixel that element
+   actually sits over — not the whole photo's brightest pixel, which no text
+   touches. The scrim darkens toward the top and opens up toward the bottom
+   because the two binding elements sit at opposite ends. The data hero's teal
+   headline sits ~30% down over the bright dashboard screen and, as large text,
+   needs 3:1; the gradient dilutes the top stop by the time it reaches the
+   headline, so 0.87 is the floor that keeps it at ~3.2. The career hero's stat
+   labels sit at the very bottom over the lit steps and need 4.5; at 0.82 they
+   land near 5.1, but only because the labels were bumped to 0.7 alpha (see
+   .lp-hero__stat-label) — at their old 0.6 the bottom could not go below 0.87.
+   Everything else clears with room. Raise the alpha, or the label opacity,
+   before touching the photos if anything reads thin — the copy has to win. */
 .lp[data-track='career'] .lp-hero,
 .lp[data-track='data'] .lp-hero {
   background-repeat: no-repeat;
@@ -47,13 +54,13 @@
 
 .lp[data-track='career'] .lp-hero {
   background-image:
-    linear-gradient(160deg, rgba(11, 31, 58, 0.93) 0%, rgba(20, 50, 85, 0.90) 100%),
+    linear-gradient(160deg, rgba(11, 31, 58, 0.87) 0%, rgba(20, 50, 85, 0.82) 100%),
     url('../assets/hero-career.jpg');
 }
 
 .lp[data-track='data'] .lp-hero {
   background-image:
-    linear-gradient(160deg, rgba(11, 31, 58, 0.93) 0%, rgba(20, 50, 85, 0.90) 100%),
+    linear-gradient(160deg, rgba(11, 31, 58, 0.87) 0%, rgba(20, 50, 85, 0.82) 100%),
     url('../assets/hero-data.jpg');
 }
 
@@ -211,7 +218,12 @@
   margin-top: 4px;
   font-size: 0.85rem;
   line-height: 1.5;
-  color: rgba(255, 255, 255, 0.6);
+  /* 0.7, not the 0.6 it began at. These labels are the faintest text on the
+     hero and, on the career photo, sit over the brightly lit steps — so they
+     were what stopped the scrim getting any lighter. The extra 0.1 buys enough
+     contrast to drop the scrim (see the hero-image block) while keeping them
+     clearly quieter than the white headline above. */
+  color: rgba(255, 255, 255, 0.7);
   max-width: 210px;
 }
 

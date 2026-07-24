@@ -144,10 +144,12 @@
 /* The same photograph each service hero carries, so a visitor moving from
    /data/services to /data/packages stays on one visual. The navy gradient
    becomes a scrim over the photo; the flat gradient above is kept as the
-   fallback if the image fails. Alphas mirror landing.css — 0.93 top / 0.90
-   bottom — and clear AA for the faintest text here (the eyebrow and intro,
-   white at 0.65 alpha). See the fuller note in landing.css. rgba values are
-   #0B1F3A / #143255, i.e. --navy / --navy2. */
+   fallback if the image fails. Alpha mirrors landing.css at 0.87 top / 0.82
+   bottom. The faintest text here (the eyebrow and intro, white at 0.65 alpha)
+   clears AA with room even this light, because this hero carries neither the
+   accent headline nor the stat labels that are the tight cases on the service
+   heroes. See the fuller note in landing.css. rgba values are #0B1F3A /
+   #143255. */
 .theme-career .packages-page__hero,
 .theme-data .packages-page__hero {
   background-repeat: no-repeat;
@@ -157,13 +159,13 @@
 
 .theme-career .packages-page__hero {
   background-image:
-    linear-gradient(155deg, rgba(11, 31, 58, 0.93) 0%, rgba(20, 50, 85, 0.90) 100%),
+    linear-gradient(155deg, rgba(11, 31, 58, 0.87) 0%, rgba(20, 50, 85, 0.82) 100%),
     url('../assets/hero-career.jpg');
 }
 
 .theme-data .packages-page__hero {
   background-image:
-    linear-gradient(155deg, rgba(11, 31, 58, 0.93) 0%, rgba(20, 50, 85, 0.90) 100%),
+    linear-gradient(155deg, rgba(11, 31, 58, 0.87) 0%, rgba(20, 50, 85, 0.82) 100%),
     url('../assets/hero-data.jpg');
 }
 
