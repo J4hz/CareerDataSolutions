@@ -19,6 +19,44 @@
   padding: 150px 0 60px;
 }
 
+/* Each track's hero photograph, behind the navy gradient rather than instead
+   of it. The gradient becomes a scrim: the same two colours as the flat
+   background above, at an alpha that still clears AA for the white headline
+   and the 0.6-alpha stat labels, which are the least contrasty text on the
+   hero. Raise the alphas before touching the photos if anything ever reads
+   thin — the copy has to win. The flat gradient stays declared above so a
+   failed image request degrades to what the hero looked like before.
+
+   Hard-coded rgba rather than the --navy tokens because colour-mix() on a
+   var() is the only way to get an alpha out of them, and this needs to work
+   in the same browsers the rest of the file targets. Values are #0B1F3A and
+   #143255, i.e. --navy and --navy2.
+
+   Alphas are measured, not guessed — against the single brightest pixel in
+   each photo, the true worst case. Top is deeper (0.93) because the teal
+   headline sits there and, as large text, needs 3:1: it lands at 3.5 over
+   worst-case, where a flat 0.90 gave only 2.83. Bottom stays 0.90 for the
+   stat labels (white at 0.6 alpha, the faintest text on the hero), which
+   clear AA's 4.5 at 4.6. Gold on the career hero clears both bars already. */
+.lp[data-track='career'] .lp-hero,
+.lp[data-track='data'] .lp-hero {
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+
+.lp[data-track='career'] .lp-hero {
+  background-image:
+    linear-gradient(160deg, rgba(11, 31, 58, 0.93) 0%, rgba(20, 50, 85, 0.90) 100%),
+    url('../assets/hero-career.jpg');
+}
+
+.lp[data-track='data'] .lp-hero {
+  background-image:
+    linear-gradient(160deg, rgba(11, 31, 58, 0.93) 0%, rgba(20, 50, 85, 0.90) 100%),
+    url('../assets/hero-data.jpg');
+}
+
 /* The accent's only structural appearance: a faint accent tint bleeding in
    from the top-right, and a hairline rule at the very top of the page. Enough
    to make the two tracks feel distinct at a glance without changing the
