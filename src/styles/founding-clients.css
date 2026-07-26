@@ -1,0 +1,100 @@
+/* ─────────────────────────────────────────────────────────────
+   The founding-clients callout (components/FoundingClientsCallout.jsx).
+
+   A panel, not a paragraph. The statement has to read as something the
+   business chose to say, rather than a caveat that ended up in the body
+   copy — so it sits in its own surface and carries its own label.
+
+   ── Why there is no border ──
+
+   This started as a bordered box with a heavy accent rule down the leading
+   edge. That is the shape of a warning: a coloured bar on the left of a
+   tinted box is what an error or a "note:" callout looks like everywhere
+   else on the web, and it made a confident statement read as an apology.
+
+   The accent is carried two ways instead, neither of which outlines
+   anything: a soft wash of --accent-soft over the whole panel gives it its
+   shape without an edge, and the label sits in a solid accent pill. The
+   colour is now something the panel HAS rather than something drawn
+   around it.
+
+   COLOUR: --accent* only, never --teal or --gold directly, so the panel
+   turns gold inside .theme-career and teal inside .theme-data with no
+   per-track rules in this file.
+   ───────────────────────────────────────────────────────────── */
+
+.founding-callout {
+  max-width: 720px;
+  padding: 24px 28px 26px;
+  border-radius: var(--radius-md);
+  background: var(--accent-soft);
+}
+
+/* ── The label pill ──
+   --accent-dark, not --accent, and the pairing is load-bearing. On the
+   plain accents the label would fail AA at this size: white on teal is
+   3.4:1, which theme.css notes passes only for large/bold text. Against
+   the darkened accents the same --accent-contrast pairing measures ~4.9:1
+   (white on teal-dark) and ~6.1:1 (navy on gold-dark), so both themes pass
+   AA for normal text. Re-measure if either accent moves. */
+.founding-callout__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0 0 14px;
+  padding: 6px 13px 6px 11px;
+  border-radius: 999px;
+  background: var(--accent-dark);
+  color: var(--accent-contrast);
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  line-height: 1;
+  /* The pill is a text run, not a block: it should end where the words do. */
+  width: fit-content;
+}
+
+.founding-callout__mark {
+  display: inline-flex;
+  /* Optical, not metric: the star's visual centre sits a touch high against
+     uppercase letterforms. */
+  margin-top: -1px;
+}
+
+.founding-callout__mark svg {
+  display: block;
+}
+
+.founding-callout__copy {
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* ── Light tone ──
+   For the white sections of the homepage. The accent wash alone carries the
+   panel; the copy stays in the page's own ink so the accent is a surface,
+   not a text colour. */
+.founding-callout--light .founding-callout__copy {
+  color: var(--ink-soft);
+}
+
+/* ── Dark tone ──
+   For the navy About section. Same structure and the same accent wash — it
+   simply sits over --navy-950 instead of white, which reads as a tint of
+   the section rather than a panel dropped onto it. */
+.founding-callout--dark .founding-callout__copy {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+@media (max-width: 560px) {
+  .founding-callout {
+    padding: 20px 20px 22px;
+  }
+
+  .founding-callout__copy {
+    font-size: 0.9rem;
+  }
+}

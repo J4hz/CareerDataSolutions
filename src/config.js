@@ -18,6 +18,44 @@ export function absoluteUrl(path = "/") {
 export const CONTACT_EMAIL = "kabiru@careerdatasolutions.com";
 export const WHATSAPP_URL  = "https://wa.me/254791910398";
 
+// ─────────────────────────────────────────────────────────────
+// Registered business details, for the LocalBusiness JSON-LD on the
+// homepage (src/seo/schema.js).
+//
+// TODO(kabiru): FILL THESE IN. Until legalName, telephone and
+// serviceAreaOnly are all set, schema.js emits NO LocalBusiness node at
+// all — deliberately. Structured data is a machine-readable claim about a
+// real registered business, and a placeholder phone number or a guessed
+// address is a false one. An absent LocalBusiness costs a little; a wrong
+// one is what gets a Business Profile suspended.
+//
+//   legalName        The name as it appears on the business registration,
+//                    if it differs from the trading name (SITE_NAME).
+//                    Set it equal to SITE_NAME if they are the same.
+//   telephone        Full international format, e.g. "+254791910398".
+//                    Must be a number that actually answers.
+//   serviceAreaOnly  true  → no public storefront. streetAddress and
+//                            postalCode stay null and the node is emitted
+//                            with areaServed only, which is the correct
+//                            shape for a business clients do not visit.
+//                    false → there is an address clients can come to, so
+//                            streetAddress and postalCode must be filled.
+//
+// addressLocality / addressCountry are already asserted by the Organization
+// node and are safe: the site says "Nairobi, Kenya" in the footer.
+// ─────────────────────────────────────────────────────────────
+export const BUSINESS = {
+  legalName:       null,
+  telephone:       null,
+  serviceAreaOnly: null,
+
+  streetAddress:   null,
+  postalCode:      null,
+  addressLocality: "Nairobi",
+  addressRegion:   "Nairobi County",
+  addressCountry:  "KE",
+};
+
 // Cal.com — find these at cal.com/[username]/[event-slug]
 export const CAL_NAMESPACE = "careerdatasolutions";
 export const CAL_LINK      = "careerdatasolutions/discovery-call";

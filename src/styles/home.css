@@ -325,6 +325,21 @@
 .trust-bar__check--data   { color: var(--teal); }
 .trust-bar__check--career { color: var(--gold); }
 
+/* ── FOUNDING CLIENTS BAND ──
+   Carries the callout across the seam between the trust bar and the path
+   cards. Same white as .paths below it, so the two read as one field and
+   the panel is the only thing with an edge. The callout is centred rather
+   than full-bleed: at container width it would stop looking like a panel.
+   Bottom padding is 0 — .paths supplies the gap under it. */
+.founding-band {
+  background: var(--off);
+  padding: 48px 0 0;
+}
+
+.founding-band .founding-callout {
+  margin: 0 auto;
+}
+
 /* ── SERVICES OVERVIEW ── */
 .services-overview {
   background: var(--off);

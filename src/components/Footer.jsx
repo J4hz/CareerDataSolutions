@@ -13,6 +13,28 @@ import '../styles/footer.css';
  * prop only decides where track-ambiguous links (About, Book a call) land;
  * the layout's theme class handles the accent colour.
  */
+/**
+ * External profile links for the bottom bar.
+ *
+ * EMPTY ON PURPOSE. This used to hold three hardcoded anchors pointing at
+ * "#upwork", "#linkedin" and "#google" — fragment links that went nowhere,
+ * which is worse than no link at all: a visitor who clicks one gets nothing
+ * and learns the site is unfinished. They are gone rather than hidden.
+ *
+ * The markup and styles below are untouched and still render this list, so
+ * bringing them back is adding a line here, not rebuilding the bar. Fill in
+ * a real profile URL and uncomment:
+ */
+const PLATFORMS = [
+  // { label: 'Upwork',          href: 'https://www.upwork.com/agencies/...' },
+  // { label: 'LinkedIn',        href: 'https://www.linkedin.com/company/...' },
+  // { label: 'Google Business', href: 'https://www.google.com/maps/place/...' },
+];
+
+/* When a profile does go live here, add the same URL to SAME_AS in
+   src/seo/schema.js. That is the machine-readable half of the same fact,
+   and it carries the same "no placeholders" rule. */
+
 const Footer = memo(function Footer({ track = null }) {
   // Inside a track shell About stays in that shell, so the accent does not
   // change under the visitor mid-session. On the neutral shell it goes to the
@@ -117,11 +139,17 @@ const Footer = memo(function Footer({ track = null }) {
         <p className="footer__copy">
           © 2026 CareerDataSolutions. All rights reserved. · Nairobi, Kenya
         </p>
-        <nav className="footer__platforms" aria-label="External platforms">
-          <a href="#upwork" rel="noopener noreferrer">Upwork</a>
-          <a href="#linkedin" rel="noopener noreferrer">LinkedIn</a>
-          <a href="#google" rel="noopener noreferrer">Google Business</a>
-        </nav>
+        {/* Renders nothing while PLATFORMS is empty, so the copyright line
+            keeps the bar to itself rather than sitting opposite a gap. */}
+        {PLATFORMS.length > 0 && (
+          <nav className="footer__platforms" aria-label="External platforms">
+            {PLATFORMS.map(({ label, href }) => (
+              <a key={href} href={href} target="_blank" rel="noopener noreferrer">
+                {label}
+              </a>
+            ))}
+          </nav>
+        )}
       </div>
     </footer>
   );

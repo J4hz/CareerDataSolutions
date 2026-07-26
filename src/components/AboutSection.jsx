@@ -1,4 +1,5 @@
 import { about } from '../content/about';
+import FoundingClientsCallout from './FoundingClientsCallout';
 import founderPhoto from '../assets/kabiru.jpg';
 import '../styles/about-section.css';
 
@@ -62,9 +63,25 @@ export default function AboutSection() {
             </p>
           ))}
 
+          {/* FOUNDING CLIENTS. Sits between the founder copy and the proof
+              block on purpose: it says where the business is today, right
+              before the numbers say where Kabiru has already been. This is
+              the one element on this page that takes var(--accent) and so
+              shifts gold/teal with the shell — see the colour note at the
+              top of styles/about-section.css. */}
+          <FoundingClientsCallout tone="dark" className="about-sec__founding" />
+
           <div className="about-sec__stat-box">
             <p className="about-sec__stat-quote">{about.statBox.quote}</p>
-            <dl className="about-sec__stat-row">
+
+            {/* Says whose numbers these are. Sits on the numbers rather than
+                on the whole box, so it reads as their attribution and not as
+                a second heading over the quote above. */}
+            <p className="about-sec__stat-label-lead" id="about-stats-source">
+              {about.statBox.statsLabel}
+            </p>
+
+            <dl className="about-sec__stat-row" aria-labelledby="about-stats-source">
               {about.statBox.stats.map((stat) => (
                 <div key={stat.label} className="about-sec__stat">
                   <dt className="about-sec__stat-num">{stat.num}</dt>

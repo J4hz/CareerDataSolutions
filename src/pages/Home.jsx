@@ -4,6 +4,8 @@ import { useInView } from '../hooks/useInView';
 // import TestimonialsMarquee from '../components/TestimonialsMarquee';  — restore with the testimonials section
 import FaqAccordion from '../components/FaqAccordion';
 import CTASection from '../components/CTASection';
+import FoundingClientsCallout from '../components/FoundingClientsCallout';
+import { isFoundingClientsActive } from '../content/foundingClients';
 import '../styles/home.css';
 import '../styles/button.css';
 
@@ -143,6 +145,21 @@ export default function Home() {
           ))}
         </div>
       </div>
+
+      {/* FOUNDING CLIENTS — the stage the business is actually at, said
+          plainly, in its own panel between the two-service strip and the
+          service cards. It gets ahead of the objection instead of answering
+          it later, which is why it is here and not on either pricing page.
+          The band is skipped entirely when the offer has lapsed, so an
+          expired callout leaves no empty gap behind it (the component
+          itself returns null; this keeps the padding from rendering). */}
+      {isFoundingClientsActive() && (
+        <div className="founding-band">
+          <div className="container">
+            <FoundingClientsCallout />
+          </div>
+        </div>
+      )}
 
       {/* PATH SELECTOR — the two cards that hand the visitor into the
           gold career shell or the teal data shell. Adapted from the

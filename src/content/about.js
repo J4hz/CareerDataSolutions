@@ -44,10 +44,24 @@ export const about = {
     'On the career side, he applies the same structured, data-first approach, treating a CV and job search like a dataset: what’s the signal, what’s the noise, what actually gets a recruiter’s attention.',
   ],
 
-  /* Proof block: a claim, then the numbers behind it. */
+  /* Proof block: a claim, then the numbers behind it.
+     The quote used to open "In his role leading Data Analytics, he took..."
+     That clause moved to statsLabel below, which sits between this quote and
+     the numbers and does the same job in fewer words. Leaving it in both put
+     the role on the page twice inside one box, three times counting the
+     founding-clients callout directly above it. "He" carries over from the
+     bio paragraphs above, so nothing is lost by starting on the verb. */
   statBox: {
     quote:
-      'In his role leading Data Analytics, he took a fragmented reporting environment to real-time, decision-ready dashboards and digitized processes across the organization. That’s the same rigor he brings to every dashboard and CV he builds.',
+      'He took a fragmented reporting environment to real-time, decision-ready dashboards and digitized processes across the organization. That’s the same rigor he brings to every dashboard and CV he builds.',
+
+    /* Attribution for the three numbers below. It exists so nobody reads them
+       as CareerDataSolutions client deliverables: they are what Kabiru has
+       shipped in the job he currently holds. Rendered directly above the
+       numbers rather than above the whole box, since the quote already opens
+       with "In his role leading Data Analytics" and the two would collide. */
+    statsLabel: 'In his current role leading Data Analytics',
+
     stats: [
       { num: '8', label: 'dashboards deployed: 7 dept + 1 executive' },
       { num: '2', label: 'manual processes digitized and streamlined' },

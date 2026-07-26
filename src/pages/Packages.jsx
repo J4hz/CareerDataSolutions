@@ -3,6 +3,14 @@ import PackageCard from '../components/ui/PackageCard';
 import CTASection from '../components/CTASection';
 import '../styles/packages.css';
 
+/* How the business gets paid. Declared once and appended to BOTH tracks'
+   closing notes, so the two pricing pages cannot end up telling a visitor
+   different things about payment — the data page previously said nothing at
+   all, which read as though the options were narrower on that side.
+   Same sentence, same position (end of .packages-page__note), same styling. */
+const PAYMENT_METHODS =
+  'Payment accepted via M-Pesa, Payoneer, and bank transfer.';
+
 const COPY = {
   data: {
     trackLabel: 'Data Analytics',
@@ -10,10 +18,11 @@ const COPY = {
     sectionTitle: 'Dashboard and automation scope tiers',
     intro:
       'Local KES pricing for Kenya. USD rates for international and Upwork projects. These are starting points rather than fixed packages: dashboard work varies too much by data complexity to price sight-unseen.',
-    // Data work is quoted, not bought off the page, so the closing line talks
-    // about how the number gets fixed rather than how it gets paid.
+    // Data work is quoted, not bought off the page, so the note leads with how
+    // the number gets fixed before it closes on how it gets paid.
     note:
-      'Every engagement starts with a free discovery call. After it you receive a written scope and a fixed price for the agreed deliverables, before any work begins. If requirements expand later, that is scoped and quoted separately rather than folded into the original price.',
+      'Every engagement starts with a free discovery call. After it you receive a written scope and a fixed price for the agreed deliverables, before any work begins. If requirements expand later, that is scoped and quoted separately rather than folded into the original price. ' +
+      PAYMENT_METHODS,
   },
   career: {
     trackLabel: 'Career Services',
@@ -22,7 +31,8 @@ const COPY = {
     intro:
       'Local KES pricing for Kenya. USD rates for international clients. Every package includes clear timelines and revision rounds.',
     note:
-      'All packages include clear timelines, defined revision rounds, and delivery via email. Payment accepted via M-Pesa, Payoneer, and bank transfer.',
+      'All packages include clear timelines, defined revision rounds, and delivery via email. ' +
+      PAYMENT_METHODS,
   },
 };
 
