@@ -15,6 +15,7 @@
 import { Resend } from 'resend';
 import { CALENDLY_URL, CONTACT_EMAIL, NOTIFY_FROM, SITE_DOMAIN, WHATSAPP_URL } from '../src/config.js';
 import { cleanText, cleanHeader, isValidEmail } from './_lib/sanitize.js';
+import { limited } from './_lib/rate-limit.js';
 
 // The three selects are closed sets. Mapping the submitted value through these
 // means the email can only ever contain a label chosen here, never whatever
@@ -85,6 +86,9 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
+
+  // Same reasoning as notify-career: every accepted call sends an email.
+  if (await limited(req, res, 'notify-data', { limit: 5, windowSeconds: 600 })) return;
 
   const { name, company, email, phone, goal, dataLocation, dataState, existingReport } =
     req.body ?? {};

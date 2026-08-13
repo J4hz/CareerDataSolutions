@@ -18,6 +18,7 @@
 import { Resend } from 'resend';
 import { CALENDLY_URL, CONTACT_EMAIL, NOTIFY_FROM, SITE_DOMAIN, WHATSAPP_URL } from '../src/config.js';
 import { cleanText, cleanHeader, isValidEmail, validateCvUpload } from './_lib/sanitize.js';
+import { limited } from './_lib/rate-limit.js';
 
 // Moved here off /career/contact, where it sat above the form and answered a
 // question nobody has until after they have submitted. The welcome email below
@@ -65,6 +66,11 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
+
+  // Each accepted call sends mail with an attachment. Unlimited, it is a way
+  // to flood the team inbox and burn the Resend quota. Five in ten minutes
+  // leaves room for a re-send after a bad upload.
+  if (await limited(req, res, 'notify-career', { limit: 5, windowSeconds: 600 })) return;
 
   const {
     name, email, phone,

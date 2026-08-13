@@ -7,11 +7,18 @@
 
 import { packages } from '../src/data/packages.js';
 import { resolveAmount } from './_lib/promo.js';
+import { limited } from './_lib/rate-limit.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
+
+  // Looser than the others because a shopper may try a few codes, but a
+  // limit belongs here specifically: this endpoint answers "is this code
+  // real?", so without one it is an oracle for guessing promo codes at
+  // whatever rate the network allows.
+  if (await limited(req, res, 'promo', { limit: 20, windowSeconds: 600 })) return;
 
   const { code, packageId } = req.body ?? {};
 

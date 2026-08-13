@@ -19,11 +19,19 @@ import { cleanText, isValidEmail, validateCvUpload } from './_lib/sanitize.js';
 import { createOrder, newOrderId, signOrder } from './_lib/orders.js';
 import { normalizeMsisdn, requestStkPush } from './_lib/payments.js';
 import { resolveAmount } from './_lib/promo.js';
+import { limited } from './_lib/rate-limit.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
+
+  // The tightest limit on the site. A successful call makes someone's phone
+  // ring with an M-Pesa prompt, so an unlimited endpoint is a way to harass
+  // a stranger's handset using our payment account — quite apart from the
+  // email and the STK push each attempt costs us. Five in ten minutes is
+  // far above what a real buyer needs, including retries after a typo.
+  if (await limited(req, res, 'order', { limit: 5, windowSeconds: 600 })) return;
   if (!process.env.RESEND_API_KEY) {
     console.error('RESEND_API_KEY is not configured');
     return res.status(500).json({ error: 'Server is not configured to take orders yet.' });
