@@ -55,9 +55,11 @@ export default function BlogPost() {
 
   return (
     <main>
+      {/* scaleX rather than width, so the scroll handler updates a
+          compositor property instead of forcing layout — see blog.css. */}
       <div
         className="blog-post__progress"
-        style={{ width: `${progress}%` }}
+        style={{ transform: `scaleX(${progress / 100})` }}
         aria-hidden="true"
       />
 

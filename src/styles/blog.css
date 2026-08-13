@@ -179,14 +179,27 @@
   }
 }
 
+/* Scaled, not widened. This bar is driven by a scroll listener, so it
+   changed on nearly every frame of every scroll, and animating width made
+   each of those frames a layout + paint; transform runs on the compositor.
+
+   Safe to scale here specifically because the bar is an empty element with
+   a flat fill and no radius: scaling a solid rectangle horizontally is
+   indistinguishable from resizing it. It is the full width of the viewport
+   at scaleX(1), so the scale factor is just the fraction read (see
+   pages/BlogPost.jsx), and position:fixed means the 100% width costs no
+   layout of its own. */
 .blog-post__progress {
   position: fixed;
   top: 0;
   left: 0;
+  width: 100%;
   height: 3px;
   background: var(--teal);
   z-index: 9999;
-  transition: width 0.1s linear;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.1s linear;
   pointer-events: none;
 }
 
