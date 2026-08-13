@@ -463,7 +463,9 @@
 /* ── Shared section furniture ─────────────────────────────── */
 
 .lp-eyebrow {
-  color: var(--lp-accent);
+  /* Section eyebrows sit on the white body, not the hero, so they take the
+     readable accent rather than the bright one. */
+  color: var(--lp-accent-ink);
 }
 
 .lp h2 {

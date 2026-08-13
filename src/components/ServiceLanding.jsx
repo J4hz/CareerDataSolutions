@@ -26,6 +26,10 @@ export default function ServiceLanding({ track }) {
     '--lp-accent': track.accent,
     '--lp-accent-soft': track.accentSoft,
     '--lp-accent-glow': track.accentGlow,
+    // The accent darkened enough to read as text on the white body below the
+    // hero; --lp-accent stays the bright one for fills and for the hero,
+    // where it sits on navy. See the --accent-ink note in styles/theme.css.
+    '--lp-accent-ink': track.accentInk,
   };
 
   /* Restore with the testimonials section further down. Shows this track's own

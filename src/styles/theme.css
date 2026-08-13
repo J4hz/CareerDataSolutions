@@ -137,7 +137,28 @@
   --accent-glow:     var(--teal-glow);
   --accent-hover:    var(--teal-dark);
   --accent-contrast: var(--white);
+  --accent-ink:      var(--teal-dark);
 }
+
+/* ── ACCENT AS TEXT ON A LIGHT SURFACE ────────────────────────
+   --accent-ink is the accent darkened until it can be READ. Neither brand
+   accent passes AA as body text on white, and the near-miss shades do not
+   either:
+
+       --gold       #F4A833 on white   2.0:1   fails
+       --gold-dark  #D98F1C on white   2.7:1   fails
+       --gold-deep  #8A5A0F on white   5.9:1   passes
+       --teal       #1D9E75 on white   3.4:1   fails
+       --teal-dark  #17805E on white   4.9:1   passes
+
+   Gold fails even the 3:1 large-text allowance, so its size does not
+   rescue it — a 32px price in plain gold is as unreadable as a 10px label.
+
+   Use --accent-ink wherever the accent colours TEXT on white or paper.
+   Keep using --accent for fills, borders, and anything on a dark surface,
+   where the brighter value is both correct and more legible: none of those
+   are what fails, and swapping them would dull the brand for no gain.
+   ───────────────────────────────────────────────────────────── */
 
 /* ── Track themes ─────────────────────────────────────────────
    Applied at the layout wrapper. Only accent-dependent tokens are
@@ -151,6 +172,7 @@
   --accent-hover:    var(--teal-dark);
   /* White on teal is 3.4:1, fine for the large bold text on buttons */
   --accent-contrast: var(--white);
+  --accent-ink:      var(--teal-dark);
 }
 
 .theme-career {
@@ -161,4 +183,5 @@
   --accent-hover:    var(--gold-dark);
   /* Navy text passes on gold at 8.2:1; white does not */
   --accent-contrast: var(--navy);
+  --accent-ink:      var(--gold-deep);
 }

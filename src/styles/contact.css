@@ -55,7 +55,7 @@
   height: 28px;
   border-radius: 50%;
   background: rgba(29,158,117,0.12);
-  color: var(--teal);
+  color: var(--teal-dark);
   font-size: 13px;
   font-weight: 700;
   display: flex;
@@ -222,7 +222,7 @@
 
 /* ── EYEBROW VARIANTS ────────────────────── */
 .contact-eyebrow--gold {
-  color: var(--gold);
+  color: var(--gold-deep);
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 1.5px;
@@ -231,7 +231,7 @@
 }
 
 .contact-eyebrow--teal {
-  color: var(--teal);
+  color: var(--teal-dark);
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 1.5px;
@@ -284,7 +284,7 @@
 /* ── NUMBERED STEPS GOLD VARIANT ─────────── */
 .contact-expect__num--gold {
   background: rgba(244,168,51,0.12);
-  color: var(--gold);
+  color: var(--gold-deep);
 }
 
 /* ── WHAT HAPPENS NEXT CARD ──────────────── */
@@ -461,7 +461,7 @@
 
 .cv-dropzone__icon {
   font-size: 24px;
-  color: var(--gold);
+  color: var(--gold-deep);
   line-height: 1;
 }
 

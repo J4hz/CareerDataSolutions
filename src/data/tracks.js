@@ -20,6 +20,8 @@ export const dataTrack = {
   accent: 'var(--accent)',
   accentSoft: 'var(--accent-soft)',
   accentGlow: 'var(--accent-glow)',
+  // The accent darkened until it reads as text on white; see theme.css.
+  accentInk: 'var(--accent-ink)',
   // primaryCta is a booking, so it takes the orange booking colour rather
   // than the track accent — same button as the navbar.
   buttonClass: 'btn--cta',
@@ -129,6 +131,8 @@ export const careerTrack = {
   accent: 'var(--accent)',
   accentSoft: 'var(--accent-soft)',
   accentGlow: 'var(--accent-glow)',
+  // The accent darkened until it reads as text on white; see theme.css.
+  accentInk: 'var(--accent-ink)',
   buttonClass: 'btn--accent',
 
   eyebrow: 'Career advancement services',

@@ -129,7 +129,8 @@ input, textarea, select {
   font-size: 0.75rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--accent);
+  /* Eyebrows sit on white sections, so this takes the readable accent. */
+  color: var(--accent-ink);
   margin-bottom: 12px;
 }
 

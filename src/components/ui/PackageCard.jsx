@@ -3,6 +3,10 @@ import { Link } from 'react-router-dom';
 export default function PackageCard({ pkg, variant = 'card' }) {
   const isData = pkg.track === 'data';
   const accent = isData ? 'var(--teal)' : 'var(--gold)';
+  // The same accent darkened until it can be read as text on the white card.
+  // Plain gold on white is 2.0:1 and fails AA even at the price's size; see
+  // the --accent-ink note in styles/theme.css.
+  const accentInk = isData ? 'var(--teal-dark)' : 'var(--gold-deep)';
   const badgeBg = isData ? 'var(--teal)' : 'var(--gold)';
   const badgeColor = isData ? 'var(--white)' : 'var(--navy)';
   // Career packages are purchasable, so the CTA goes to checkout with the
@@ -134,7 +138,7 @@ export default function PackageCard({ pkg, variant = 'card' }) {
             single price rather than a headline with a footnote. Sized in
             packages.css, where a media query can hold the longest string — the
             retainer's two /mo figures — on one line in a third-width card. */}
-        <div className="pkg-card__price" style={{ color: accent }}>
+        <div className="pkg-card__price" style={{ color: accentInk }}>
           <span className="pkg-card__price-part">{priceLead}</span>
           {priceTrail && (
             <>

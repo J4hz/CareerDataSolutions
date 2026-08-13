@@ -48,16 +48,16 @@
 }
 
 .pkg-card__check {
-  color: var(--teal);
+  color: var(--teal-dark);
   font-weight: 700;
   flex-shrink: 0;
   font-size: 13px;
 }
 
-/* The tick follows its card's track. Gold-dark rather than gold: plain gold
-   on white is too light to read at 13px. */
+/* The tick follows its card's track. Gold-DEEP, not gold or gold-dark: on
+   white those measure 2.0:1 and 2.7:1, both failing AA at this size. */
 .pkg-card--career .pkg-card__check {
-  color: var(--gold-dark);
+  color: var(--gold-deep);
 }
 
 /* Price line: USD first, then KES after a slash, both at one size so the pair

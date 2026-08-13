@@ -47,7 +47,8 @@
   font-size: 1.25rem;
   font-weight: 500;
   line-height: 1;
-  color: var(--accent-dark, var(--accent));
+  /* On the white FAQ card, so the readable accent. */
+  color: var(--accent-ink);
   transition: transform 0.25s ease;
 }
 

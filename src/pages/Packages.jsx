@@ -58,7 +58,7 @@ export default function Packages({ track = 'data' }) {
       <section className="section packages-page__main" aria-label="Package options">
         <div className="container">
           <div className="packages-page__group">
-            <p className="packages-page__track-label" style={{ color: 'var(--accent)' }}>
+            <p className="packages-page__track-label" style={{ color: 'var(--accent-ink)' }}>
               {copy.trackLabel}
             </p>
             <h3 className="packages-page__section-title">{copy.sectionTitle}</h3>

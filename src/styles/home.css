@@ -440,8 +440,8 @@
   margin-bottom: 14px;
 }
 
-.path-card--data .path-card__eyebrow   { color: var(--teal); }
-.path-card--career .path-card__eyebrow { color: var(--gold-dark); }
+.path-card--data .path-card__eyebrow   { color: var(--teal-dark); }
+.path-card--career .path-card__eyebrow { color: var(--gold-deep); }
 
 /* Centred with the eyebrow so the two read as one header block; the bullet
    list below stays left-aligned. */
@@ -1091,8 +1091,8 @@
   margin-bottom: 4px;
 }
 
-.home-faq__col-label--data   { color: var(--teal); }
-.home-faq__col-label--career { color: var(--gold-dark); }
+.home-faq__col-label--data   { color: var(--teal-dark); }
+.home-faq__col-label--career { color: var(--gold-deep); }
 
 /* Inside a two-column grid the accordion just fills its column, rather than
    the centred 760px it uses on the service pages. */
@@ -1117,8 +1117,8 @@
   text-decoration: underline;
 }
 
-.home-faq__more--data   { color: var(--teal); }
-.home-faq__more--career { color: var(--gold-dark); }
+.home-faq__more--data   { color: var(--teal-dark); }
+.home-faq__more--career { color: var(--gold-deep); }
 
 @media (max-width: 768px) {
   .home-faq__grid {

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useSyncExternalStore } from 'react';
 import { useLocation } from 'react-router-dom';
 import { metaForPath } from '../seo/meta.js';
 import { schemaForPath } from '../seo/schema.js';
@@ -18,12 +18,21 @@ import { SITE_NAME } from '../config.js';
  * scripts/prerender.js. main.jsx strips those prerendered tags just
  * before hydration so React re-renders them here without duplicating.
  */
+/** Never notifies: the "is this hydrated yet" answer only changes once. */
+const subscribe = () => () => {};
+
 export default function Seo() {
   const { pathname } = useLocation();
   const meta = metaForPath(pathname);
   const schema = schemaForPath(pathname);
 
-  // The JSON-LD waits for mount. This component renders nothing during the
+  // The JSON-LD waits for hydration to finish. useSyncExternalStore is the
+  // primitive for exactly this: React takes the server snapshot (false)
+  // during SSR and during the hydration pass, then the client one (true)
+  // once hydration is done — no setState in an effect, and no extra render
+  // for React to warn about.
+  //
+  // This component renders nothing during the
   // prerender (below), so on a first load the server HTML has none of these
   // tags — and React 19 does not mind that for title/meta/link, because it
   // hoists those into <head> itself rather than matching them by position.
@@ -33,8 +42,7 @@ export default function Seo() {
   // this site. Rendering it one tick later keeps the hydration pass
   // identical to the server and puts the script in exactly the same place
   // it ended up before.
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  const mounted = useSyncExternalStore(subscribe, () => true, () => false);
 
   // During the build-time prerender the script writes the head itself,
   // straight from the same registry. Staying quiet here keeps React from

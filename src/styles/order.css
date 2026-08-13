@@ -62,7 +62,7 @@
   font-size: 2rem;
   font-weight: 800;
   letter-spacing: -1px;
-  color: var(--gold-dark);
+  color: var(--gold-deep);
 }
 
 .order-summary__usd {
@@ -94,7 +94,7 @@
 }
 
 .order-summary__check {
-  color: var(--gold-dark);
+  color: var(--gold-deep);
   font-weight: 700;
   flex-shrink: 0;
 }
@@ -128,7 +128,7 @@
 }
 
 .order-summary__help a {
-  color: var(--gold-dark);
+  color: var(--gold-deep);
   font-weight: 600;
 }
 
@@ -160,7 +160,7 @@
   font-size: 1.35rem;
   font-weight: 800;
   letter-spacing: -0.5px;
-  color: var(--gold-dark);
+  color: var(--gold-deep);
   display: flex;
   align-items: baseline;
   gap: 8px;
@@ -371,7 +371,7 @@
   font-size: 1.5rem;
   font-weight: 800;
   letter-spacing: -0.5px;
-  color: var(--gold-dark);
+  color: var(--gold-deep);
   margin-top: 8px;
 }
 
@@ -382,7 +382,7 @@
 }
 
 .order-picker__alt a {
-  color: var(--gold-dark);
+  color: var(--gold-deep);
   font-weight: 600;
 }
 
