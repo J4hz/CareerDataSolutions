@@ -10,7 +10,8 @@
     "favicons": "node scripts/favicons.js",
     "lint": "eslint .",
     "preview": "vite preview",
-    "images": "node scripts/images.js"
+    "images": "node scripts/images.js",
+    "fonts": "node scripts/fonts.js"
   },
   "dependencies": {
     "@calcom/embed-react": "^1.5.3",

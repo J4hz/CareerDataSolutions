@@ -1,0 +1,31 @@
+/* ─────────────────────────────────────────────────────────────
+   Self-hosted brand fonts. GENERATED — edit scripts/fonts.js, not this
+   file, and re-run `npm run fonts`.
+
+   Latin subset only; see the script for why. font-display: swap is carried
+   over from Google's own CSS: text paints immediately in the fallback and
+   is re-rendered when the face arrives, rather than hanging invisible.
+
+   One file and one rule per family: both are variable fonts, so the weight
+   is a RANGE and every weight in it comes out of the same file. Both files
+   are preloaded from index.html, so they are fetched alongside this
+   stylesheet rather than after it.
+   ───────────────────────────────────────────────────────────── */
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url('/fonts/inter.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  font-style: normal;
+  font-weight: 600 800;
+  font-display: swap;
+  src: url('/fonts/plus-jakarta-sans.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
