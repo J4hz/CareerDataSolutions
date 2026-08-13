@@ -9,9 +9,11 @@
 // Keep this file free of React/browser code: schema.js runs in Node at
 // build time (scripts/prerender.js).
 //
-// Ported from reference/careerdatasolutions-rebuild.html (#faq-data and
-// #faq-career), lightly rewritten, plus one extra question per track
-// grounded in the site's real packages and process.
+// Originally ported from the old reference/careerdatasolutions-rebuild.html
+// mockup (#faq-data and #faq-career), lightly rewritten, plus one extra
+// question per track grounded in the site's real packages and process. That
+// mockup has since been deleted — it was never imported or served, and this
+// file is now the source of truth for the FAQs.
 // ─────────────────────────────────────────────────────────────
 
 export const dataFaqs = [
