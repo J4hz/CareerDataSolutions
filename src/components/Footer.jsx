@@ -119,6 +119,12 @@ const Footer = memo(function Footer({ track = null }) {
             */}
             {/* Blog link removed with the Insights nav entries; restore
                 alongside the routes in App.jsx to bring the blog back. */}
+            {/* The footer is the conventional home for these, and the site
+                takes CV uploads and phone numbers with no policy published
+                anywhere else. Both pages are scaffolds today — see
+                pages/Privacy.jsx. */}
+            <li><Link to="/privacy">Privacy Policy</Link></li>
+            <li><Link to="/terms">Terms of Service</Link></li>
           </ul>
         </div>
 

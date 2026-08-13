@@ -94,6 +94,28 @@ export const staticRoutes = {
       'CareerDataSolutions is led by Kabiru Nyabwengi, whose years of Emergency Medical Services operations experience ground both the Power BI analytics and the career strategy work the consultancy delivers.',
   },
 
+  // ── Legal ──
+  // Scaffolds: real text is pending advocate review, so both are noindex
+  // for the same reason /career/order is — there is nothing here worth
+  // putting in front of a searcher yet, and a placeholder ranking for
+  // "CareerDataSolutions privacy policy" would be worse than no page.
+  // scripts/sitemap.js skips noindex routes, so neither is submitted.
+  // They still need entries here: a route missing from this registry is
+  // never prerendered and hard-404s on a direct load or a shared link.
+  // Drop noindex in the same commit that removes the placeholder banner.
+  '/privacy': {
+    title: `Privacy Policy | ${SITE_NAME}`,
+    description:
+      'How CareerDataSolutions handles the personal data submitted through this site.',
+    noindex: true,
+  },
+  '/terms': {
+    title: `Terms of Service | ${SITE_NAME}`,
+    description:
+      'The terms covering CareerDataSolutions engagements, deliverables and payment.',
+    noindex: true,
+  },
+
   // The '/blog' entry is removed while Insights is hidden, so the blog is
   // left out of the prerender and the sitemap. Restore it alongside the
   // routes in App.jsx:

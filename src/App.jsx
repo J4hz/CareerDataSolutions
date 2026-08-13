@@ -16,6 +16,10 @@ const About         = lazy(() => import('./pages/About'));
 const ContactCareer = lazy(() => import('./pages/ContactCareer'));
 const ContactData   = lazy(() => import('./pages/ContactData'));
 const CareerOrder   = lazy(() => import('./pages/CareerOrder'));
+// Scaffolds. Both are noindex in seo/meta.js and carry a placeholder banner
+// until the advocate-reviewed text replaces them — see pages/Privacy.jsx.
+const Privacy       = lazy(() => import('./pages/Privacy'));
+const Terms         = lazy(() => import('./pages/Terms'));
 const NotFound      = lazy(() => import('./pages/NotFound'));
 
 function ScrollToTop() {
@@ -70,6 +74,10 @@ export default function App() {
             <Route path="/blog"       element={<Blog />} />
             <Route path="/blog/:slug" element={<BlogPost />} />
             */}
+            {/* Neutral shell: the legal pages belong to the company, not
+                to either track, so they pick no lane. */}
+            <Route path="/privacy"    element={<Privacy />} />
+            <Route path="/terms"      element={<Terms />} />
             <Route path="*"           element={<NotFound />} />
           </Route>
 
