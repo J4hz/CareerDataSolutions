@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { metaForPath } from '../seo/meta.js';
 import { schemaForPath } from '../seo/schema.js';
@@ -21,6 +22,19 @@ export default function Seo() {
   const { pathname } = useLocation();
   const meta = metaForPath(pathname);
   const schema = schemaForPath(pathname);
+
+  // The JSON-LD waits for mount. This component renders nothing during the
+  // prerender (below), so on a first load the server HTML has none of these
+  // tags — and React 19 does not mind that for title/meta/link, because it
+  // hoists those into <head> itself rather than matching them by position.
+  // A <script> is the one tag here it does NOT hoist, so it stays in the
+  // tree, and rendering it during hydration means the client has an element
+  // where the server had none. That is the whole of React error #418 on
+  // this site. Rendering it one tick later keeps the hydration pass
+  // identical to the server and puts the script in exactly the same place
+  // it ended up before.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   // During the build-time prerender the script writes the head itself,
   // straight from the same registry. Staying quiet here keeps React from
@@ -49,15 +63,16 @@ export default function Seo() {
       {/* JSON-LD. The content is ours, not user input, so there is nothing
           to inject here — but `<` is still escaped as a matter of course,
           since a stray `</script>` in any future copy would break the page. */}
-      {schema.map((block, i) => (
-        <script
-          key={i}
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(block).replace(/</g, '\\u003c'),
-          }}
-        />
-      ))}
+      {mounted &&
+        schema.map((block, i) => (
+          <script
+            key={i}
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify(block).replace(/</g, '\\u003c'),
+            }}
+          />
+        ))}
     </>
   );
 }
