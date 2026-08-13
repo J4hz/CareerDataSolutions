@@ -1,6 +1,8 @@
 import { StrictMode } from 'react';
 import { prerenderToNodeStream } from 'react-dom/static';
-import { StaticRouter } from 'react-router-dom/server';
+// react-router-dom v7 dropped the /server subpath: its export map is now
+// just "." re-exporting react-router, and StaticRouter comes from there.
+import { StaticRouter } from 'react-router-dom';
 import App from './App.jsx';
 
 /**
