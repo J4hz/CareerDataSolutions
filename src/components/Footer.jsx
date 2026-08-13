@@ -3,7 +3,9 @@ import { Link } from 'react-router-dom';
 import { WHATSAPP_URL, CONTACT_EMAIL } from '../config';
 // Same asset as the navbar: one logo file, so a rebrand is a single swap.
 // (Was logo-stacked.jpg, a separate stacked lockup of the old brand.)
-import logo from '../assets/logo.png';
+// The 490x90 derivative covers the navbar's 45px and this 38px at 2x.
+import logoWebp from '../assets/generated/logo-490.webp';
+import logo from '../assets/generated/logo-490.png';
 import '../styles/footer.css';
 
 /**
@@ -49,19 +51,24 @@ const Footer = memo(function Footer({ track = null }) {
           <div className="footer__brand-logo">
             {/* The horizontal lockup is wide (5.4:1), so it sits shorter here
                 than the old stacked mark did while occupying similar width. */}
-            <img
-              src={logo}
-              alt="CareerDataSolutions"
-              style={{
-                height: '38px',
-                width: 'auto',
-                maxWidth: '100%',
-                display: 'block',
-                background: 'var(--white)',
-                borderRadius: '10px',
-                padding: '8px 12px',
-              }}
-            />
+            <picture>
+              <source srcSet={logoWebp} type="image/webp" />
+              <img
+                src={logo}
+                alt="CareerDataSolutions"
+                width="490"
+                height="90"
+                style={{
+                  height: '38px',
+                  width: 'auto',
+                  maxWidth: '100%',
+                  display: 'block',
+                  background: 'var(--white)',
+                  borderRadius: '10px',
+                  padding: '8px 12px',
+                }}
+              />
+            </picture>
           </div>
           {/* One line each, taking its own track colour, so the split reads
               here the same way it does in the hero headline and the service

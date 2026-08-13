@@ -2,7 +2,10 @@ import { memo, useState, useEffect, useCallback, useRef } from 'react';
 import { NavLink, Link } from 'react-router-dom';
 /* Shared with the closing CTA band's dropdown — see src/data/booking.js. */
 import { BOOK_OPTIONS } from '../data/booking';
-import logoPng from '../assets/logo.png';
+// 490x90 derivatives of assets/logo.png, which is 1654x304 — nearly 7x the
+// pixels that ever reach the screen. See scripts/images.js.
+import logoWebp from '../assets/generated/logo-490.webp';
+import logoPng from '../assets/generated/logo-490.png';
 import '../styles/navbar.css';
 
 /**
@@ -93,7 +96,19 @@ const Navbar = memo(function Navbar({ track = null }) {
     <header className={`navbar${scrolled ? ' navbar--scrolled' : ''}`}>
       <div className="navbar__inner">
         <NavLink to="/" className="navbar__logo" onClick={close} aria-label="CareerDataSolutions home">
-          <img src={logoPng} alt="CareerDataSolutions" className="navbar__logo-img" />
+          {/* width/height are the asset's own, not the rendered size: the CSS
+              pins the height and lets width follow, and these give the browser
+              the ratio to reserve the box before the image arrives. */}
+          <picture>
+            <source srcSet={logoWebp} type="image/webp" />
+            <img
+              src={logoPng}
+              alt="CareerDataSolutions"
+              className="navbar__logo-img"
+              width="490"
+              height="90"
+            />
+          </picture>
         </NavLink>
 
         <nav className="navbar__nav" aria-label="Main navigation">

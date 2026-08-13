@@ -246,3 +246,9 @@
     font-size: 1.4rem;
   }
 }
+
+/* The portrait's <picture> must not introduce a box of its own: the img
+   inside is what the grid column sizes against. */
+.about-sec__photo picture {
+  display: block;
+}

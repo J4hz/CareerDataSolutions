@@ -1,6 +1,12 @@
 import { about } from '../content/about';
 import FoundingClientsCallout from './FoundingClientsCallout';
-import founderPhoto from '../assets/kabiru.jpg';
+// Responsive derivatives of assets/kabiru.jpg (1047x1502). See scripts/images.js.
+import portrait400Webp from '../assets/generated/kabiru-400.webp';
+import portrait640Webp from '../assets/generated/kabiru-640.webp';
+import portrait900Webp from '../assets/generated/kabiru-900.webp';
+import portrait400 from '../assets/generated/kabiru-400.jpg';
+import portrait640 from '../assets/generated/kabiru-640.jpg';
+import portrait900 from '../assets/generated/kabiru-900.jpg';
 import '../styles/about-section.css';
 
 /**
@@ -20,13 +26,26 @@ export default function AboutSection() {
     <section className="about-sec" aria-labelledby="about-heading">
       <div className="container about-sec__grid">
         <div className="about-sec__photo">
-          <img
-            src={founderPhoto}
-            alt="Kabiru Nyabwengi, founder of CareerDataSolutions"
-            className="about-sec__portrait"
-            width="1047"
-            height="1502"
-          />
+          {/* sizes tracks the CSS: the portrait fills its grid column up to
+              about 450px, and is capped at 320px below 900px viewports. */}
+          <picture>
+            <source
+              type="image/webp"
+              srcSet={`${portrait400Webp} 400w, ${portrait640Webp} 640w, ${portrait900Webp} 900w`}
+              sizes="(max-width: 900px) 320px, 450px"
+            />
+            <img
+              src={portrait640}
+              srcSet={`${portrait400} 400w, ${portrait640} 640w, ${portrait900} 900w`}
+              sizes="(max-width: 900px) 320px, 450px"
+              alt="Kabiru Nyabwengi, founder of CareerDataSolutions"
+              className="about-sec__portrait"
+              width="1047"
+              height="1502"
+              loading="lazy"
+              decoding="async"
+            />
+          </picture>
           <div className="about-sec__credentials">
             {about.credentials.map((line, i) => (
               <p

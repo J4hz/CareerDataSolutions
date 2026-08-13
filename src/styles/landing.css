@@ -52,16 +52,67 @@
   background-size: cover;
 }
 
+/* Each track declares the background twice on purpose. The first is a plain
+   url() every browser understands; the second upgrades it to image-set(),
+   which serves WebP where supported and falls back to the same JPEG where
+   not. A browser without image-set() drops the second declaration at parse
+   time and keeps the first — which is why this is written out rather than
+   routed through a custom property, where an unsupported value would be
+   invalid at computed-value time and blank the background instead. */
 .lp[data-track='career'] .lp-hero {
   background-image:
     linear-gradient(160deg, rgba(11, 31, 58, 0.87) 0%, rgba(20, 50, 85, 0.82) 100%),
-    url('../assets/hero-career.jpg');
+    url('../assets/generated/hero-career-1600.jpg');
+  background-image:
+    linear-gradient(160deg, rgba(11, 31, 58, 0.87) 0%, rgba(20, 50, 85, 0.82) 100%),
+    image-set(
+      url('../assets/generated/hero-career-1600.webp') type('image/webp'),
+      url('../assets/generated/hero-career-1600.jpg') type('image/jpeg')
+    );
 }
 
 .lp[data-track='data'] .lp-hero {
   background-image:
     linear-gradient(160deg, rgba(11, 31, 58, 0.87) 0%, rgba(20, 50, 85, 0.82) 100%),
-    url('../assets/hero-data.jpg');
+    url('../assets/generated/hero-data-1600.jpg');
+  background-image:
+    linear-gradient(160deg, rgba(11, 31, 58, 0.87) 0%, rgba(20, 50, 85, 0.82) 100%),
+    image-set(
+      url('../assets/generated/hero-data-1600.webp') type('image/webp'),
+      url('../assets/generated/hero-data-1600.jpg') type('image/jpeg')
+    );
+}
+
+/* Phones take the 800px cut at 1x and the full one only at 2x, where the
+   extra pixels actually land on the screen. */
+@media (max-width: 820px) {
+  .lp[data-track='career'] .lp-hero {
+    background-image:
+      linear-gradient(160deg, rgba(11, 31, 58, 0.87) 0%, rgba(20, 50, 85, 0.82) 100%),
+      url('../assets/generated/hero-career-800.jpg');
+    background-image:
+      linear-gradient(160deg, rgba(11, 31, 58, 0.87) 0%, rgba(20, 50, 85, 0.82) 100%),
+      image-set(
+        url('../assets/generated/hero-career-800.webp') type('image/webp') 1x,
+        url('../assets/generated/hero-career-1600.webp') type('image/webp') 2x,
+        url('../assets/generated/hero-career-800.jpg') type('image/jpeg') 1x,
+        url('../assets/generated/hero-career-1600.jpg') type('image/jpeg') 2x
+      );
+  }
+
+  .lp[data-track='data'] .lp-hero {
+    background-image:
+      linear-gradient(160deg, rgba(11, 31, 58, 0.87) 0%, rgba(20, 50, 85, 0.82) 100%),
+      url('../assets/generated/hero-data-800.jpg');
+    background-image:
+      linear-gradient(160deg, rgba(11, 31, 58, 0.87) 0%, rgba(20, 50, 85, 0.82) 100%),
+      image-set(
+        url('../assets/generated/hero-data-800.webp') type('image/webp') 1x,
+        url('../assets/generated/hero-data-1600.webp') type('image/webp') 2x,
+        url('../assets/generated/hero-data-800.jpg') type('image/jpeg') 1x,
+        url('../assets/generated/hero-data-1600.jpg') type('image/jpeg') 2x
+      );
+  }
 }
 
 /* The accent's only structural appearance: a faint accent tint bleeding in
