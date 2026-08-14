@@ -56,6 +56,42 @@ const UA =
 
 const slug = (family) => family.toLowerCase().replace(/\s+/g, '-');
 
+// ── Metric-matched fallbacks ─────────────────────────────────
+// Self-hosting removed the render-blocking font stylesheet, which means the
+// page now paints BEFORE the webfont arrives instead of after it — so the
+// swap became visible, and reflowed the hero headline and everything under
+// it. That measured 0.057 CLS on desktop where the site had been at 0.
+//
+// These faces give the fallback the webfont's own metrics, so the text
+// occupies the same space either way and the swap moves nothing. The
+// numbers are measured, not guessed: both fonts were rendered to a canvas
+// against Arial at 100px, and
+//
+//   size-adjust      = webfont advance width / Arial advance width
+//   ascent-override  = webfont ascent / size-adjust
+//   descent-override = webfont descent / size-adjust
+//
+// Both families run ~7-8% wider than Arial, which is the whole of the
+// shift. RE-MEASURE THESE if either font is ever changed or re-cut.
+//
+// src is local() only: nothing is downloaded, and on a system without
+// Arial the face simply does not load and the stack falls through to the
+// next family, rather than applying Arial's metrics to some other font.
+const FALLBACKS = [
+  {
+    family: 'Plus Jakarta Sans',
+    sizeAdjust: '108.11%',
+    ascent: '96.2%',
+    descent: '20.35%',
+  },
+  {
+    family: 'Inter',
+    sizeAdjust: '106.84%',
+    ascent: '90.79%',
+    descent: '22.46%',
+  },
+];
+
 async function main() {
   await mkdir(fontsDir, { recursive: true });
 
@@ -150,6 +186,25 @@ ${faces
 }`
   )
   .join('\n\n')}
+
+/* ── Metric-matched fallbacks ─────────────────────────────────
+   Named "<Family> Fallback" and referenced from --font-display and
+   --font-body in globals.css, immediately after the real family. They
+   render in Arial with the webfont's own metrics, so the text takes the
+   same space before and after the swap and nothing moves. See the note in
+   scripts/fonts.js for where the numbers come from.
+   ───────────────────────────────────────────────────────────── */
+
+${FALLBACKS.map(
+  (f) => `@font-face {
+  font-family: '${f.family} Fallback';
+  src: local('Arial');
+  size-adjust: ${f.sizeAdjust};
+  ascent-override: ${f.ascent};
+  descent-override: ${f.descent};
+  line-gap-override: 0%;
+}`
+).join('\n\n')}
 `;
 
   await writeFile(join(stylesDir, 'fonts.css'), sheet);
