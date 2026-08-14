@@ -63,6 +63,11 @@
 
 html {
   scroll-behavior: smooth;
+  /* The navbar is fixed, so anything scrolled to by id — the footer's
+     service links, any future anchor — would otherwise land underneath it.
+     scroll-padding on the scrolling element is honoured by scrollIntoView
+     as well as by ordinary hash navigation. */
+  scroll-padding-top: 96px;
   font-size: 16px;
   overflow-x: hidden;
   max-width: 100%;
@@ -147,17 +152,6 @@ input, textarea, select {
   clip: rect(0,0,0,0);
   white-space: nowrap;
   border: 0;
-}
-
-/* Lazy loading suspense fallback */
-.page-loading {
-  min-height: 60vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-body);
-  color: var(--gm);
-  font-size: 0.95rem;
 }
 
 @media (max-width: 768px) {

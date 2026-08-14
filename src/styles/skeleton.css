@@ -1,0 +1,129 @@
+/* ─────────────────────────────────────────────────────────────
+   Skeleton placeholders, for the gap between a route being requested and
+   its lazy() chunk arriving.
+
+   These are shown INSTEAD of the old "Loading…" line. The point is not
+   decoration: a single centred word gives no sense of what is coming and
+   makes every route feel identical and empty, while a shell in roughly the
+   shape of the page reads as "this is arriving" and holds the layout still
+   when it does.
+
+   NOT shown on a first load. Every route is prerendered, so a visitor
+   arriving from outside gets real HTML; this only appears on in-app
+   navigation to a chunk that has not been fetched yet, which on a fast
+   connection is a few frames and on a slow one is the whole point.
+
+   The shimmer is a transform on an overlay, never a width or a
+   background-position, so it stays on the compositor — same reasoning as
+   the reading-progress bar in blog.css.
+   ───────────────────────────────────────────────────────────── */
+
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  /* Navy at low alpha rather than a grey: it sits on --paper and reads as
+     the page's own colour drained out, not as a foreign box. */
+  background: rgba(11, 31, 58, 0.07);
+}
+
+.skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.55) 50%,
+    transparent 100%
+  );
+  animation: skeleton-sweep 1.4s ease-in-out infinite;
+}
+
+@keyframes skeleton-sweep {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* A moving highlight is exactly the kind of repeating motion this setting
+   exists to stop. The shapes stay, the sweep goes. */
+@media (prefers-reduced-motion: reduce) {
+  .skeleton::after {
+    animation: none;
+  }
+}
+
+.skeleton--text {
+  height: 0.85em;
+  border-radius: 4px;
+}
+
+.skeleton--title {
+  height: 2.4rem;
+  border-radius: 8px;
+}
+
+.skeleton--eyebrow {
+  height: 0.75rem;
+  width: 120px;
+  border-radius: 4px;
+}
+
+.skeleton--card {
+  height: 232px;
+  border-radius: 14px;
+}
+
+/* ── Route fallback ───────────────────────────────────────────
+   Deliberately generic. Every route here opens the same way — eyebrow,
+   heading, a line or two of intro, then a row of cards — so one shell
+   covers services, packages, about and contact without pretending to know
+   which one is coming. */
+
+.page-skeleton {
+  padding: 150px 0 90px;
+  background: var(--paper);
+  min-height: 70vh;
+}
+
+.page-skeleton__head {
+  max-width: 640px;
+  margin: 0 auto 56px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.page-skeleton__head .skeleton--title {
+  width: 100%;
+  max-width: 520px;
+}
+
+.page-skeleton__head .skeleton--text {
+  width: 100%;
+}
+
+.page-skeleton__head .skeleton--text:last-child {
+  width: 72%;
+}
+
+.page-skeleton__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+@media (max-width: 900px) {
+  .page-skeleton__grid {
+    grid-template-columns: 1fr;
+    max-width: 420px;
+    margin: 0 auto;
+  }
+
+  .page-skeleton {
+    padding: 130px 0 70px;
+  }
+}

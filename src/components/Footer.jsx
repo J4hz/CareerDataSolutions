@@ -88,10 +88,17 @@ const Footer = memo(function Footer({ track = null }) {
           {/* These three mirror the data bullets in the home page hero
               (src/pages/Home.jsx). Keep the two lists in step. */}
           <h3 className="footer__col-title">Data Services</h3>
+          {/* The three service lines used to point at the top of
+              /data/services, so three different labels went to one identical
+              destination — repetitive for anyone tabbing or listening
+              through the footer, and no help to a crawler. They now land on
+              the deliverables list that actually describes them (the id is
+              on the section in ServiceLanding.jsx; App.jsx does the
+              scrolling, globals.css keeps it clear of the fixed navbar). */}
           <ul className="footer__list footer__list--data">
-            <li><Link to="/data/services">Dashboards and reporting</Link></li>
-            <li><Link to="/data/services">Business performance analysis</Link></li>
-            <li><Link to="/data/services">Data-driven forecasting and planning</Link></li>
+            <li><Link to="/data/services#deliverables">Dashboards and reporting</Link></li>
+            <li><Link to="/data/services#deliverables">Business performance analysis</Link></li>
+            <li><Link to="/data/services#deliverables">Data-driven forecasting and planning</Link></li>
             <li><Link to="/data/packages">Scope tiers &amp; pricing</Link></li>
           </ul>
         </div>
@@ -101,9 +108,9 @@ const Footer = memo(function Footer({ track = null }) {
               (src/pages/Home.jsx). Keep the two lists in step. */}
           <h3 className="footer__col-title">Career Services</h3>
           <ul className="footer__list footer__list--career">
-            <li><Link to="/career/services">CV and LinkedIn optimisation</Link></li>
-            <li><Link to="/career/services">Cover letter/Resume tailored for specific roles</Link></li>
-            <li><Link to="/career/services">Interview coaching and job search strategy</Link></li>
+            <li><Link to="/career/services#deliverables">CV and LinkedIn optimisation</Link></li>
+            <li><Link to="/career/services#deliverables">Cover letter/Resume tailored for specific roles</Link></li>
+            <li><Link to="/career/services#deliverables">Interview coaching and job search strategy</Link></li>
             <li><Link to="/career/packages">Packages &amp; pricing</Link></li>
           </ul>
         </div>

@@ -4,6 +4,7 @@ import SiteLayout from './layouts/SiteLayout';
 import CareerLayout from './layouts/CareerLayout';
 import DataLayout from './layouts/DataLayout';
 import Seo from './components/Seo';
+import PageSkeleton from './components/PageSkeleton';
 
 const Home           = lazy(() => import('./pages/Home'));
 const CareerServices = lazy(() => import('./pages/CareerServices'));
@@ -22,17 +23,47 @@ const Privacy       = lazy(() => import('./pages/Privacy'));
 const Terms         = lazy(() => import('./pages/Terms'));
 const NotFound      = lazy(() => import('./pages/NotFound'));
 
+/**
+ * Scroll behaviour on navigation.
+ *
+ * Plain route change: back to the top, as before.
+ *
+ * With a hash (the footer's service links point at #deliverables): scroll to
+ * that element instead. React Router does not do this itself, and the browser
+ * cannot — the target does not exist yet at navigation time, because the
+ * route it lives on is lazy() and still loading. So this retries on the next
+ * frame until the element appears, giving up after a few attempts rather
+ * than spinning if the id is wrong.
+ */
 function ScrollToTop() {
-  const { pathname } = useLocation();
+  const { pathname, hash } = useLocation();
+
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
+    if (!hash) {
+      window.scrollTo(0, 0);
+      return undefined;
+    }
+
+    let frame;
+    let attempts = 0;
+    const seek = () => {
+      const target = document.querySelector(hash);
+      if (target) {
+        target.scrollIntoView({ block: 'start' });
+        return;
+      }
+      if (attempts++ < 60) frame = requestAnimationFrame(seek);
+    };
+    frame = requestAnimationFrame(seek);
+    return () => cancelAnimationFrame(frame);
+  }, [pathname, hash]);
+
   return null;
 }
 
-function PageFallback() {
-  return <div className="page-loading" role="status" aria-live="polite">Loading…</div>;
-}
+// Was a centred "Loading…". A shell in roughly the shape of the incoming
+// page reads as arriving rather than empty, and holds the layout still.
+// components/PageSkeleton.jsx.
 
 /**
  * Route tree for the career/data split.
@@ -55,7 +86,7 @@ export default function App() {
     <>
       <Seo />
       <ScrollToTop />
-      <Suspense fallback={<PageFallback />}>
+      <Suspense fallback={<PageSkeleton />}>
         <Routes>
           <Route element={<SiteLayout />}>
             <Route path="/"           element={<Home />} />

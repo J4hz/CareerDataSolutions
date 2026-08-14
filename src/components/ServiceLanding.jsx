@@ -104,8 +104,16 @@ export default function ServiceLanding({ track }) {
         </div>
       </section>
 
-      {/* DELIVERABLES */}
-      <section className="section lp-deliverables" aria-labelledby="lp-deliverables-heading">
+      {/* DELIVERABLES
+          id="deliverables" is a link target, not decoration: the footer's
+          three service lines point here rather than at the top of the page,
+          so clicking "Dashboards and reporting" lands on the list that
+          describes it. App.jsx honours the hash on navigation. */}
+      <section
+        id="deliverables"
+        className="section lp-deliverables"
+        aria-labelledby="lp-deliverables-heading"
+      >
         <div className="container">
           <span className="eyebrow lp-eyebrow">Scope</span>
           <h2 id="lp-deliverables-heading">{track.deliverablesTitle}</h2>
