@@ -108,7 +108,11 @@ export default async function handler(req, res) {
       subject: "You're booked with CareerDataSolutions",
       html: `
         <div style="font-family: sans-serif; max-width: 560px;">
-          <img src="${EMAIL_LOGO_URL}" alt="CareerDataSolutions" width="200" height="100" style="display: block; margin-bottom: 24px;" />
+          <!-- 200x37 is the logo's real 5.44:1 shape. It was declared
+               200x100, which squashed it in every client that honours the
+               attributes — and most email clients do, since they cannot lay
+               out from the image itself. -->
+          <img src="${EMAIL_LOGO_URL}" alt="CareerDataSolutions" width="200" height="37" style="display: block; margin-bottom: 24px;" />
           <h2 style="color: #0B1F3A;">Thanks for booking, ${name}!</h2>
           <p style="color: #0F172A; font-size: 14px; line-height: 1.6;">
             Your discovery call is confirmed. Cal.com has already sent you a

@@ -2,7 +2,7 @@ import { memo } from 'react';
 import { Link } from 'react-router-dom';
 import { WHATSAPP_URL, CONTACT_EMAIL } from '../config';
 // Same asset as the navbar: one logo file, so a rebrand is a single swap.
-// (Was logo-stacked.jpg, a separate stacked lockup of the old brand.)
+// (Was a separate stacked lockup of the old brand, since deleted.)
 // The 490x90 derivative covers the navbar's 45px and this 38px at 2x.
 import logoWebp from '../assets/generated/logo-490.webp';
 import logo from '../assets/generated/logo-490.png';

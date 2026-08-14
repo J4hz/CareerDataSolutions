@@ -47,6 +47,14 @@ const WEBP = { quality: 78 };
 const JPEG = { quality: 80, mozjpeg: true };
 const PNG = { compressionLevel: 9, palette: true };
 
+// public/logo-email.png is its own case: it is referenced by absolute URL
+// from the transactional emails (config.js EMAIL_LOGO_URL), so it needs a
+// stable public path rather than a hashed build asset, and it must stay PNG
+// because email clients cannot be relied on for WebP. It was a byte-for-byte
+// copy of the 1654x304 master — 365 KB fetched to draw a 200px-wide logo in
+// someone's inbox. 400px wide covers that at 2x.
+const EMAIL_LOGO = { src: 'logo.png', out: 'logo-email.png', width: 400 };
+
 const JOBS = [
   { src: 'logo.png', name: 'logo', widths: [490], fallback: 'png' },
   { src: 'hero-career.jpg', name: 'hero-career', widths: [800, 1600], fallback: 'jpg' },
@@ -88,6 +96,18 @@ async function main() {
       );
     }
   }
+
+  const emailSrc = join(assets, EMAIL_LOGO.src);
+  const emailOut = join(root, 'public', EMAIL_LOGO.out);
+  const emailBefore = (await stat(emailOut).catch(() => ({ size: 0 }))).size;
+  const emailInfo = await sharp(emailSrc)
+    .resize({ width: EMAIL_LOGO.width, withoutEnlargement: true })
+    .png(PNG)
+    .toFile(emailOut);
+  console.log(
+    `\npublic/${EMAIL_LOGO.out}  ${emailInfo.width}x${emailInfo.height}` +
+      `  ${kb(emailBefore)} -> ${kb(emailInfo.size)}`
+  );
 
   const files = (await readdir(outDir)).length;
   console.log(`\n✓ ${files} files in src/assets/generated/`);
