@@ -82,12 +82,14 @@ export default async function handler(req, res) {
   // The charged amount is decided HERE, from the package plus the server-held
   // promo code. api/promo.js only told the browser what to display; it has no
   // say in what is billed.
-  const { amountKES, promoApplied } = resolveAmount(pkg, promoCode);
+  const { amountKES, promoApplied, foundingApplied } = resolveAmount(pkg, promoCode);
 
   try {
     // The CV reaches the inbox before any payment is attempted, so a failed or
     // abandoned payment never costs us the submission.
-    const stored = await createOrder({ id, pkg, safe, cv, amountKES, promoApplied });
+    const stored = await createOrder({
+      id, pkg, safe, cv, amountKES, promoApplied, foundingApplied,
+    });
     if (!stored.ok) {
       return res.status(502).json({ error: 'We could not save your order. Please try again.' });
     }
@@ -128,6 +130,7 @@ export default async function handler(req, res) {
       token,
       amountKES,
       promoApplied,
+      foundingApplied,
     });
   } catch (err) {
     console.error('Order error:', err);

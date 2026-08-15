@@ -17,16 +17,21 @@ export const packages = [
   //
   // THE NUMBERS. Set by the business, not derived from a rate card:
   //
-  //   Starter    5–10 business days      → KES 90,000 / $700
+  //   Starter    7–21 days               → KES 90,000 / $700
   //   Growth     3–6 weeks               → KES 160,000 / $1,250
   //   Automation build, then ongoing     → KES 60,000 / $450, per month
   //
   // For reference when they next move: costed against the timelines above,
-  // Starter works out near KES 4,000/hr, comfortably above a full Nairobi BI
-  // consultant rate of KES 2,500–3,000/hr. Growth lands nearer KES 1,600/hr,
-  // well under it — widening its window to 3–6 weeks spreads the same fee over
-  // roughly twice the days. Growth is the tier to revisit first if the two
-  // ever need to converge on one rate.
+  // Growth lands near KES 1,600/hr, under a full Nairobi BI consultant rate
+  // of KES 2,500–3,000/hr, because a 3–6 week window spreads the same fee
+  // over roughly twice the days.
+  //
+  // STARTER NEEDS RECOSTING. It was quoted at 5–10 business days and worked
+  // out near KES 4,000/hr, comfortably above that consultant rate. The
+  // window is now 7–21 days — close to twice the midpoint — so the same
+  // KES 90,000 buys roughly half the hourly it used to, which puts it at or
+  // below the rate it was priced to beat. Either the fee or the window is
+  // the thing to move; nothing here has been adjusted to compensate.
   //
   // USD is a conversion at ~130 KES/USD rounded to the nearest $50, on the
   // same basis for every tier, so an overseas client and a local one are
@@ -43,7 +48,7 @@ export const packages = [
     priceKES: 'KES 90,000',
     amountKES: null,
     priceUSD: '$700 USD',
-    timeline: '5–10 business days',
+    timeline: '7–21 days',
     features: [
       '1 Power BI dashboard',
       'Up to 2 data sources',

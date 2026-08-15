@@ -105,10 +105,11 @@ export default function ServiceLanding({ track }) {
       </section>
 
       {/* DELIVERABLES
-          id="deliverables" is a link target, not decoration: the footer's
-          three service lines point here rather than at the top of the page,
-          so clicking "Dashboards and reporting" lands on the list that
-          describes it. App.jsx honours the hash on navigation. */}
+          id="deliverables" stays a link target, but nothing in the site
+          points at it today: the footer used to, and now sends visitors to
+          the top of the page instead of part-way down into this list. Kept
+          because it is a stable anchor someone may have linked to, and
+          because App.jsx already honours a hash on navigation. */}
       <section
         id="deliverables"
         className="section lp-deliverables"
@@ -228,7 +229,7 @@ export default function ServiceLanding({ track }) {
       {/* FAQ — content in data/faqs.js; the matching FAQPage JSON-LD is
           emitted per-route by src/seo/schema.js from the same data. */}
       {track.faqs && (
-        <section className="section lp-faq" aria-labelledby="lp-faq-heading">
+        <section id="faq" className="section lp-faq" aria-labelledby="lp-faq-heading">
           <div className="container">
             <div className="lp-faq__head">
               <span className="eyebrow lp-eyebrow">Common questions</span>

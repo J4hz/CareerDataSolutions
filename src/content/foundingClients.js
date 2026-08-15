@@ -46,16 +46,42 @@ export const foundingClientsConfig = {
   /* Incremented by hand as engagements complete. The callout disappears
      once this reaches engagementCap. */
   completedEngagements: 0,
+
+  /* The founding rate, as a percentage off every published price. Read by
+     data/pricing.js and by nothing else: no card, page or API route works
+     out a discount of its own, so the number below is the only place it
+     can be changed and the only place it can be wrong. */
+  discountPercent: 10,
+
+  /* Days past the end of the window during which the SERVER still charges
+     the founding rate.
+
+     The pages are prerendered, so a card shows whatever was true at BUILD
+     time (see the prerender note above), while api/order.js decides at
+     REQUEST time. Without a grace period the day the window closes, every
+     visitor on the already-built HTML would read the founding price and be
+     charged the list price — the one failure here that takes money someone
+     did not agree to. The grace makes the server the more generous of the
+     two for a week, which is the safe direction to be wrong in, and a week
+     is long enough to notice and redeploy.
+
+     It does not need to cover engagementCap: bumping completedEngagements
+     is an edit to this file, so the build and the server change together. */
+  graceDays: 7,
 };
 
 /* The visible copy, kept beside the config it is governed by so a future
    edit to one is made looking at the other. */
 export const foundingClientsCopy = {
   title: 'Founding Clients',
+  /* The percentage is interpolated rather than typed out, because it is also
+     the number the prices on every card are actually reduced by. Written by
+     hand it could say 10% while the cards said something else. */
   body:
     'We’re onboarding our first CareerDataSolutions clients now. Founding clients ' +
-    'get priority turnaround and a founding rate, in exchange for a testimonial ' +
-    'and permission to feature the work as a case study.',
+    `get ${foundingClientsConfig.discountPercent}% off every package and priority ` +
+    'turnaround, in exchange for a testimonial and permission to feature the ' +
+    'work as a case study.',
 };
 
 /** Last instant the offer is still true, as a Date. */
@@ -74,4 +100,20 @@ export function isFoundingClientsActive(now = new Date(), config = foundingClien
     now < foundingClientsEndDate(config) &&
     config.completedEngagements < config.engagementCap
   );
+}
+
+/**
+ * Whether the SERVER should still charge the founding rate — the same rule as
+ * above plus `graceDays`, for the reason given beside that setting.
+ *
+ * Only api/_lib/promo.js should call this. Anything that renders a price calls
+ * isFoundingClientsActive() instead, so the grace never shows up as an offer
+ * that is still being advertised after it ended: it only ever means the
+ * customer pays the lower of the two prices.
+ */
+export function isFoundingRateHonoured(now = new Date(), config = foundingClientsConfig) {
+  const graceEnds = new Date(
+    foundingClientsEndDate(config).getTime() + config.graceDays * 24 * 60 * 60 * 1000
+  );
+  return now < graceEnds && config.completedEngagements < config.engagementCap;
 }

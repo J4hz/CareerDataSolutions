@@ -119,7 +119,7 @@ const row = (label, value) => `
  *
  * `safe` values are already escaped by the caller (api/order.js).
  */
-export async function createOrder({ id, pkg, safe, cv, amountKES, promoApplied }) {
+export async function createOrder({ id, pkg, safe, cv, amountKES, promoApplied, foundingApplied }) {
   const resend = resendClient();
   const configuredFrom = process.env.NOTIFY_FROM || NOTIFY_FROM;
 
@@ -145,9 +145,14 @@ export async function createOrder({ id, pkg, safe, cv, amountKES, promoApplied }
           ${row('Package', `${pkg.name} (${pkg.tier})`)}
           ${row(
             'Amount',
+            // Anything other than the list price is called out with what the
+            // list price was, so a figure in your inbox is never just lower
+            // than expected with no explanation attached to it.
             promoApplied
               ? `${money(amountKES)} <span style="color:#B45309;font-weight:600;">(PROMO CODE · list price ${money(pkg.amountKES)})</span>`
-              : money(amountKES)
+              : foundingApplied
+                ? `${money(amountKES)} <span style="color:#B45309;font-weight:600;">(FOUNDING RATE · list price ${money(pkg.amountKES)})</span>`
+                : money(amountKES)
           )}
           ${row('Name', safe.name)}
           ${row('Email', safe.email)}

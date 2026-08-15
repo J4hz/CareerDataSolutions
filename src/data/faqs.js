@@ -23,7 +23,10 @@ export const dataFaqs = [
   },
   {
     q: 'How long does it take to build a custom dashboard?',
-    a: 'A standard single-department dashboard (for example, sales or operations) typically takes 5–10 business days from data access to delivery. More complex, multi-source dashboards can take 2–4 weeks. Timelines depend on how clean and accessible your existing data is, which is assessed on the discovery call, so you get a realistic date before anything is committed.',
+    // The two figures here are the Starter and Growth tiers in
+    // src/data/packages.js. They are the same promise stated in prose, so
+    // they move when those timelines move.
+    a: 'A standard single-department dashboard (for example, sales or operations) typically takes 7–21 days from data access to delivery. More complex, multi-source dashboards can take 3–6 weeks. Timelines depend on how clean and accessible your existing data is, which is assessed on the discovery call, so you get a realistic date before anything is committed.',
   },
   {
     q: 'What if our data is messy or spread across multiple systems?',

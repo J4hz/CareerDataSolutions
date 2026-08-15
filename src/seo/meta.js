@@ -24,22 +24,28 @@ const DEFAULT_OG_IMAGE = OG_IMAGE_URL;
  *  before the split are 308-redirected in vercel.json and are deliberately
  *  NOT listed here — a listed route gets prerendered and canonicalised. */
 export const staticRoutes = {
+  /* TITLES ARE WRITTEN TO A BUDGET. Google truncates around 60 characters,
+     so the words that earn the click go first and the brand goes last,
+     where losing it costs least. Every commercial route names its
+     geography, because "in Kenya" is half of what these pages are trying
+     to be found for and a description-only mention is a weaker signal than
+     the title. Check the length before adding to one of these. */
   '/': {
-    title: `${SITE_NAME} · Power BI Dashboards & Career Services | Nairobi, Kenya`,
+    title: `Power BI Dashboards & CV Writing, Nairobi | ${SITE_NAME}`,
     description:
       'CareerDataSolutions builds Power BI dashboards and ATS-optimized CVs from Nairobi, Kenya. Grounded in 12 years of Emergency Medical Services operational experience, working with clients locally and internationally.',
   },
 
   // ── Data track ──
   '/data/services': {
-    title: `Data Services · Power BI Dashboards & Analytics Automation | ${SITE_NAME}`,
+    title: `Power BI Dashboards & Analytics, Kenya | ${SITE_NAME}`,
     description:
-      'Power BI dashboards, Excel automation and operational analytics for organizations in Kenya and beyond. Free discovery call, quote confirmed in writing before work begins.',
+      'Power BI dashboards, Excel automation and operational analytics for businesses in Nairobi and across Kenya. Free discovery call, quote confirmed in writing before work begins.',
   },
   '/data/packages': {
-    title: `Data Scope Tiers & Pricing · Power BI Dashboards | ${SITE_NAME}`,
+    title: `Power BI Dashboard Pricing, Kenya | ${SITE_NAME}`,
     description:
-      'Scope tiers for Power BI dashboard builds and analytics automation, from a single-department starter dashboard to an ongoing automation retainer, in KES and USD.',
+      'What a Power BI dashboard costs in Kenya: scope tiers from a single-department starter build to an ongoing automation retainer, priced in KES and USD.',
   },
   '/data/about': {
     title: `About Kabiru Nyabwengi · ${SITE_NAME} | Nairobi, Kenya`,
@@ -47,31 +53,34 @@ export const staticRoutes = {
       'CareerDataSolutions is led by Kabiru Nyabwengi, whose years of Emergency Medical Services operations experience ground both the Power BI analytics and the career strategy work the consultancy delivers.',
   },
   '/data/contact': {
-    title: `Book a Discovery Call · Data Services | ${SITE_NAME}`,
+    title: `Book a Free Power BI Discovery Call | ${SITE_NAME}`,
     description:
-      'Tell us what you are trying to see and where your data sits, and book a free 30-minute discovery call to scope a Power BI dashboard or analytics automation project.',
+      'Tell us what you are trying to see and where your data sits, and book a free 30-minute discovery call to scope a Power BI dashboard or analytics automation project in Kenya.',
   },
 
   // ── Career track ──
   '/career/services': {
-    title: `Career Services · ATS CV Writing & LinkedIn Optimization | ${SITE_NAME}`,
+    title: `ATS CV Writing & LinkedIn Optimization, Kenya | ${SITE_NAME}`,
     description:
-      'ATS-optimized CV writing, LinkedIn profile optimization and career coaching for professionals targeting roles in Kenya, the UK, the US and the Gulf. Free CV review, honest feedback.',
+      'ATS-optimized CV writing, LinkedIn profile optimization and interview coaching in Nairobi, for professionals targeting roles in Kenya, the UK, the US and the Gulf. Free CV review, honest feedback.',
   },
   '/career/packages': {
-    title: `Career Packages & Pricing · CV Writing & LinkedIn | ${SITE_NAME}`,
+    title: `CV Writing & LinkedIn Packages, Kenya | ${SITE_NAME}`,
     description:
-      'Transparent packages for ATS-optimized CV writing, LinkedIn optimization and interview coaching, from entry-level to mid-career, in KES and USD.',
+      'What professional CV writing costs in Kenya: packages covering ATS-optimized CVs, LinkedIn optimization and interview coaching, entry-level to mid-career, in KES and USD.',
   },
   '/career/about': {
     title: `About Kabiru Nyabwengi · ${SITE_NAME} | Nairobi, Kenya`,
     description:
       'CareerDataSolutions is led by Kabiru Nyabwengi, whose years of Emergency Medical Services operations experience ground both the career strategy and the Power BI analytics work the consultancy delivers.',
   },
+  /* "free CV review" is the strongest query this site can honestly answer —
+     it is a real, free thing on the other side of the click, not a lead
+     magnet with a paywall behind it. Worth the whole title. */
   '/career/contact': {
-    title: `Submit Your CV · Career Services | ${SITE_NAME}`,
+    title: `Free CV Review, Kenya | ${SITE_NAME}`,
     description:
-      'Send us your CV and career goals to start an ATS-optimized CV rewrite, LinkedIn optimization or career coaching engagement.',
+      'Send your CV for a free, honest review from Nairobi before you pay for anything, or start an ATS-optimized CV rewrite, LinkedIn optimization or interview coaching engagement.',
   },
   // Checkout. Listed here so it is prerendered — a route in App.jsx but not in
   // this registry hard-404s on a direct load (see scripts/prerender.js). The

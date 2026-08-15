@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { packagePricing } from '../../data/pricing';
 
 export default function PackageCard({ pkg, variant = 'card' }) {
   const isData = pkg.track === 'data';
@@ -19,8 +20,27 @@ export default function PackageCard({ pkg, variant = 'card' }) {
   // timeline dropped to the line below. Every tier publishes both today; the
   // fallback keeps a card readable if a future one ships without a USD price,
   // by promoting KES to the lead slot with nothing trailing it.
-  const priceLead = pkg.priceUSD || pkg.priceKES;
-  const priceTrail = pkg.priceUSD ? pkg.priceKES : null;
+  //
+  // While the founding offer runs these are the reduced figures, and the list
+  // price moves to the struck-through line above. Both come out of
+  // packagePricing(), which is also what api/order.js bills from — the card
+  // and the charge cannot disagree.
+  const price = packagePricing(pkg);
+  const priceLead = price.usdLabel || price.kesLabel;
+  const priceTrail = price.usdLabel ? price.kesLabel : null;
+
+  const wasLine = price.discounted ? (
+    <div className="pkg-was">
+      <span className="sr-only">Regular price </span>
+      <s className="pkg-was__price">
+        {price.wasUSDLabel ? `${price.wasUSDLabel} / ${price.wasKESLabel}` : price.wasKESLabel}
+      </s>
+      <span className="pkg-was__tag" style={{ color: accentInk }}>
+        {price.percent}% founding
+      </span>
+      <span className="sr-only">, now</span>
+    </div>
+  ) : null;
 
   if (variant === 'list') {
     const trackPillBg = isData ? 'rgba(29,158,117,0.10)' : 'rgba(244,168,51,0.12)';
@@ -60,6 +80,7 @@ export default function PackageCard({ pkg, variant = 'card' }) {
         {/* Price + CTA */}
         <div className="pkg-row__side">
           {pkg.pricePrefix && <div className="pkg-row__price-prefix">{pkg.pricePrefix}</div>}
+          {wasLine}
           <div className="pkg-row__price" style={{ color: accent }}>
             <span className="pkg-row__price-part">{priceLead}</span>
             {priceTrail && (
@@ -134,6 +155,7 @@ export default function PackageCard({ pkg, variant = 'card' }) {
             {pkg.pricePrefix}
           </div>
         )}
+        {wasLine}
         {/* Both currencies at one size in one colour, so the pair reads as a
             single price rather than a headline with a footnote. Sized in
             packages.css, where a media query can hold the longest string — the

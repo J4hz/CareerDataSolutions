@@ -51,6 +51,12 @@
   margin-bottom: 18px;
 }
 
+/* Founding rate above the summary price. .pkg-was in globals.css does the
+   work; this only buys it a little air before the 2rem figure below. */
+.order-summary__was {
+  margin-bottom: 4px;
+}
+
 .order-summary__price {
   display: flex;
   align-items: baseline;
@@ -373,6 +379,18 @@
   letter-spacing: -0.5px;
   color: var(--gold-deep);
   margin-top: 8px;
+}
+
+/* The list price sits inline ahead of the founding one here rather than on
+   its own line: these cards are a compact three-across grid, and a second
+   line of price would push the timeline out of the shortest one. */
+.order-picker__was {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--gm);
+  text-decoration: line-through;
+  letter-spacing: 0;
 }
 
 .order-picker__alt {

@@ -42,7 +42,6 @@ const Footer = memo(function Footer({ track = null }) {
   // change under the visitor mid-session. On the neutral shell it goes to the
   // neutral /about, which is where the homepage nav points too.
   const aboutTo = track ? `/${track}/about` : '/about';
-  const contactTo = track === 'career' ? '/career/contact' : '/data/contact';
 
   return (
     <footer className="footer">
@@ -83,35 +82,41 @@ const Footer = memo(function Footer({ track = null }) {
           </p>
         </div>
 
-        {/* Each line goes to the track that actually delivers it. */}
+        {/* Each column is the map of one track: overview, prices, answers,
+            and the way in. Four lines, four destinations, no two the same.
+
+            These used to be service names — "Custom Power BI dashboards" and
+            so on — deep-linked to the matching card. That is why the cards
+            in ServiceLanding.jsx no longer need ids: the footer was the only
+            thing pointing at them. It landed a visitor inside the "Scope"
+            list, part-way down a page they had not seen the top of, which is
+            a worse first impression than the page itself.
+
+            The labels name what is at the other end. "Common questions" is
+            the FAQ section's own eyebrow, and "Pricing" rather than
+            "Packages" on the data side because /data/packages leads with
+            "Scope tiers built for every stage" — that track quotes, it does
+            not sell packages. */}
         <div className="footer__col">
-          {/* These three mirror the data bullets in the home page hero
-              (src/pages/Home.jsx). Keep the two lists in step. */}
           <h3 className="footer__col-title">Data Services</h3>
-          {/* The three service lines used to point at the top of
-              /data/services, so three different labels went to one identical
-              destination — repetitive for anyone tabbing or listening
-              through the footer, and no help to a crawler. They now land on
-              the deliverables list that actually describes them (the id is
-              on the section in ServiceLanding.jsx; App.jsx does the
-              scrolling, globals.css keeps it clear of the fixed navbar). */}
           <ul className="footer__list footer__list--data">
-            <li><Link to="/data/services#deliverables">Dashboards and reporting</Link></li>
-            <li><Link to="/data/services#deliverables">Business performance analysis</Link></li>
-            <li><Link to="/data/services#deliverables">Data-driven forecasting and planning</Link></li>
-            <li><Link to="/data/packages">Scope tiers &amp; pricing</Link></li>
+            <li><Link to="/data/services">Data services overview</Link></li>
+            <li><Link to="/data/packages">Pricing</Link></li>
+            <li><Link to="/data/services#faq">Common questions</Link></li>
+            <li><Link to="/data/contact">Book a discovery call</Link></li>
           </ul>
         </div>
 
         <div className="footer__col">
-          {/* These three mirror the career bullets in the home page hero
-              (src/pages/Home.jsx). Keep the two lists in step. */}
           <h3 className="footer__col-title">Career Services</h3>
           <ul className="footer__list footer__list--career">
-            <li><Link to="/career/services#deliverables">CV and LinkedIn optimisation</Link></li>
-            <li><Link to="/career/services#deliverables">Cover letter/Resume tailored for specific roles</Link></li>
-            <li><Link to="/career/services#deliverables">Interview coaching and job search strategy</Link></li>
-            <li><Link to="/career/packages">Packages &amp; pricing</Link></li>
+            <li><Link to="/career/services">Career services overview</Link></li>
+            <li><Link to="/career/packages">Packages and pricing</Link></li>
+            <li><Link to="/career/services#faq">Common questions</Link></li>
+            {/* The career contact page is the free CV review, not a booking
+                form. Naming it that is both more accurate and the stronger
+                offer of the two. */}
+            <li><Link to="/career/contact">Get a free CV review</Link></li>
           </ul>
         </div>
 
@@ -137,10 +142,11 @@ const Footer = memo(function Footer({ track = null }) {
 
         <div className="footer__col">
           <h3 className="footer__col-title">Contact</h3>
+          {/* Both ways in now live in the track columns above, where they say
+              which track they lead to. A third, track-guessing "Book a
+              discovery call" here pointed at the same two pages under a
+              vaguer label, so this column is the direct channels only. */}
           <ul>
-            <li>
-              <Link to={contactTo}>Book a discovery call</Link>
-            </li>
             <li>
               <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">
                 WhatsApp us

@@ -20,11 +20,24 @@
 
 import { verifyOrderToken, markPaid } from './_lib/orders.js';
 import { checkStatus, settlesOnStatusCheck } from './_lib/payments.js';
+import { limited } from './_lib/rate-limit.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
+
+  // Unlike the other routes this one is *meant* to be hammered: the checkout
+  // polls every 3s for up to 120s, so one honest payment is ~40 calls, and
+  // api/order.js already allows five payments per ten minutes — 200. The cap
+  // is set above that rather than near it, because every call it accepts is a
+  // server-to-server STK Query on our Daraja credentials.
+  //
+  // The client treats a 429 as "keep waiting", not as a failed payment (see
+  // CareerOrder.jsx). It must stay that way: telling someone their payment
+  // failed while the prompt is still live on their phone is worse than the
+  // extra polls.
+  if (await limited(req, res, 'order-status', { limit: 240, windowSeconds: 600 })) return;
 
   const order = verifyOrderToken(req.query?.token);
   if (!order) {

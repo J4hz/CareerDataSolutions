@@ -23,6 +23,7 @@
 import { Resend } from 'resend';
 import { CONTACT_EMAIL, NOTIFY_FROM, SITE_DOMAIN } from '../src/config.js';
 import { cleanText, cleanHeader, isValidEmail } from './_lib/sanitize.js';
+import { limited } from './_lib/rate-limit.js';
 
 export default async function handler(req, res) {
   if (!process.env.RESEND_API_KEY) {
@@ -34,6 +35,12 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
+
+  // Every accepted call sends mail to the team inbox on Resend's quota, and
+  // nothing here is authenticated. Same five in ten minutes as the two
+  // notify-* routes; no browser code posts here at all any more (cal-webhook
+  // took over booking alerts), so even that is generous.
+  if (await limited(req, res, 'notify', { limit: 5, windowSeconds: 600 })) return;
 
   const { name, email, phone, reason, discussion } = req.body ?? {};
 

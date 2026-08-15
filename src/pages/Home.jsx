@@ -191,7 +191,9 @@ export default function Home() {
               <ul className="path-card__list">
                 <li>Custom Power BI and Excel dashboards built from your existing data (e.g. sales, operations, HR or finance)</li>
                 <li>We clean and structure messy or scattered data as part of the engagement, so you don't need it "ready" first</li>
-                <li>Single-department builds in 5–10 business days; multi-source builds in 2–4 weeks</li>
+                {/* Starter and Growth from src/data/packages.js, restated for
+                    the homepage. Move these when those timelines move. */}
+                <li>Single-department builds in 7–21 days; multi-source builds in 3–6 weeks</li>
                 <li>Live, visual reporting that replaces "we think" with "we know"</li>
               </ul>
               <Link to="/data/services" className="btn btn--teal">

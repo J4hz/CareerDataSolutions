@@ -78,6 +78,7 @@
   white-space: nowrap;
 }
 
+
 /* The grid is still three across down to 900px, so cards are at their
    narrowest just above that edge; below it they go two across and get roomy
    again. Measured against the longest of the three prices: 18px holds one

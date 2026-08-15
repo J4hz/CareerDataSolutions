@@ -23,6 +23,7 @@ import {
 import { posts } from '../data/blog.js';
 import { dataFaqs, careerFaqs } from '../data/faqs.js';
 import { dataPackages, careerPackages } from '../data/packages.js';
+import { packagePricing } from '../data/pricing.js';
 import { allRoutes } from './meta.js';
 
 /* Stable node identifiers. Every @id on the site is declared here, so the
@@ -41,9 +42,17 @@ const SAME_AS = [
   // 'https://www.upwork.com/agencies/careerdatasolutions',
 ].filter(Boolean);
 
-/* Both tracks serve the same two areas, and so does the business itself.
-   One array rather than three copies, so they cannot drift apart. */
+/* Both tracks serve the same areas, and so does the business itself. One
+   array rather than three copies, so they cannot drift apart.
+
+   Nairobi is named as a City in its own right rather than left implied by
+   Kenya. A local query is the specific case this site most wants to win,
+   and "serves Kenya" is a weaker answer to "near Nairobi" than "serves
+   Nairobi" is. The country and the worldwide entry stay: the work is
+   genuinely delivered remotely, and dropping them to look more local would
+   be narrowing a true claim to chase a ranking. */
 const AREA_SERVED = [
+  { '@type': 'City', name: 'Nairobi' },
   { '@type': 'Country', name: 'Kenya' },
   { '@type': 'Place', name: 'Worldwide' },
 ];
@@ -73,6 +82,24 @@ function organization() {
       addressCountry: 'KE',
     },
     areaServed: AREA_SERVED,
+    /* The subjects this organization is actually competent in. This is the
+       plainest statement on the site of what to return it for, and it is
+       read by answer engines as much as by search: a model deciding whether
+       CareerDataSolutions is a relevant answer to "who writes ATS CVs in
+       Nairobi" is doing entity matching, not keyword matching.
+
+       Every entry has to be a thing the site demonstrably does. Padding
+       this with adjacent skills nobody here sells would make the whole node
+       less trustworthy, not more findable. */
+    knowsAbout: [
+      'Power BI dashboard development',
+      'Business intelligence and data visualization',
+      'Excel automation and reporting',
+      'Data cleaning and structuring',
+      'ATS-optimized CV writing',
+      'LinkedIn profile optimization',
+      'Interview preparation and job search strategy',
+    ],
     ...(SAME_AS.length ? { sameAs: SAME_AS } : {}),
   };
 }
@@ -132,22 +159,24 @@ function localBusiness() {
 }
 
 /**
- * The KES figure for a package.
+ * The KES figure for a package: whatever the card shows today, which is the
+ * founding rate while that offer is running and the list price once it is
+ * not. data/pricing.js resolves that, and it is also what api/order.js bills
+ * from, so an Offer here cannot advertise a price the page does not show or
+ * the checkout does not honour.
  *
- * Career tiers carry `amountKES`, the authoritative integer api/order.js
- * actually bills. Data tiers deliberately carry null there — they are quoted
- * after a discovery call, not sold off the page — so their number is read
- * from the display string the pricing page itself shows, which is exactly
- * the figure this schema is supposed to mirror.
+ * Career tiers price off `amountKES`, the authoritative integer. Data tiers
+ * deliberately carry null there — they are quoted after a discovery call,
+ * not sold off the page — so their number is read back out of the display
+ * string, which is exactly the figure this schema is meant to mirror.
  *
  * USD is not emitted as a second Offer. src/data/packages.js documents it as
  * a conversion at ~130 KES/USD rounded to the nearest $50, so it is the same
  * price restated, not a separate one to advertise.
  */
 function kesAmount(pkg) {
-  if (typeof pkg.amountKES === 'number') return pkg.amountKES;
-  const digits = String(pkg.priceKES).replace(/[^0-9]/g, '');
-  return digits ? Number(digits) : null;
+  const { kes } = packagePricing(pkg);
+  return typeof kes === 'number' ? kes : null;
 }
 
 /**

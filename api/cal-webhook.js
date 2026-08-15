@@ -14,7 +14,7 @@
 
 import crypto from 'node:crypto';
 import { Resend } from 'resend';
-import { EMAIL_LOGO_URL, NOTIFY_FROM, CONTACT_EMAIL, NOTIFY_EMAIL } from '../src/config.js';
+import { EMAIL_LOGO_URL, NOTIFY_FROM, CONTACT_EMAIL } from '../src/config.js';
 import { cleanText, isValidEmail } from './_lib/sanitize.js';
 
 export const config = {

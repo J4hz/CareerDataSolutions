@@ -29,11 +29,17 @@ export default async function handler(req, res) {
 
   const { amountKES, promoApplied } = resolveAmount(pkg, code);
 
+  // What the total was before the code, which is the founding price while
+  // that offer is running rather than the list price. The checkout strikes
+  // this figure through, and striking through a number the visitor was never
+  // going to pay would overstate what the code just saved them.
+  const { amountKES: beforeCode } = resolveAmount(pkg, null);
+
   // One answer shape either way: a wrong code and an unconfigured promo are
   // indistinguishable from out here.
   return res.status(200).json({
     valid: promoApplied,
     amountKES,
-    originalKES: pkg.amountKES,
+    originalKES: beforeCode,
   });
 }

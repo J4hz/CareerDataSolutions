@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { careerPackages } from '../data/packages';
 import { useCvUpload, MAX_CV_MB } from '../hooks/useCvUpload';
 import { WHATSAPP_URL, CONTACT_EMAIL } from '../config';
+import { packagePricing, formatKES } from '../data/pricing';
 import '../styles/contact.css';
 import '../styles/order.css';
 
@@ -79,7 +80,17 @@ export default function CareerOrder() {
           setStatus('paid');
           return;
         }
-        if (body.status === 'failed' || !res.ok) {
+        // A rail that says "failed" is final, and so is a 4xx: the token is
+        // tampered, malformed or expired, and polling again cannot fix any of
+        // those. Everything else is this endpoint having a bad moment rather
+        // than the customer's payment going wrong — a 429 from the poll limit,
+        // a 5xx from a Daraja blip — while the prompt is still live on their
+        // phone. Those keep polling, exactly like the dropped request in the
+        // catch below, and POLL_TIMEOUT_MS is what ends the wait.
+        const fatal =
+          body.status === 'failed' || (!res.ok && res.status < 500 && res.status !== 429);
+
+        if (fatal) {
           setErrors({ submit: body.error || 'The payment was not completed.' });
           setStatus('failed');
           return;
@@ -98,8 +109,15 @@ export default function CareerOrder() {
     };
   }, [status, session]);
 
-  const money = (n) => `KES ${Number(n).toLocaleString('en-KE')}`;
-  const chargedKES = promo.applied ? promo.amountKES : pkg?.amountKES;
+  // Same formatter the cards use, so a figure cannot be written one way on the
+  // packages page and another here.
+  const money = (n) => formatKES(Number(n));
+
+  /* Founding rate, if it is running. `price.kes` is what api/order.js will
+     bill — both sides read it out of data/pricing.js — so the total below is
+     a statement about the charge rather than a second opinion on it. */
+  const price = pkg ? packagePricing(pkg) : null;
+  const chargedKES = promo.applied ? promo.amountKES : price?.kes;
 
   const applyPromo = async () => {
     const code = promo.code.trim();
@@ -210,14 +228,26 @@ export default function CareerOrder() {
             Pick the package you want and we will take your details on the next step.
           </p>
           <div className="order-picker__grid">
-            {careerPackages.map((p) => (
-              <Link key={p.id} to={`/career/order?pkg=${p.id}`} className="order-picker__card">
-                <span className="order-picker__name">{p.name}</span>
-                <span className="order-picker__tier">{p.tier}</span>
-                <span className="order-picker__price">{p.priceKES}</span>
-                <span className="order-picker__timeline">{p.timeline}</span>
-              </Link>
-            ))}
+            {careerPackages.map((p) => {
+              const pPrice = packagePricing(p);
+              return (
+                <Link key={p.id} to={`/career/order?pkg=${p.id}`} className="order-picker__card">
+                  <span className="order-picker__name">{p.name}</span>
+                  <span className="order-picker__tier">{p.tier}</span>
+                  <span className="order-picker__price">
+                    {pPrice.discounted && (
+                      <>
+                        <span className="sr-only">Regular price </span>
+                        <s className="order-picker__was">{pPrice.wasKESLabel}</s>{' '}
+                        <span className="sr-only">, now</span>
+                      </>
+                    )}
+                    {pPrice.kesLabel}
+                  </span>
+                  <span className="order-picker__timeline">{p.timeline}</span>
+                </Link>
+              );
+            })}
           </div>
           <p className="order-picker__alt">
             Not ready to buy? <Link to="/career/contact">Get a free CV review first →</Link>
@@ -238,9 +268,19 @@ export default function CareerOrder() {
             {pkg.tier} · {pkg.audience}
           </p>
 
+          {price.discounted && (
+            <div className="pkg-was order-summary__was">
+              <span className="sr-only">Regular price </span>
+              <s className="pkg-was__price">
+                {price.wasKESLabel} / {price.wasUSDLabel}
+              </s>
+              <span className="pkg-was__tag">{price.percent}% founding</span>
+              <span className="sr-only">, now</span>
+            </div>
+          )}
           <div className="order-summary__price">
-            <span className="order-summary__kes">{pkg.priceKES}</span>
-            <span className="order-summary__usd">{pkg.priceUSD}</span>
+            <span className="order-summary__kes">{price.kesLabel}</span>
+            <span className="order-summary__usd">{price.usdLabel}</span>
           </div>
           <p className="order-summary__timeline">Delivered in {pkg.timeline}</p>
 
@@ -451,8 +491,15 @@ export default function CareerOrder() {
               <div className="order-total">
                 <span>Total</span>
                 <strong>
-                  {promo.applied && (
-                    <s className="order-total__was">{pkg.priceKES}</s>
+                  {/* What the total would have been without whichever
+                      reduction is in play. A code beats the founding rate
+                      rather than stacking with it, so when both are live the
+                      struck figure is the founding price — the one the
+                      visitor was actually about to pay. */}
+                  {(promo.applied || price.discounted) && (
+                    <s className="order-total__was">
+                      {promo.applied ? money(price.kes) : price.wasKESLabel}
+                    </s>
                   )}
                   {money(chargedKES)}
                 </strong>

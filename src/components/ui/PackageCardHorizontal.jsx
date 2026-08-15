@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { packagePricing } from '../../data/pricing';
 
 const DataIcon = () => (
   <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">
@@ -24,6 +25,7 @@ const ClockIcon = () => (
 );
 
 export default function PackageCardHorizontal({ pkg }) {
+  const price      = packagePricing(pkg);
   const isData     = pkg.track === 'data';
   const contactPath = isData ? '/data/contact' : '/career/contact';
   const accent     = isData ? 'var(--teal)' : 'var(--gold)';
@@ -137,6 +139,18 @@ export default function PackageCardHorizontal({ pkg }) {
           {pkg.timeline}
         </div>
 
+        {/* List price, struck through, only while the founding offer runs */}
+        {price.discounted && (
+          <div className="pkg-was">
+            <span className="sr-only">Regular price </span>
+            <s className="pkg-was__price">{price.wasKESLabel}</s>
+            <span className="pkg-was__tag" style={{ color: accent }}>
+              {price.percent}% founding
+            </span>
+            <span className="sr-only">, now</span>
+          </div>
+        )}
+
         {/* KES price */}
         <div style={{
           fontFamily: 'var(--font-display)',
@@ -147,7 +161,7 @@ export default function PackageCardHorizontal({ pkg }) {
           lineHeight: 1,
           marginBottom: '4px',
         }}>
-          {pkg.priceKES}
+          {price.kesLabel}
         </div>
 
         {/* USD price */}
@@ -156,7 +170,7 @@ export default function PackageCardHorizontal({ pkg }) {
           color: 'var(--gm)',
           marginBottom: '20px',
         }}>
-          (~{pkg.priceUSD})
+          (~{price.usdLabel})
         </div>
 
         {/* CTA button */}

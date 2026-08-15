@@ -52,7 +52,7 @@ export const dataTrack = {
      track (showHeroViz below), so the row has half the width it does on the
      career page. */
   stats: [
-    { num: '5–10 days', label: 'Turnaround on a single-department dashboard' },
+    { num: '7–21 days', label: 'Turnaround on a single-department dashboard' },
     { num: 'Free', label: 'Discovery call before you commit to anything' },
   ],
 
