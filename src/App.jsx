@@ -17,10 +17,13 @@ const About         = lazy(() => import('./pages/About'));
 const ContactCareer = lazy(() => import('./pages/ContactCareer'));
 const ContactData   = lazy(() => import('./pages/ContactData'));
 const CareerOrder   = lazy(() => import('./pages/CareerOrder'));
-// Scaffolds. Both are noindex in seo/meta.js and carry a placeholder banner
-// until the advocate-reviewed text replaces them — see pages/Privacy.jsx.
-const Privacy       = lazy(() => import('./pages/Privacy'));
-const Terms         = lazy(() => import('./pages/Terms'));
+// HIDDEN FROM THE LIVE SITE, like the blog above. Both were scaffolds
+// carrying a "what this page will cover" placeholder, and a published
+// placeholder reads as an unfinished site rather than a considered one.
+// pages/Privacy.jsx, pages/Terms.jsx and components/LegalPage.jsx are all
+// untouched on disk; restore alongside the routes below.
+// const Privacy    = lazy(() => import('./pages/Privacy'));
+// const Terms      = lazy(() => import('./pages/Terms'));
 const NotFound      = lazy(() => import('./pages/NotFound'));
 
 /**
@@ -105,10 +108,16 @@ export default function App() {
             <Route path="/blog"       element={<Blog />} />
             <Route path="/blog/:slug" element={<BlogPost />} />
             */}
-            {/* Neutral shell: the legal pages belong to the company, not
-                to either track, so they pick no lane. */}
+            {/* LEGAL PAGES — HIDDEN FROM THE LIVE SITE.
+                Neutral shell when they return: the legal pages belong to the
+                company, not to either track, so they pick no lane. Restore
+                these two routes, the lazy() imports at the top of this file,
+                the two Footer links, and the seo/meta.js entries — all four,
+                or the page is unreachable, unlinked, or hard-404s on a
+                direct load.
             <Route path="/privacy"    element={<Privacy />} />
             <Route path="/terms"      element={<Terms />} />
+            */}
             <Route path="*"           element={<NotFound />} />
           </Route>
 

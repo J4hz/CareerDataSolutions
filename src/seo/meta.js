@@ -104,26 +104,25 @@ export const staticRoutes = {
   },
 
   // ── Legal ──
-  // Scaffolds: real text is pending advocate review, so both are noindex
-  // for the same reason /career/order is — there is nothing here worth
-  // putting in front of a searcher yet, and a placeholder ranking for
-  // "CareerDataSolutions privacy policy" would be worse than no page.
-  // scripts/sitemap.js skips noindex routes, so neither is submitted.
-  // They still need entries here: a route missing from this registry is
-  // never prerendered and hard-404s on a direct load or a shared link.
-  // Drop noindex in the same commit that removes the placeholder banner.
-  '/privacy': {
-    title: `Privacy Policy | ${SITE_NAME}`,
-    description:
-      'How CareerDataSolutions handles the personal data submitted through this site.',
-    noindex: true,
-  },
-  '/terms': {
-    title: `Terms of Service | ${SITE_NAME}`,
-    description:
-      'The terms covering CareerDataSolutions engagements, deliverables and payment.',
-    noindex: true,
-  },
+  // Removed while the two pages are hidden (see App.jsx), on the same
+  // reasoning as the '/blog' entry below: a route left in this registry is
+  // prerendered and reachable by anyone with the URL even when nothing
+  // links to it, which is not hidden.
+  //
+  // They were noindex while they existed, so nothing has been submitted to
+  // a search engine and there is no ranking to lose by removing them. Put
+  // both entries back — WITHOUT noindex, once the text is real — in the
+  // same commit that restores the routes:
+  // '/privacy': {
+  //   title: `Privacy Policy | ${SITE_NAME}`,
+  //   description:
+  //     'How CareerDataSolutions handles the personal data submitted through this site.',
+  // },
+  // '/terms': {
+  //   title: `Terms of Service | ${SITE_NAME}`,
+  //   description:
+  //     'The terms covering CareerDataSolutions engagements, deliverables and payment.',
+  // },
 
   // The '/blog' entry is removed while Insights is hidden, so the blog is
   // left out of the prerender and the sitemap. Restore it alongside the
