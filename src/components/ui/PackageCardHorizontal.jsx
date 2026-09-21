@@ -38,7 +38,7 @@ export default function PackageCardHorizontal({ pkg }) {
     : 'var(--gl)';
   const featuredBg = pkg.featured
     ? (isData ? 'rgba(29,158,117,0.025)' : 'rgba(244,168,51,0.025)')
-    : 'var(--white)';
+    : 'var(--surface)';
 
   const isSingleCol = pkg.features.length <= 3;
 

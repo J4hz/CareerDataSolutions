@@ -17,11 +17,18 @@
      which are vivid enough to read on navy (4.8:1 and 8.2:1). */
   --teal2:     var(--teal);
   --gold2:     var(--gold);
+  /* No longer referenced anywhere: every use was rewritten to --paper,
+     which is what this always resolved to. Kept declared for a beat in case
+     anything outside src/ reaches for it. */
   --off:       var(--paper);
   --gl:        var(--line);
   --gm:        var(--ink-soft);
   --gd:        var(--ink);
-  --dark:      var(--navy-950);
+  /* Every use of --dark is text on a light surface, never a fill, so it is
+     the strongest ink rather than a dark colour. Pointing it at
+     --ink-strong (which IS --navy-950 in light) themes all 25 of them
+     without touching a single one. */
+  --dark:      var(--ink-strong);
   --footer-bg: var(--navy-950);
   /* --whatsapp / --whatsapp-dark now live in theme.css, alongside the two
      other non-palette colours, so every raw hex on the site is declared in
@@ -38,9 +45,9 @@
   --radius-lg:  20px;
   --radius-xl:  28px;
 
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
-  --shadow-md: 0 4px 16px rgba(0,0,0,0.10);
-  --shadow-lg: 0 8px 32px rgba(0,0,0,0.14);
+  /* --shadow-sm / -md / -lg moved to theme.css: they are rgba() values,
+     and that file holds every colour on the site. They also fork in dark,
+     where a 0.08 black does not register. */
 
   --transition: 0.22s ease;
 
@@ -76,7 +83,9 @@ html {
 body {
   font-family: var(--font-body);
   color: var(--gd);
-  background: var(--white);
+  /* --paper, not --white: this is the page surface, and it is the one
+     thing that has to follow the theme. See theme.css. */
+  background: var(--paper);
   overflow-x: hidden;
   max-width: 100%;
   line-height: 1.6;
@@ -86,7 +95,11 @@ body {
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);
   line-height: 1.2;
-  color: var(--navy);
+  /* --ink, not --navy. Identical in light (--ink IS navy there), but --navy
+     is the fill colour of buttons and dark bands and does not follow the
+     theme; --ink is the page's text colour and does. Headings that sit on a
+     navy surface set --white themselves and are unaffected. */
+  color: var(--ink);
 }
 
 a {

@@ -1,18 +1,18 @@
 .blog-page__header {
-  background: var(--white);
+  background: var(--paper);
   padding: 140px 0 48px;
 }
 
 .blog-page__header h1 {
   font-size: clamp(2rem, 4vw, 3rem);
   font-weight: 800;
-  color: var(--navy);
+  color: var(--ink);
   letter-spacing: -0.025em;
   margin-top: 12px;
 }
 
 .blog-page__main {
-  background: var(--off);
+  background: var(--paper);
 }
 
 .blog-page__filters {
@@ -28,15 +28,15 @@
   font-size: 0.875rem;
   font-weight: 600;
   border: 2px solid var(--gl);
-  background: var(--white);
+  background: var(--surface);
   color: var(--gm);
   cursor: pointer;
   transition: all var(--transition);
 }
 
 .blog-page__filter:hover {
-  border-color: var(--navy);
-  color: var(--navy);
+  border-color: var(--ink);
+  color: var(--ink);
 }
 
 .blog-page__filter--active {
@@ -107,7 +107,7 @@
 }
 
 .blog-post__body {
-  background: var(--white);
+  background: var(--paper);
   padding: 72px 0 48px;
 }
 
@@ -139,7 +139,7 @@
 }
 
 .blog-post__inline-cta {
-  background: var(--off);
+  background: var(--surface);
   border-left: 4px solid var(--teal);
   border-radius: 0 var(--radius-md) var(--radius-md) 0;
   padding: 24px 28px;
@@ -170,7 +170,7 @@
 }
 
 .blog-post__inline-cta-link:hover {
-  color: var(--navy);
+  color: var(--ink);
 }
 
 @media (max-width: 600px) {

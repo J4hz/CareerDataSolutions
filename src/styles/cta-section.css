@@ -95,7 +95,7 @@
   left: 50%;
   transform: translateX(-50%);
   min-width: 232px;
-  background: var(--white);
+  background: var(--surface);
   border: 1px solid var(--gl);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-lg);
@@ -154,8 +154,8 @@
 .cta-section__book-item--career::before { background: var(--gold); }
 
 .cta-section__book-item:hover {
-  background: var(--off);
-  color: var(--navy);
+  background: var(--paper);
+  color: var(--ink);
 }
 
 @media (prefers-reduced-motion: reduce) {

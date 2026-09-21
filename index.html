@@ -13,6 +13,19 @@
     <meta name="theme-color" content="#0B1F3A" />
 
     <!--
+      Resolves the light/dark theme onto <html> before the first paint, so
+      the page never renders in the wrong one and flips. It sits here, ahead
+      of everything Vite injects, and outside the head placeholder below so
+      scripts/prerender.js rewrites the head around it rather than over it.
+      Every prerendered route, 404.html included, is built from this same
+      file and therefore carries it.
+
+      A separate file rather than an inline script on purpose: vercel.json
+      sets script-src 'self' with no inline allowance.
+    -->
+    <script src="/theme-init.js"></script>
+
+    <!--
       Per-route SEO tags (title, description, canonical, Open Graph, Twitter)
       are injected here at build time by scripts/prerender.js, and rendered at
       runtime by src/components/Seo.jsx. Both read src/seo/meta.js.

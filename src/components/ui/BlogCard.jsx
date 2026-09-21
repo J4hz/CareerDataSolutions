@@ -18,7 +18,7 @@ const BlogCard = memo(function BlogCard({ post }) {
   return (
     <article
       style={{
-        background: 'var(--white)',
+        background: 'var(--surface)',
         borderRadius: 'var(--radius-xl)',
         overflow: 'hidden',
         boxShadow: 'var(--shadow-sm)',
@@ -54,7 +54,7 @@ const BlogCard = memo(function BlogCard({ post }) {
           style={{
             fontSize: '1.1rem',
             fontWeight: 800,
-            color: 'var(--navy)',
+            color: 'var(--ink)',
             letterSpacing: '-0.015em',
             lineHeight: 1.3,
             marginBottom: '12px',
@@ -90,7 +90,7 @@ const BlogCard = memo(function BlogCard({ post }) {
             style={{
               fontSize: '0.85rem',
               fontWeight: 600,
-              color: 'var(--navy)',
+              color: 'var(--ink)',
               textDecoration: 'none',
             }}
           >

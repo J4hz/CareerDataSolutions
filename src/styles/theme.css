@@ -22,9 +22,43 @@
    Nothing else may introduce a raw hex. If a component needs a colour, it
    takes a token from here.
 
-   Neutral tokens (navy, paper, ink, line) are global and never themed.
-   The two accents, gold for /career/* and teal for /data/*, are only
-   reachable through the --accent* indirection below.
+   ── TWO AXES OF THEMING ───────────────────────────────────────
+
+   This file now forks along two independent axes, and the difference
+   between them is the thing to keep straight:
+
+   TRACK (gold for /career/*, teal for /data/*) is set by a CLASS on the
+   route layout's container, and reaches only the --accent* tokens.
+
+   LIGHT/DARK is set by data-theme on the HTML ELEMENT, by
+   public/theme-init.js, before the first paint. It reaches the NEUTRAL
+   tokens: --paper, --surface, --ink, --ink-soft, --line. Those used to be
+   documented here as global and never themed, which is exactly what dark
+   mode changes.
+
+   The reason data-theme goes on <html> and not on a wrapper: the legacy
+   aliases in globals.css (--off, --gl, --gm, --gd, --dark, --footer-bg,
+   --navy2) are declared on :root, so an override that is to beat them has
+   to sit on the same element.
+
+   ── WHICH SURFACE TOKEN ───────────────────────────────────────
+
+   In light mode --paper and --surface are both white, so the choice is
+   invisible; in dark it is the whole of the depth model. Pick by what the
+   thing IS, not by what it currently looks like:
+
+       --paper    the page, and any full-width section band
+       --surface  a card, panel, popover, or form control that sits ON the
+                  page and should read as lifted off it
+
+   Depth comes from that step plus a --line hairline. Not from shadows,
+   which barely register on a dark base, and never from a glow.
+
+   --white keeps its literal meaning: white. It stays the right token for
+   text and marks on a navy surface, in both themes. It is no longer a
+   surface colour. --navy likewise stays a fill: where it was colouring
+   TEXT on a light page it has been moved to --ink, which is navy in light
+   and near-white in dark.
 
    .theme-career / .theme-data are applied by the route layout wrappers
    (src/layouts/CareerLayout.jsx, DataLayout.jsx) on their top-level
@@ -41,6 +75,11 @@
    ───────────────────────────────────────────────────────────── */
 
 :root {
+  /* Native UI (form controls, scrollbars, the canvas behind the page)
+     follows this rather than guessing from our backgrounds. The dark
+     block at the bottom of this file flips it. */
+  color-scheme: light;
+
   /* ── The four brand colours ──────────────────────────────── */
   --navy:  #0B1F3A;
   --teal:  #1D9E75;
@@ -55,7 +94,15 @@
   /* ── Derived neutrals: navy at reduced alpha over white ──── */
   --paper:     var(--white);
   --paper-dim: #F4F6F8;
+  /* The raised step above --paper: cards, panels, popovers, form fields.
+     Identical to --paper here on purpose, so light mode is unchanged; in
+     dark the two separate and this is what lifts a card off the page. */
+  --surface:   var(--white);
   --ink:       var(--navy);
+  /* One notch stronger than --ink, for card and section titles. This is
+     what the legacy --dark alias resolves to; every one of its 25 uses is
+     text on a light surface, never a fill. */
+  --ink-strong: var(--navy-950);
   --ink-soft:  rgba(11, 31, 58, 0.70);
   --line:      rgba(11, 31, 58, 0.12);
   --line-dark: rgba(255, 255, 255, 0.14);
@@ -67,6 +114,12 @@
      brand teal or brand gold, darkened for hover or dropped to a low
      alpha for soft fills. */
   --teal-dark: #17805E;
+  /* The brand teal scaled up 20% per channel, so the same hue lighter.
+     Only used as --accent-ink in dark, where the plain teal is 3.8:1 on a
+     raised --surface and misses AA for normal text; this lands at 5.5:1
+     there and 7.3:1 on the page. Gold needs no equivalent: it clears
+     everywhere in dark on its own. */
+  --teal-bright: #23BE8C;
   --teal-soft: rgba(29, 158, 117, 0.12);
   --teal-glow: rgba(29, 158, 117, 0.22);
 
@@ -129,6 +182,32 @@
   --error-line: rgba(220, 38, 38, 0.25);
   --error-tint: rgba(220, 38, 38, 0.08);
 
+  /* ── The primary button ───────────────────────────────────────
+     .btn--primary, .btn--navy and the neutral shell's .navbar__cta are a
+     navy fill with white text. Navy is 1.05:1 against the dark page base,
+     so in dark the button would simply not be there. It inverts instead:
+     a light fill with navy text, which is the conventional dark-mode
+     primary and stays flat. Hover goes lighter in both themes, matching
+     what --navy2 already did here in light.
+
+     Routed through tokens rather than a [data-theme] rule in button.css
+     because three files paint this same button. */
+  --btn-primary-bg:       var(--navy);
+  --btn-primary-bg-hover: var(--navy-800);
+  --btn-primary-ink:      var(--white);
+
+  /* ── Shadows ──────────────────────────────────────────────────
+     Moved here from globals.css: they are rgba() values, and this file is
+     where every colour on the site is declared. The geometry is unchanged.
+
+     On a dark page a 0.08-alpha black is invisible, so the dark block
+     deepens the alpha. Even then the shadow is not what does the work --
+     the --surface step and the --line hairline are. Deliberately no glow
+     substitute. */
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.10);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.14);
+
   /* Default accent outside a themed shell (neutral pages lean teal,
      matching the site's historic primary). */
   --accent:          var(--teal);
@@ -184,4 +263,108 @@
   /* Navy text passes on gold at 8.2:1; white does not */
   --accent-contrast: var(--navy);
   --accent-ink:      var(--gold-deep);
+}
+
+/* ── DARK ─────────────────────────────────────────────────────
+   Set by public/theme-init.js on <html> before the first paint, from the
+   visitor's stored choice or, failing that, prefers-color-scheme.
+
+   ONLY the neutral tokens fork. The four brand colours do not, the track
+   accents do not, and the orange booking CTA does not: it is held constant
+   across every shell and theme and keeps its --navy-950 text.
+
+   THE SURFACE LADDER, and why it is shaped this way. --navy-950 (#06121F)
+   and --navy (#0B1F3A) are only 1.14:1 apart, so a page base between them
+   is within ~1.1:1 of both. That is not a step you can see. The base
+   therefore sits high in that gap, near navy:
+
+       #06121F  --navy-950   footer, .about-sec        1.09 below the base
+       #0A1B2E  --paper      the page                  --
+       #0B1F3A  --navy       hero / stats / CTA bands  1.05 above, merges
+       #143255  --surface    cards, panels, fields     1.34 above, reads
+
+   The consequence is deliberate and worth stating: in dark the navy bands
+   stop being bands. They are within a rounding error of the page and are
+   held instead by their own content -- the hero's photo scrim and 4px
+   accent rule, and a hairline added to the flat ones. A dark band is a
+   contrast device that only works on a light page.
+
+   Contrast, measured, against the page base / against a --surface card:
+
+       --ink        14.9 / 11.0      --ink-soft     7.3 / 6.4
+       --accent-ink career (gold)   8.8 / 6.5
+       --accent-ink data (bright)   7.3 / 5.5
+       --error                      6.3 / 4.7
+   ───────────────────────────────────────────────────────────── */
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --paper:     #0A1B2E;
+  --paper-dim: #0D2136;
+  --surface:   var(--navy-800);
+
+  /* Not pure white. At 17.6:1 on this base white body copy glares and
+     blooms; this keeps the navy's cool cast and still clears AA by 3x. */
+  --ink:        #E8EDF4;
+  --ink-strong: #F4F8FC;
+  /* 0.62, not the 0.70 light uses. Light-on-dark reads heavier, so
+     matching the alpha would leave the quiet text louder in dark than the
+     loud text is in light. This holds the same ratio to --ink that light
+     mode has. */
+  --ink-soft: rgba(255, 255, 255, 0.62);
+  --line:     rgba(255, 255, 255, 0.12);
+
+  /* The inversion described up in the :root block. */
+  --btn-primary-bg:       var(--ink);
+  --btn-primary-bg-hover: var(--white);
+  --btn-primary-ink:      var(--navy);
+
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.45);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.55);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.65);
+
+  /* #DC2626 is 3.6:1 on the page base and 2.7:1 on a card -- it fails as
+     error text in both places, which is the one job it has. Same hue,
+     lifted until it reads. Listed with the other non-palette colours
+     above. */
+  --error:      #F87171;
+  --error-soft: rgba(248, 113, 113, 0.16);
+  --error-line: rgba(248, 113, 113, 0.34);
+  --error-tint: rgba(248, 113, 113, 0.12);
+
+  /* Outside a themed shell. The neutral default leans teal, as in light. */
+  --accent-ink: var(--teal-bright);
+}
+
+/* ── ACCENT AS TEXT IN DARK ───────────────────────────────────
+   --accent-ink is the accent pushed until it can be READ against the
+   surface behind it. In light that meant DARKENING it, because the surface
+   was white. In dark the surface is navy, so the correct move is the
+   opposite one, and for gold it is simply the brand colour itself:
+
+       --gold-deep  #8A5A0F  on the dark page   3.0:1   fails
+       --gold       #F4A833  on the dark page   8.8:1   passes
+       --teal-dark  #17805E  on the dark page   3.6:1   fails
+       --teal       #1D9E75  on the dark page   5.1:1   passes on the page
+                                                3.8:1   FAILS on a card
+       --teal-bright #23BE8C on the dark page   7.3:1   passes
+                                                5.5:1   passes on a card
+
+   Teal takes the brightened shade rather than the plain brand teal
+   because --accent-ink lands on raised cards as often as on the page.
+
+   These need a selector that beats .theme-career / .theme-data, which sit
+   on a container BELOW <html> and would otherwise win on document order.
+   A descendant selector off the themed root does it, and it still reaches
+   the two shells that are applied mid-page rather than at a layout (see
+   the FAQ columns in pages/Home.jsx).
+   ───────────────────────────────────────────────────────────── */
+
+:root[data-theme='dark'] .theme-career {
+  --accent-ink: var(--gold);
+}
+
+:root[data-theme='dark'] .theme-data {
+  --accent-ink: var(--teal-bright);
 }

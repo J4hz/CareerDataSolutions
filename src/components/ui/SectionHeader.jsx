@@ -22,7 +22,9 @@ const SectionHeader = memo(function SectionHeader({
           fontSize: 'clamp(1.9rem, 3.5vw, 2.75rem)',
           fontWeight: 800,
           letterSpacing: '-0.025em',
-          color: light ? 'var(--white)' : 'var(--navy)',
+          /* light = on a navy band. Otherwise this is page text, so --ink
+             (which IS navy in light mode) rather than the fill colour. */
+          color: light ? 'var(--white)' : 'var(--ink)',
           marginBottom: subtitle ? '16px' : 0,
         }}
       >

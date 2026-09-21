@@ -1,0 +1,98 @@
+/* ─────────────────────────────────────────────────────────────
+   The light/dark switch in the footer's bottom bar
+   (components/ThemeToggle.jsx).
+
+   Quiet on purpose. It sits beside a copyright line on the deepest bar on
+   the page and is not something a visitor needs to find; it should be
+   there when they look for it and invisible when they are not. So: no
+   fill, no border, no label, muted white that comes up on hover.
+
+   The bar is --navy-950 in BOTH themes, so every colour here is a white
+   alpha and none of it forks. Same vocabulary as the rest of footer.css.
+   ───────────────────────────────────────────────────────────── */
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  /* 44px touch target around a 16px icon. The bar's own content is a ~20px
+     line of copy, so without the negative margin this would add ~24px to
+     the height of the bar for a control nobody asked to be taller. The
+     margin pulls the box back to the copy's line height while the hit area
+     stays 44px. Reset in the stacked layout at the bottom of this file. */
+  width: 44px;
+  height: 44px;
+  margin-block: -12px;
+
+  padding: 0;
+  border: none;
+  background: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+
+  /* Matches .footer__copy beside it, so the two read as one row. */
+  color: rgba(255, 255, 255, 0.35);
+  transition: color var(--transition), background var(--transition);
+}
+
+.theme-toggle:hover {
+  color: var(--white);
+  background: rgba(255, 255, 255, 0.07);
+}
+
+/* The global :focus-visible ring is accent-driven, so it goes teal on the
+   neutral and data shells and gold inside /career/*. Both clear 3:1
+   against --navy-950 (5.6:1 and 9.4:1). Nothing to add here beyond making
+   sure the ring is not clipped by the bar. */
+
+.theme-toggle__icon {
+  display: block;
+  pointer-events: none;
+}
+
+/* ── Which icon shows ──
+   Driven by the attribute, never by React state, so the server markup and
+   the hydration pass are identical. See the note in ThemeToggle.jsx.
+
+   The icon shows what a click will GIVE you, not what you have: a moon on
+   the light site, a sun on the dark one.
+
+   The moon is the default because the server, and any browser that ran no
+   script at all, has no data-theme attribute -- and that case is the light
+   site. theme-init.js sets the attribute before this stylesheet is even
+   fetched, so a visitor never sees the wrong one. */
+.theme-toggle__icon--sun {
+  display: none;
+}
+
+[data-theme='dark'] .theme-toggle__icon--moon {
+  display: none;
+}
+
+[data-theme='dark'] .theme-toggle__icon--sun {
+  display: block;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-toggle {
+    transition: none;
+  }
+}
+
+/* Under 520px .footer__bottom stacks into a column with a 12px gap, and a
+   negative block margin would eat it. The bar is no longer one line, so
+   there is nothing to line up with. */
+@media (max-width: 520px) {
+  .theme-toggle {
+    /* The bar's 12px gap plus this box's own 14px of centring padding put
+       the glyph 26px under the copy, which reads as unrelated to it.
+       Half the gap back. */
+    margin-block: -10px 0;
+    /* Same correction on the other axis: pull the box left so the 16px
+       glyph lines up with the copy's left edge rather than sitting 14px
+       in from it. */
+    margin-inline-start: -14px;
+  }
+}

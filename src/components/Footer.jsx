@@ -1,6 +1,7 @@
 import { memo } from 'react';
 import { Link } from 'react-router-dom';
 import { WHATSAPP_URL, CONTACT_EMAIL } from '../config';
+import ThemeToggle from './ThemeToggle';
 // Same asset as the navbar: one logo file, so a rebrand is a single swap.
 // (Was a separate stacked lockup of the old brand, since deleted.)
 // The 490x90 derivative covers the navbar's 45px and this 38px at 2x.
@@ -168,6 +169,10 @@ const Footer = memo(function Footer({ track = null }) {
         <p className="footer__copy">
           © 2026 CareerDataSolutions. All rights reserved. · Nairobi, Kenya
         </p>
+        {/* The light/dark switch. Here rather than in the navbar because it
+            is a preference, not navigation, and the footer is where a
+            visitor goes looking for one. */}
+        <ThemeToggle />
         {/* Renders nothing while PLATFORMS is empty, so the copyright line
             keeps the bar to itself rather than sitting opposite a gap. */}
         {PLATFORMS.length > 0 && (

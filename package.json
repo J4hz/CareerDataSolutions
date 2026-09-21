@@ -11,6 +11,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "images": "node scripts/images.js",
+    "logo": "node scripts/logo-svg.js",
     "fonts": "node scripts/fonts.js"
   },
   "dependencies": {

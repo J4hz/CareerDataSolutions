@@ -2,10 +2,10 @@ import { memo, useState, useEffect, useCallback, useRef } from 'react';
 import { NavLink, Link } from 'react-router-dom';
 /* Shared with the closing CTA band's dropdown — see src/data/booking.js. */
 import { BOOK_OPTIONS } from '../data/booking';
-// 490x90 derivatives of assets/logo.png, which is 1654x304 — nearly 7x the
-// pixels that ever reach the screen. See scripts/images.js.
-import logoWebp from '../assets/generated/logo-490.webp';
-import logoPng from '../assets/generated/logo-490.png';
+// Built from assets/logo-lockup.svg by scripts/logo-svg.js. Vector
+// wordmark, transparent background, and a reversed copy for dark mode.
+import logo from '../assets/generated/logo.svg';
+import logoReversed from '../assets/generated/logo-reversed.svg';
 import '../styles/navbar.css';
 
 /**
@@ -96,19 +96,34 @@ const Navbar = memo(function Navbar({ track = null }) {
     <header className={`navbar${scrolled ? ' navbar--scrolled' : ''}`}>
       <div className="navbar__inner">
         <NavLink to="/" className="navbar__logo" onClick={close} aria-label="CareerDataSolutions home">
-          {/* width/height are the asset's own, not the rendered size: the CSS
-              pins the height and lets width follow, and these give the browser
-              the ratio to reserve the box before the image arrives. */}
-          <picture>
-            <source srcSet={logoWebp} type="image/webp" />
-            <img
-              src={logoPng}
-              alt="CareerDataSolutions"
-              className="navbar__logo-img"
-              width="490"
-              height="90"
-            />
-          </picture>
+          {/* Both marks ship, and theme-toggle-aware CSS in navbar.css shows
+              one. An <img> cannot inherit the page's colour or see
+              data-theme, so a single self-theming file is not an option --
+              see the note in scripts/logo-svg.js.
+
+              width/height are the asset's own, not the rendered size: the
+              CSS pins the height and lets width follow, and these give the
+              browser the ratio to reserve the box before the image lands.
+
+              The reversed copy is lazy: a visitor who never uses dark mode
+              should not pay for it. The alt text sits on the light one only,
+              so the mark is announced once rather than twice. */}
+          <img
+            src={logo}
+            alt="CareerDataSolutions"
+            className="navbar__logo-img navbar__logo-img--light"
+            width="1239"
+            height="231"
+          />
+          <img
+            src={logoReversed}
+            alt=""
+            aria-hidden="true"
+            loading="lazy"
+            className="navbar__logo-img navbar__logo-img--dark"
+            width="1239"
+            height="231"
+          />
         </NavLink>
 
         <nav className="navbar__nav" aria-label="Main navigation">

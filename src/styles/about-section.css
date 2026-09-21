@@ -23,7 +23,7 @@
 
 .about-sec {
   background: var(--navy-950);
-  color: var(--paper);
+  color: var(--white);
   /* The fixed navbar is 68px (see navbar.css), so the top padding must stay
      above that. 112px leaves ~44px of clear space under it. */
   padding: 112px 0 96px;

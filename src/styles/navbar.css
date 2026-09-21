@@ -4,7 +4,7 @@
   left: 0;
   right: 0;
   z-index: 100;
-  background: var(--white);
+  background: var(--paper);
   border-bottom: 1px solid var(--gl);
   transition: box-shadow var(--transition);
 }
@@ -31,7 +31,12 @@
 /* The logo asset is trimmed to its bounding box, so these heights are the
    logo's actual rendered height. They were previously ~3x larger (130/100/84)
    because the source image carried a wide white margin and most of that box
-   was empty; the rendered size is unchanged. */
+   was empty; the rendered size is unchanged.
+
+   mix-blend-mode: multiply is gone with the raster. It existed to make the
+   old PNG's white background disappear into the white navbar, and on a dark
+   navbar it would have multiplied the whole mark to black. The SVG carries
+   real transparency, so there is nothing left to hide. */
 .navbar__logo-img {
   display: block;
   height: 45px;
@@ -39,7 +44,22 @@
   max-width: 460px;
   object-fit: contain;
   object-position: left center;
-  mix-blend-mode: multiply;
+}
+
+/* One mark per theme, chosen by the attribute rather than by React, so the
+   server markup and the hydration pass are identical -- the same reasoning
+   as the footer toggle's icons. Both <img> elements are always in the DOM;
+   only one is ever displayed. */
+.navbar__logo-img--dark {
+  display: none;
+}
+
+[data-theme='dark'] .navbar__logo-img--light {
+  display: none;
+}
+
+[data-theme='dark'] .navbar__logo-img--dark {
+  display: block;
 }
 
 @media (max-width: 768px) {
@@ -75,11 +95,13 @@
 
 .navbar__link:hover {
   color: var(--dark);
-  background: var(--off);
+  background: var(--paper);
 }
 
+/* --ink, not --navy: this is page text, and --navy does not follow the
+   theme. Identical in light, where --ink IS navy. Same below. */
 .navbar__link--active {
-  color: var(--navy);
+  color: var(--ink);
   font-weight: 600;
 }
 
@@ -90,7 +112,7 @@
   left: 14px;
   right: 14px;
   height: 2px;
-  background: var(--navy);
+  background: var(--ink);
   border-radius: 2px;
 }
 
@@ -119,8 +141,8 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: var(--navy);
-  color: var(--white);
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-ink);
   font-family: var(--font-body);
   font-weight: 600;
   font-size: 0.875rem;
@@ -130,7 +152,7 @@
 }
 
 .navbar__cta:hover {
-  background: var(--navy2);
+  background: var(--btn-primary-bg-hover);
 }
 
 /* Themed shells colour the CTA with the track accent; the neutral shell
@@ -208,7 +230,7 @@
   top: calc(100% + 8px);
   right: 0;
   min-width: 216px;
-  background: var(--white);
+  background: var(--surface);
   border: 1px solid var(--gl);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-lg);
@@ -260,8 +282,8 @@
 .navbar__book-item--career::before { background: var(--gold); }
 
 .navbar__book-item:hover {
-  background: var(--off);
-  color: var(--navy);
+  background: var(--paper);
+  color: var(--ink);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -304,7 +326,7 @@
 .navbar__mobile {
   display: none;
   flex-direction: column;
-  background: var(--white);
+  background: var(--paper);
   padding: 16px 24px 24px;
   border-top: 1px solid var(--gl);
 }
@@ -322,7 +344,7 @@
 }
 
 .navbar__mobile .navbar__link--active {
-  color: var(--navy);
+  color: var(--ink);
 }
 
 .navbar__mobile .navbar__link--active::after {

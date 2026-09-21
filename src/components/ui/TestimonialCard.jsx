@@ -10,7 +10,7 @@ const TestimonialCard = memo(function TestimonialCard({ testimonial }) {
   return (
     <article
       style={{
-        background: 'var(--white)',
+        background: 'var(--surface)',
         borderRadius: 'var(--radius-xl)',
         padding: '32px',
         boxShadow: 'var(--shadow-sm)',
@@ -20,7 +20,7 @@ const TestimonialCard = memo(function TestimonialCard({ testimonial }) {
         gap: '20px',
       }}
     >
-      <div style={{ color: 'var(--navy)', fontSize: '1rem', letterSpacing: '2px' }}>
+      <div style={{ color: 'var(--ink)', fontSize: '1rem', letterSpacing: '2px' }}>
         {'★'.repeat(testimonial.stars)}
       </div>
 

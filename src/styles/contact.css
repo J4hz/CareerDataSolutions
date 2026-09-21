@@ -1,6 +1,6 @@
 /* ── Page layout ── */
 .contact-page {
-  background: var(--off);
+  background: var(--paper);
   min-height: 100vh;
   padding-top: 120px;
 }
@@ -85,7 +85,7 @@
 }
 
 .contact-alt-card {
-  background: var(--white);
+  background: var(--surface);
   border: 1.5px solid var(--gl);
   border-radius: 12px;
   padding: 16px 20px;
@@ -289,7 +289,7 @@
 
 /* ── WHAT HAPPENS NEXT CARD ──────────────── */
 .contact-next-card {
-  background: var(--white);
+  background: var(--surface);
   border: 1.5px solid var(--gl);
   border-radius: 12px;
   padding: 20px 22px;
@@ -328,7 +328,7 @@
 
 /* ── FORM CARD (career) ─────────────────── */
 .contact-form-card {
-  background: var(--white);
+  background: var(--surface);
   border-radius: 16px;
   padding: 36px 32px;
   border: 1.5px solid var(--gl);
@@ -376,7 +376,7 @@
      or two off the inputs above and below it. */
   line-height: 1.4;
   color: var(--dark);
-  background: var(--white);
+  background: var(--surface);
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
   font-family: var(--font-body);
@@ -434,7 +434,7 @@
   text-align: center;
   cursor: pointer;
   transition: border-color 0.2s, background 0.2s;
-  background: var(--off);
+  background: var(--paper);
 }
 
 .cv-dropzone:hover {
@@ -551,7 +551,7 @@
 
 /* ── SUCCESS STATE ───────────────────────── */
 .contact-career-success {
-  background: var(--white);
+  background: var(--surface);
   border: 1.5px solid var(--gl);
   border-radius: 16px;
   padding: 48px 36px;

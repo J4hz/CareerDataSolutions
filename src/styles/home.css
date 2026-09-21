@@ -332,7 +332,7 @@
    than full-bleed: at container width it would stop looking like a panel.
    Bottom padding is 0 — .paths supplies the gap under it. */
 .founding-band {
-  background: var(--off);
+  background: var(--paper);
   padding: 48px 0 0;
 }
 
@@ -342,7 +342,7 @@
 
 /* ── SERVICES OVERVIEW ── */
 .services-overview {
-  background: var(--off);
+  background: var(--paper);
 }
 
 .services-overview__header {
@@ -376,7 +376,7 @@
    (teal) shells. Adapted from the reference file's .path-card pattern,
    translated into the site's own card vocabulary. */
 .paths {
-  background: var(--off);
+  background: var(--paper);
   /* Tighter top padding so the cards sit closer to the trust bar above, and
      a tighter bottom so the cards run into the testimonials — both sections
      share the same background, so a wide gap just reads as dead space. */
@@ -411,7 +411,7 @@
 }
 
 .path-card {
-  background: var(--white);
+  background: var(--surface);
   border: 1px solid var(--gl);
   border-radius: var(--radius-xl);
   padding: 36px 32px 32px;
@@ -449,7 +449,7 @@
   text-align: center;
   font-size: 1.35rem;
   font-weight: 800;
-  color: var(--navy);
+  color: var(--ink);
   letter-spacing: -0.02em;
   margin-bottom: 10px;
 }
@@ -538,7 +538,7 @@
 
 /* ── WHY US ── */
 .why-us {
-  background: var(--white);
+  background: var(--paper);
 }
 
 .why-us__header {
@@ -697,7 +697,7 @@
 
 /* ── PROCESS ── */
 .process {
-  background: var(--off);
+  background: var(--paper);
 }
 
 .process__header {
@@ -733,15 +733,15 @@
   font-weight: 600;
   font-size: 0.875rem;
   border: 1.5px solid var(--gl);
-  background: var(--white);
+  background: var(--surface);
   color: var(--gm);
   transition: all var(--transition);
   cursor: pointer;
 }
 
 .process__tab:hover {
-  border-color: var(--navy);
-  color: var(--navy);
+  border-color: var(--ink);
+  color: var(--ink);
 }
 
 .process__tab.active {
@@ -872,7 +872,7 @@
 
 /* ── HOME PACKAGES ── */
 .home-packages {
-  background: var(--white);
+  background: var(--paper);
 }
 
 .home-packages__header {
@@ -943,9 +943,9 @@
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: var(--white);
+  background: var(--surface);
   border: 1.5px solid var(--gl);
-  color: var(--navy);
+  color: var(--ink);
   box-shadow: var(--shadow-sm);
   font-size: 1.4rem;
   line-height: 1;
@@ -1006,7 +1006,7 @@
 /* ── TESTIMONIALS ── */
 .testimonials,
 .testimonials-auto {
-  background: var(--off);
+  background: var(--paper);
 }
 
 /* Full-bleed marquee: the section provides the header + background, the track
@@ -1044,7 +1044,7 @@
 
 /* ── HOME FAQ ── */
 .home-faq {
-  background: var(--white);
+  background: var(--paper);
   padding: 40px 0 60px;
 }
 
@@ -1129,7 +1129,7 @@
 
 /* ── BLOG PREVIEW ── */
 .blog-preview {
-  background: var(--white);
+  background: var(--paper);
 }
 
 .blog-preview__header {

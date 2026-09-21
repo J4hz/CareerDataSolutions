@@ -15,13 +15,16 @@
   white-space: nowrap;
 }
 
+/* Navy fill, white text -- in light. In dark it inverts to a light fill
+   with navy text, because navy is 1.05:1 against the dark page and the
+   button would otherwise not be there. Both values come from theme.css. */
 .btn--primary {
-  background: var(--navy);
-  color: var(--white);
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-ink);
 }
 
 .btn--primary:hover {
-  background: var(--navy2);
+  background: var(--btn-primary-bg-hover);
   transform: translateY(-1px);
   box-shadow: var(--shadow-sm);
 }
@@ -37,15 +40,17 @@
   background: rgba(255,255,255,0.07);
 }
 
+/* The outlined counterpart to --primary, so it takes the same pair: --ink
+   is the page's text colour and follows the theme, where --navy does not. */
 .btn--ghost-dark {
   background: transparent;
-  color: var(--navy);
-  border: 2px solid var(--navy);
+  color: var(--ink);
+  border: 2px solid var(--ink);
 }
 
 .btn--ghost-dark:hover {
-  background: var(--navy);
-  color: var(--white);
+  background: var(--ink);
+  color: var(--paper);
 }
 
 .btn--whatsapp {
@@ -59,12 +64,12 @@
 }
 
 .btn--navy {
-  background: var(--navy);
-  color: var(--white);
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-ink);
 }
 
 .btn--navy:hover {
-  background: var(--navy2);
+  background: var(--btn-primary-bg-hover);
   transform: translateY(-1px);
 }
 
