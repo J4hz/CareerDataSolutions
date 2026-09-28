@@ -17,9 +17,31 @@
 import { packages } from '../src/data/packages.js';
 import { cleanText, isValidEmail, validateCvUpload } from './_lib/sanitize.js';
 import { createOrder, newOrderId, signOrder } from './_lib/orders.js';
-import { normalizeMsisdn, requestStkPush } from './_lib/payments.js';
+import {
+  normalizeMsisdn,
+  requestStkPush,
+  startCardCheckout,
+  supportsCard,
+} from './_lib/payments.js';
 import { resolveAmount } from './_lib/promo.js';
 import { limited } from './_lib/rate-limit.js';
+import { SITE_DOMAIN, SITE_URL } from '../src/config.js';
+
+/**
+ * Where the card checkout sends the customer back to. Follows the request's
+ * host so a preview deploy returns to itself, but only for hosts that are
+ * ours — anything else falls back to the production site.
+ */
+function returnUrl(req, pkgId) {
+  const host = String(req.headers['x-forwarded-host'] || req.headers.host || '').toLowerCase();
+  const ours =
+    host === SITE_DOMAIN ||
+    host === `www.${SITE_DOMAIN}` ||
+    host.endsWith('.vercel.app') ||
+    /^localhost(:\d+)?$/.test(host);
+  const origin = !ours ? SITE_URL : host.startsWith('localhost') ? `http://${host}` : `https://${host}`;
+  return `${origin}/career/order?pkg=${encodeURIComponent(pkgId)}`;
+}
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -39,9 +61,15 @@ export default async function handler(req, res) {
 
   const { packageId, name, email, phone, message, promoCode, cvBase64, cvName, cvType } =
     req.body ?? {};
+  const method = req.body?.method === 'card' ? 'card' : 'mpesa';
 
-  if (!packageId || !name || !email || !phone || !cvBase64) {
+  // A card payer has no M-Pesa prompt to receive, so the phone is optional.
+  if (!packageId || !name || !email || !cvBase64 || (method === 'mpesa' && !phone)) {
     return res.status(400).json({ error: 'Please complete every field and attach your CV.' });
+  }
+
+  if (method === 'card' && !supportsCard()) {
+    return res.status(400).json({ error: 'Card payments are not available yet. Please use M-Pesa.' });
   }
 
   // The package is the price. Only career packages are purchasable — the data
@@ -55,8 +83,10 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Please enter a valid email address.' });
   }
 
-  const msisdn = normalizeMsisdn(phone);
-  if (!msisdn) {
+  // Card payers may be abroad, so their number is kept as typed for contact
+  // rather than forced into Kenyan form.
+  const msisdn = method === 'mpesa' ? normalizeMsisdn(phone) : normalizeMsisdn(phone) || phone || '';
+  if (method === 'mpesa' && !msisdn) {
     return res.status(400).json({
       error: 'Enter a valid Kenyan mobile number, for example 0712 345 678.',
     });
@@ -88,24 +118,37 @@ export default async function handler(req, res) {
     // The CV reaches the inbox before any payment is attempted, so a failed or
     // abandoned payment never costs us the submission.
     const stored = await createOrder({
-      id, pkg, safe, cv, amountKES, promoApplied, foundingApplied,
+      id, pkg, safe, cv, amountKES, promoApplied, foundingApplied, method,
     });
     if (!stored.ok) {
       return res.status(502).json({ error: 'We could not save your order. Please try again.' });
     }
 
-    const push = await requestStkPush({
-      amount: amountKES,
-      phone: msisdn,
-      reference: id,
-      description: `${pkg.name} · CareerDataSolutions`,
-    });
+    const push =
+      method === 'card'
+        ? await startCardCheckout({
+            amount: amountKES,
+            email: email.trim(),
+            reference: id,
+            callbackUrl: returnUrl(req, pkg.id),
+          })
+        : await requestStkPush({
+            amount: amountKES,
+            phone: msisdn,
+            email: email.trim(), // Paystack requires one; Daraja ignores it
+            reference: id,
+            description: `${pkg.name} · CareerDataSolutions`,
+          });
 
     if (!push.ok) {
       // The order is already with us, so this is recoverable by hand rather
       // than a dead end for the customer.
       return res.status(502).json({
-        error: push.error || 'We could not reach M-Pesa. We have your details and will follow up.',
+        error:
+          push.error ||
+          (method === 'card'
+            ? 'We could not start the card payment. We have your details and will follow up.'
+            : 'We could not reach M-Pesa. We have your details and will follow up.'),
         orderId: id,
       });
     }
@@ -120,14 +163,17 @@ export default async function handler(req, res) {
       timeline: pkg.timeline,
       name: safe.name,
       email: email.trim(),
-      phone: msisdn,
+      phone: safe.phone,
+      method,
       providerRef: push.providerRef,
     });
 
     return res.status(200).json({
       orderId: id,
-      status: push.status,
+      status: 'pending',
       token,
+      // Card only: where to send the browser to enter card details.
+      authorizationUrl: push.authorizationUrl,
       amountKES,
       promoApplied,
       foundingApplied,

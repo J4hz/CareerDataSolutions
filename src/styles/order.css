@@ -181,6 +181,63 @@
   text-decoration: line-through;
 }
 
+/* ── Payment method ── */
+
+.order-method {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+
+/* Styled like the other field labels in contact.css. */
+.order-method legend {
+  grid-column: 1 / -1;
+  padding: 0;
+  margin-bottom: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--gd);
+}
+
+/* Doubled class: .contact-form-card__field label / input would otherwise win
+   and turn these into block labels around full-width, padded radios. */
+.order-method .order-method__option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px;
+  border: 1.5px solid var(--gl);
+  border-radius: 8px;
+  background: var(--surface);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--ink);
+  cursor: pointer;
+  transition: border-color var(--transition), background var(--transition);
+}
+
+.order-method .order-method__option:has(input:checked) {
+  border-color: var(--gold);
+  background: var(--gold-soft);
+}
+
+.order-method .order-method__option:has(input:focus-visible) {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+.order-method .order-method__option input {
+  width: auto;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  box-shadow: none;
+  accent-color: var(--gold-deep);
+}
+
 /* ── Promo code ── */
 
 .order-promo {

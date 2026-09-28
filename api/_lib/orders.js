@@ -119,7 +119,10 @@ const row = (label, value) => `
  *
  * `safe` values are already escaped by the caller (api/order.js).
  */
-export async function createOrder({ id, pkg, safe, cv, amountKES, promoApplied, foundingApplied }) {
+export async function createOrder({
+  id, pkg, safe, cv, amountKES, promoApplied, foundingApplied, method = 'mpesa',
+}) {
+  const card = method === 'card';
   const resend = resendClient();
   const configuredFrom = process.env.NOTIFY_FROM || NOTIFY_FROM;
 
@@ -136,7 +139,9 @@ export async function createOrder({ id, pkg, safe, cv, amountKES, promoApplied, 
         <div style="background:#FEF3C7;border-left:4px solid #F4A833;padding:12px 16px;margin-bottom:24px;">
           <strong style="color:#92400E;font-size:14px;">Awaiting payment</strong>
           <div style="color:#92400E;font-size:13px;margin-top:2px;">
-            An M-Pesa prompt has been sent. You will get a second email if it is paid.
+            ${card
+              ? 'The customer was sent to the Paystack card page.'
+              : 'An M-Pesa prompt has been sent.'} You will get a second email if it is paid.
           </div>
         </div>
         <h2 style="color:#0B1F3A;margin:0 0 16px;">New order · ${pkg.name}</h2>
@@ -156,7 +161,8 @@ export async function createOrder({ id, pkg, safe, cv, amountKES, promoApplied, 
           )}
           ${row('Name', safe.name)}
           ${row('Email', safe.email)}
-          ${row('M-Pesa phone', safe.phone)}
+          ${row('Paying by', card ? 'Card' : 'M-Pesa')}
+          ${card ? (safe.phone ? row('Phone', safe.phone) : '') : row('M-Pesa phone', safe.phone)}
           ${row('Timeline', pkg.timeline)}
           ${safe.message ? row('Notes', safe.message) : ''}
         </table>
@@ -195,28 +201,39 @@ export async function createOrder({ id, pkg, safe, cv, amountKES, promoApplied, 
  * It earns its place when the customer closed the tab mid-payment, which is the
  * one case where nothing else would tell you the money arrived.
  */
-export async function notifyUnmatchedPayment({ providerRef, receipt, amount, phone }) {
+export async function notifyUnmatchedPayment({ orderId, providerRef, receipt, amount, phone, email }) {
   const resend = resendClient();
   const from = process.env.NOTIFY_FROM || NOTIFY_FROM;
+
+  // Paystack echoes our order id; Daraja does not. Neither is escaped upstream,
+  // and although both arrive authenticated, they are still provider-supplied text.
+  const esc = (v) => String(v).replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
 
   const { error } = await resend.emails.send({
     from,
     to: process.env.NOTIFY_EMAIL || CONTACT_EMAIL,
-    subject: cleanHeader(`M-Pesa payment received · ${receipt || providerRef}`),
+    subject: cleanHeader(
+      `Payment received · ${orderId ? `Order ${orderId}` : receipt || providerRef}`
+    ),
     html: `
       <div style="font-family:sans-serif;max-width:560px;">
         <div style="background:#DCFCE7;border-left:4px solid #1D9E75;padding:12px 16px;margin-bottom:24px;">
-          <strong style="color:#166534;font-size:14px;">M-Pesa confirmed a payment</strong>
+          <strong style="color:#166534;font-size:14px;">${orderId ? 'Paystack' : 'M-Pesa'} confirmed a payment</strong>
         </div>
         <table style="width:100%;border-collapse:collapse;">
-          ${row('Receipt', receipt || 'n/a')}
+          ${orderId ? row('Order ref', esc(orderId)) : ''}
+          ${row('Receipt', receipt ? esc(receipt) : 'n/a')}
           ${row('Amount', amount ? money(amount) : 'n/a')}
-          ${row('Paid by', phone ? String(phone) : 'n/a')}
-          ${row('Checkout ID', providerRef || 'n/a')}
+          ${row('Paid by', phone ? esc(phone) : 'n/a')}
+          ${email ? row('Email', esc(email)) : ''}
+          ${row('Payment ref', providerRef ? esc(providerRef) : 'n/a')}
         </table>
         <p style="margin-top:24px;font-size:13px;color:#6B7280;line-height:1.6;">
-          Match this to the "AWAITING PAYMENT" email with the same phone number to
-          find the order and the CV.<br /><br />
+          ${
+            orderId
+              ? `Match this to the "AWAITING PAYMENT" email for order ${esc(orderId)} to find the CV.`
+              : 'Match this to the "AWAITING PAYMENT" email with the same phone number to find the order and the CV.'
+          }<br /><br />
           If the customer stayed on the page, they have already had their receipt
           and you will have a "PAID" email for this order too, in which case this
           message is a duplicate and can be ignored.
@@ -236,6 +253,8 @@ export async function notifyUnmatchedPayment({ providerRef, receipt, amount, pho
  * record already exists, so it must not surface as a checkout error.
  */
 export async function markPaid({ order, receipt }) {
+  // Card payments have no M-Pesa receipt; the Paystack reference stands in.
+  const receiptLabel = order.method === 'card' ? 'Payment ref' : 'M-Pesa receipt';
   const resend = resendClient();
   const configuredFrom = process.env.NOTIFY_FROM || NOTIFY_FROM;
   const owner = process.env.NOTIFY_EMAIL || CONTACT_EMAIL;
@@ -254,7 +273,7 @@ export async function markPaid({ order, receipt }) {
         <table style="width:100%;border-collapse:collapse;">
           ${row('Order ref', order.id)}
           ${row('Amount', money(order.amountKES))}
-          ${row('M-Pesa receipt', receipt || 'n/a')}
+          ${row(receiptLabel, receipt || 'n/a')}
           ${row('Name', order.name)}
           ${row('Email', order.email)}
           ${row('Phone', order.phone)}
@@ -285,7 +304,7 @@ export async function markPaid({ order, receipt }) {
           <table style="width:100%;border-collapse:collapse;margin:0 0 20px;">
             ${row('Order ref', order.id)}
             ${row('Amount paid', money(order.amountKES))}
-            ${row('M-Pesa receipt', receipt || 'n/a')}
+            ${row(receiptLabel, receipt || 'n/a')}
           </table>
           <p style="font-size:15px;line-height:1.7;color:#334155;margin:0 0 24px;">
             <strong style="color:#0B1F3A;">What happens next:</strong> we start work straight

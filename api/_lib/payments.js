@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────────────────────
-// Payment rail for M-Pesa STK push.
+// Payment rail: M-Pesa STK push, and cards where the provider supports them.
 //
 // THIS IS THE ONLY FILE THAT KNOWS WHO PROCESSES A PAYMENT. Everything
 // upstream (api/order.js, api/order-status.js) talks to the exported functions
@@ -9,6 +9,7 @@
 //   stub    — default. Simulates a payment settling after a few seconds so the
 //             checkout can be exercised with no credentials and no real money.
 //   daraja  — Safaricom's own API. Sandbox or production, see below.
+//   paystack — Paystack's Charge API, M-Pesa channel. See the Paystack section.
 //
 // ── How a payment is confirmed ───────────────────────────────
 //
@@ -17,11 +18,11 @@
 //
 //   true  — checkStatus() asks the provider directly, server to server, so its
 //           answer is authoritative and api/order-status.js may act on it.
-//           Both stub and Daraja work this way (Daraja has an STK Query API).
+//           Stub, Daraja (STK Query) and Paystack (Verify Transaction) all
+//           work this way.
 //   false — the provider only tells you asynchronously, by signed webhook. The
 //           browser poll then reports status but must never settle the order;
 //           only api/pay-callback.js may, after verifying the signature.
-//           Aggregators like IntaSend and Paystack belong here.
 //
 // Getting this wrong in the "false" direction would let a client talk itself
 // into a paid order, so the flag defaults to false for anything new.
@@ -91,6 +92,16 @@ const stub = {
       ok: true,
       status: 'pending',
       providerRef: `stub_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`,
+    };
+  },
+
+  /** Card checkout: skips the hosted page and sends the browser straight back,
+   *  where the status poll settles it like any stub payment. */
+  async startCheckout({ callbackUrl }) {
+    return {
+      ok: true,
+      providerRef: `stub_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`,
+      authorizationUrl: callbackUrl,
     };
   },
 
@@ -277,9 +288,144 @@ const daraja = {
   },
 };
 
+// ── Paystack ─────────────────────────────────────────────────
+//
+//   PAYSTACK_SECRET_KEY  sk_test_… or sk_live_… from Settings > API Keys.
+//                        Test vs live is decided by the key alone.
+//
+// The Charge API with mobile_money sends the same STK prompt Daraja does, but
+// Paystack owns the shortcode, so there is no passkey or callback URL to set
+// here — the webhook URL lives in the Paystack dashboard instead.
+//
+// Test mode: phone +254710000000 (0710 000 000 in the form) settles with no PIN.
+
+const PAYSTACK_HOST = 'https://api.paystack.co';
+
+function paystackKey() {
+  const key = process.env.PAYSTACK_SECRET_KEY;
+  if (!key) throw new Error('Paystack is not configured. Missing: PAYSTACK_SECRET_KEY');
+  return key;
+}
+
+async function paystackFetch(path, init = {}) {
+  const res = await fetch(`${PAYSTACK_HOST}${path}`, {
+    ...init,
+    headers: {
+      Authorization: `Bearer ${paystackKey()}`,
+      'Content-Type': 'application/json',
+      ...init.headers,
+    },
+  });
+  const body = await res.json().catch(() => ({}));
+  return { res, body };
+}
+
+const paystack = {
+  // Verify Transaction is server-to-server on our secret key, so its answer is
+  // as authoritative as Daraja's STK Query.
+  settlesOnStatusCheck: true,
+
+  async requestStkPush({ amount, phone, email, reference }) {
+    if (!email) {
+      return { ok: false, status: 'failed', error: 'An email address is required.' };
+    }
+
+    // Paystack rejects a reused reference outright, and order ids are only 3
+    // random bytes, so a time suffix keeps it unique while the dashboard still
+    // shows the order ref at the front.
+    const ref = `${reference}-${Date.now().toString(36)}`;
+
+    const { res, body } = await paystackFetch('/charge', {
+      method: 'POST',
+      body: JSON.stringify({
+        email,
+        // Subunits: KES 1,500 is sent as 150000.
+        amount: Math.round(Number(amount) * 100),
+        currency: 'KES',
+        reference: ref,
+        mobile_money: { phone: `+${phone}`, provider: 'mpesa' },
+        metadata: { orderId: reference },
+      }),
+    });
+
+    const status = body?.data?.status;
+    // pay_offline is the normal answer: the prompt is on the phone. A charge can
+    // also come back already settled, or pending while Paystack reaches M-Pesa.
+    if (!res.ok || !body.status || !['pay_offline', 'pending', 'ongoing', 'success'].includes(status)) {
+      console.error('Paystack charge rejected:', res.status, body);
+      return {
+        ok: false,
+        status: 'failed',
+        error: body?.data?.message || body?.message || 'M-Pesa rejected the request.',
+      };
+    }
+
+    return { ok: true, status: 'pending', providerRef: body.data.reference || ref };
+  },
+
+  /**
+   * Card payments go through Paystack's hosted checkout page, so card numbers
+   * never touch this server. Paystack sends the customer back to callbackUrl
+   * with ?reference=…, and the status poll confirms it via checkStatus below.
+   */
+  async startCheckout({ amount, email, reference, callbackUrl }) {
+    const ref = `${reference}-${Date.now().toString(36)}`;
+
+    const { res, body } = await paystackFetch('/transaction/initialize', {
+      method: 'POST',
+      body: JSON.stringify({
+        email,
+        amount: Math.round(Number(amount) * 100),
+        currency: 'KES',
+        reference: ref,
+        channels: ['card'],
+        callback_url: callbackUrl,
+        // Where the hosted page's own "Cancel" link goes.
+        metadata: { orderId: reference, cancel_action: callbackUrl },
+      }),
+    });
+
+    if (!res.ok || !body.status || !body.data?.authorization_url) {
+      console.error('Paystack initialize rejected:', res.status, body);
+      return { ok: false, error: body?.message || 'Card payment could not be started.' };
+    }
+    return {
+      ok: true,
+      providerRef: body.data.reference || ref,
+      authorizationUrl: body.data.authorization_url,
+    };
+  },
+
+  async checkStatus({ providerRef }) {
+    if (!providerRef) return { status: 'failed', error: 'Unknown payment reference.' };
+
+    const { res, body } = await paystackFetch(
+      `/transaction/verify/${encodeURIComponent(providerRef)}`
+    );
+    if (!res.ok || !body.status) {
+      console.error('Paystack verify failed:', res.status, body);
+      return { status: 'pending' };
+    }
+
+    const tx = body.data ?? {};
+    if (tx.status === 'success') {
+      // The M-Pesa receipt, when Paystack passes it through, is on the
+      // authorization; the Paystack reference is the fallback handle.
+      return { status: 'paid', receipt: tx.authorization?.receipt_number || tx.reference };
+    }
+    // Only definite outcomes end the wait. "abandoned" is deliberately treated
+    // as pending — Paystack can report it before the customer has answered the
+    // prompt, and the checkout page has its own timeout.
+    if (tx.status === 'failed' || tx.status === 'reversed') {
+      return { status: 'failed', error: tx.gateway_response || 'The payment did not go through.' };
+    }
+    return { status: 'pending' };
+  },
+};
+
 // ── Dispatch ─────────────────────────────────────────────────
 
-const PROVIDERS = { stub, daraja };
+const PROVIDERS = { stub, daraja, paystack };
 
 function activeProvider() {
   const name = process.env.PAYMENT_PROVIDER || 'stub';
@@ -316,8 +462,26 @@ export async function requestStkPush(args) {
   }
 }
 
+/** Whether the active rail can take cards. Daraja is M-Pesa only. */
+export function supportsCard() {
+  return typeof activeProvider().startCheckout === 'function';
+}
+
 /**
- * Ask the rail what happened to a push.
+ * Start a hosted card checkout.
+ * → { ok, providerRef?, authorizationUrl?, error? }
+ */
+export async function startCardCheckout(args) {
+  try {
+    return await activeProvider().startCheckout(args);
+  } catch (err) {
+    console.error('Card checkout error:', err);
+    return { ok: false, error: 'We could not start the card payment. Please try again.' };
+  }
+}
+
+/**
+ * Ask the rail what happened to a payment, M-Pesa or card.
  * → { status: 'pending' | 'paid' | 'failed', receipt?, error? }
  */
 export async function checkStatus(args) {

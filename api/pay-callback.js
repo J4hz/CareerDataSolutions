@@ -24,8 +24,13 @@
 // api/_lib/orders.js is what removes the manual step — the callback would then
 // look up the order and send the customer their receipt automatically.
 //
-// Providers that DO round-trip metadata (IntaSend, Paystack) return the token,
-// and the branch below settles the order in full.
+// ── Paystack ─────────────────────────────────────────────────
+//
+// Paystack does echo our reference ("CDS-XXXXXX-…"), so its email names the
+// order directly. It still goes to you only, not the customer: the browser poll
+// has usually already receipted them, and with no store there is nothing to
+// stop a second receipt. Register https://<domain>/api/pay-callback as the
+// webhook URL under Paystack Settings > API Keys & Webhooks.
 //
 // ── Authenticating the callback ──────────────────────────────
 //
@@ -34,22 +39,20 @@
 //   https://<domain>/api/pay-callback?k=<that secret>
 // The secret never appears in the page, only in Safaricom's config and yours.
 // Safaricom also publishes IP ranges you can allowlist upstream for a second
-// layer. Signed providers use PAY_WEBHOOK_SECRET and the HMAC path instead.
+// layer. Paystack signs its webhooks: an HMAC-SHA512 of the raw body, keyed
+// with PAYSTACK_SECRET_KEY, in the x-paystack-signature header.
 //
 // Body parsing is off because an HMAC has to be computed over the raw bytes —
 // re-serializing parsed JSON does not reliably reproduce them. Same shape as
 // api/cal-webhook.js.
 
 import crypto from 'node:crypto';
-import { verifyOrderToken, markPaid, notifyUnmatchedPayment } from './_lib/orders.js';
+import { notifyUnmatchedPayment } from './_lib/orders.js';
 import { activeProviderName } from './_lib/payments.js';
 
 export const config = {
   api: { bodyParser: false },
 };
-
-/** Header a signing provider puts its HMAC in. Unused by Daraja. */
-const SIGNATURE_HEADER = 'x-payment-signature';
 
 async function readRawBody(req) {
   const chunks = [];
@@ -68,10 +71,25 @@ function safeEqual(a, b) {
   return crypto.timingSafeEqual(bufA, bufB);
 }
 
-function hasValidHmac(rawBody, signature, secret) {
+function hasValidPaystackSignature(rawBody, signature, secret) {
   if (!signature || !secret) return false;
-  const expected = crypto.createHmac('sha256', secret).update(rawBody).digest('hex');
+  const expected = crypto.createHmac('sha512', secret).update(rawBody).digest('hex');
   return safeEqual(signature, expected);
+}
+
+/** Pull the fields out of a Paystack charge.success event. */
+function parsePaystack(event) {
+  if (event?.event !== 'charge.success' || event.data?.status !== 'success') return null;
+  const d = event.data;
+  return {
+    orderId: d.metadata?.orderId ?? null,
+    providerRef: d.reference,
+    receipt: d.authorization?.receipt_number || d.reference,
+    // Paystack reports subunits.
+    amount: Number.isFinite(Number(d.amount)) ? Number(d.amount) / 100 : null,
+    phone: d.authorization?.mobile_money_number || d.customer?.phone || null,
+    email: d.customer?.email ?? null,
+  };
 }
 
 /** Pull the fields out of Daraja's stkCallback envelope. */
@@ -102,9 +120,15 @@ export default async function handler(req, res) {
   const isDaraja = provider === 'daraja';
   const rawBody = await readRawBody(req);
 
+  // Stub has no callbacks, so anything but these two is refused.
   const authorized = isDaraja
     ? safeEqual(req.query?.k, process.env.MPESA_CALLBACK_SECRET)
-    : hasValidHmac(rawBody, req.headers[SIGNATURE_HEADER], process.env.PAY_WEBHOOK_SECRET);
+    : provider === 'paystack' &&
+      hasValidPaystackSignature(
+        rawBody,
+        req.headers['x-paystack-signature'],
+        process.env.PAYSTACK_SECRET_KEY
+      );
 
   if (!authorized) {
     return res.status(401).json({ error: 'Unauthorized' });
@@ -136,18 +160,12 @@ export default async function handler(req, res) {
       return res.status(200).json(ack);
     }
 
-    // Signed providers: the token round-trips, so the order can be settled here.
-    const token = event?.metadata?.token ?? event?.token;
-    const paid = event?.status === 'paid';
-    if (!paid) return res.status(200).json(ack);
+    // Paystack. Every other event type (transfers, failed charges) is
+    // acknowledged and ignored — a non-200 would only make Paystack retry it.
+    const result = parsePaystack(event);
+    if (!result) return res.status(200).json(ack);
 
-    const order = verifyOrderToken(token);
-    if (!order) {
-      console.error('Pay callback carried no verifiable order token.');
-      return res.status(200).json(ack);
-    }
-
-    await markPaid({ order, receipt: event?.receipt ?? null });
+    await notifyUnmatchedPayment(result);
     return res.status(200).json(ack);
   } catch (err) {
     console.error('Pay callback error:', err);

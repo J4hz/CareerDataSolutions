@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { careerPackages } from '../data/packages';
 import { useCvUpload, MAX_CV_MB } from '../hooks/useCvUpload';
@@ -12,6 +12,38 @@ import '../styles/order.css';
    headroom covers a slow callback rather than a slow customer. */
 const POLL_TIMEOUT_MS = 120_000;
 const POLL_INTERVAL_MS = 3000;
+
+/* A card payment is already decided by the time Paystack sends the customer
+   back here, so the wait only covers Paystack catching up. Anything still
+   unsettled after this was abandoned on the card page. */
+const CARD_POLL_TIMEOUT_MS = 30_000;
+
+/* The card checkout leaves this page for Paystack's and comes back with a
+   fresh load, so the session survives the trip in sessionStorage. Same tab
+   only, gone when the tab closes. */
+const CARD_SESSION_KEY = 'cds-card-checkout';
+
+/* Read through useSyncExternalStore so the prerender and the hydration pass
+   both see null, and the client picks up the saved checkout straight after.
+   Nothing else writes the key while this page is open, so there is nothing
+   to subscribe to. */
+const subscribeNever = () => () => {};
+const readCardSessionRaw = () => {
+  try {
+    return sessionStorage.getItem(CARD_SESSION_KEY);
+  } catch {
+    return null;
+  }
+};
+const noCardSession = () => null;
+
+function clearCardSession() {
+  try {
+    sessionStorage.removeItem(CARD_SESSION_KEY);
+  } catch {
+    // Storage blocked: nothing was saved, so nothing to clear.
+  }
+}
 
 /**
  * Paid checkout for a career package: /career/order?pkg=<id>
@@ -35,9 +67,27 @@ export default function CareerOrder() {
      this just sends what was typed and shows the answer. api/order.js prices
      the charge independently, so `amountKES` here is display only. */
   const [promo, setPromo] = useState({ code: '', applied: false, amountKES: null, checking: false });
+  const [method, setMethod] = useState('mpesa'); // mpesa | card
   const [status, setStatus] = useState('idle'); // idle | submitting | awaiting | paid | failed
   const [session, setSession] = useState(null); // { orderId, token }
   const [receipt, setReceipt] = useState(null);
+
+  /* Back from Paystack's card page. Until this page's own state moves off
+     'idle', the saved checkout drives it: straight into the wait, where the
+     poll below settles it and adopts it into state. */
+  const savedRaw = useSyncExternalStore(subscribeNever, readCardSessionRaw, noCardSession);
+  const resumed = useMemo(() => {
+    try {
+      const saved = JSON.parse(savedRaw || 'null');
+      return saved?.pkgId === pkg?.id && saved.session?.token ? saved : null;
+    } catch {
+      return null;
+    }
+  }, [savedRaw, pkg?.id]);
+  const resuming = resumed !== null && status === 'idle';
+  const activeStatus = resuming ? 'awaiting' : status;
+  const activeSession = resuming ? resumed.session : session;
+  const card = resuming || method === 'card';
 
   // setErrors is stable, but it is listed so the React Compiler's inferred
   // dependencies match the declared ones and it can still optimize this file.
@@ -49,33 +99,50 @@ export default function CareerOrder() {
     useCvUpload(setCvError);
 
   useEffect(() => {
-    if (status !== 'awaiting' || !session?.token) return undefined;
+    if (activeStatus !== 'awaiting' || !activeSession?.token) return undefined;
 
     let cancelled = false;
     let timer;
     // Set once, when the prompt goes out — the effect only re-runs if the
     // session or status changes, so this is the real start of the wait.
-    const deadline = Date.now() + POLL_TIMEOUT_MS;
+    const deadline = Date.now() + (card ? CARD_POLL_TIMEOUT_MS : POLL_TIMEOUT_MS);
+
+    /* The wait is over either way: forget the saved card checkout, and if this
+       load was resumed from it, move what it carried into state, which is what
+       the result screens read. */
+    const settle = () => {
+      clearCardSession();
+      if (!resuming) return;
+      setMethod('card');
+      setSession(resumed.session);
+      setForm((f) => ({ ...f, email: resumed.email }));
+    };
 
     const poll = async () => {
       if (cancelled) return;
 
       if (Date.now() > deadline) {
+        settle();
         setErrors({
-          submit:
-            'We did not get a confirmation from M-Pesa in time. If you were charged, ' +
-            'reply to your order email and we will sort it out.',
+          submit: card
+            ? 'The card payment was not completed. If you were charged, reply to your ' +
+              'order email and we will sort it out.'
+            : 'We did not get a confirmation from M-Pesa in time. If you were charged, ' +
+              'reply to your order email and we will sort it out.',
         });
         setStatus('failed');
         return;
       }
 
       try {
-        const res = await fetch(`/api/order-status?token=${encodeURIComponent(session.token)}`);
+        const res = await fetch(
+          `/api/order-status?token=${encodeURIComponent(activeSession.token)}`
+        );
         const body = await res.json().catch(() => ({}));
         if (cancelled) return;
 
         if (body.status === 'paid') {
+          settle();
           setReceipt(body.receipt ?? null);
           setStatus('paid');
           return;
@@ -91,6 +158,7 @@ export default function CareerOrder() {
           body.status === 'failed' || (!res.ok && res.status < 500 && res.status !== 429);
 
         if (fatal) {
+          settle();
           setErrors({ submit: body.error || 'The payment was not completed.' });
           setStatus('failed');
           return;
@@ -107,7 +175,7 @@ export default function CareerOrder() {
       cancelled = true;
       clearTimeout(timer);
     };
-  }, [status, session]);
+  }, [activeStatus, activeSession, card, resuming, resumed]);
 
   // Same formatter the cards use, so a figure cannot be written one way on the
   // packages page and another here.
@@ -160,7 +228,7 @@ export default function CareerOrder() {
     const e = {};
     if (!form.name.trim()) e.name = 'Name is required';
     if (!form.email.trim()) e.email = 'Email is required';
-    if (!form.phone.trim()) e.phone = 'M-Pesa number is required';
+    if (!card && !form.phone.trim()) e.phone = 'M-Pesa number is required';
     if (!cvFile) e.cv = 'Please upload your CV';
     return e;
   };
@@ -186,6 +254,7 @@ export default function CareerOrder() {
         body: JSON.stringify({
           packageId: pkg.id,
           ...form,
+          method,
           // Sent as typed. The server re-checks it and decides the price.
           promoCode: promo.applied ? promo.code.trim() : undefined,
           cvBase64,
@@ -199,6 +268,36 @@ export default function CareerOrder() {
         setErrors({ submit: body.error || 'Something went wrong. Please try again.' });
         setStatus('failed');
         return;
+      }
+
+      if (card) {
+        if (!body.authorizationUrl) {
+          setErrors({ submit: 'We could not start the card payment. Please try again.' });
+          setStatus('failed');
+          return;
+        }
+        // Off to Paystack's page. Without storage the return trip cannot find
+        // the order, so a blocked sessionStorage is a stop, not a warning.
+        try {
+          sessionStorage.setItem(
+            CARD_SESSION_KEY,
+            JSON.stringify({
+              pkgId: pkg.id,
+              email: form.email,
+              session: { orderId: body.orderId, token: body.token, amountKES: body.amountKES },
+            })
+          );
+        } catch {
+          setErrors({
+            submit:
+              'Your browser is blocking the storage card checkout needs. Please pay by ' +
+              'M-Pesa, or message us on WhatsApp.',
+          });
+          setStatus('failed');
+          return;
+        }
+        window.location.assign(body.authorizationUrl);
+        return; // status stays 'submitting' while the browser navigates away
       }
 
       // The server's amount is authoritative; show what was actually charged.
@@ -323,11 +422,24 @@ export default function CareerOrder() {
                 </div>
                 {receipt && (
                   <div>
-                    <dt>M-Pesa receipt</dt>
+                    <dt>{card ? 'Payment ref' : 'M-Pesa receipt'}</dt>
                     <dd>{receipt}</dd>
                   </div>
                 )}
               </dl>
+            </div>
+          ) : activeStatus === 'awaiting' && card ? (
+            <div className="order-result order-result--awaiting">
+              <div className="order-result__spinner" aria-hidden="true" />
+              <h2 className="order-result__title">Confirming your payment.</h2>
+              <p className="order-result__body">
+                Checking your card payment of{' '}
+                <strong>{money(activeSession?.amountKES ?? chargedKES)}</strong> with Paystack.
+              </p>
+              <p className="order-result__hint" role="status" aria-live="polite">
+                This takes a few seconds… keep this page open.
+              </p>
+              <p className="order-result__ref">Order ref: {activeSession?.orderId}</p>
             </div>
           ) : status === 'awaiting' ? (
             <div className="order-result order-result--awaiting">
@@ -347,7 +459,7 @@ export default function CareerOrder() {
             <form className="contact-form-card" onSubmit={handleSubmit} noValidate>
               <p className="contact-form-card__title">Your details</p>
               <p className="contact-form-card__subtitle">
-                We need your CV to start, and your M-Pesa number to take payment.
+                We need your CV to start. Pay by M-Pesa or card.
               </p>
 
               {errors.submit && (
@@ -367,11 +479,50 @@ export default function CareerOrder() {
               </div>
 
               <div className="contact-form-card__field">
-                <label htmlFor="order-phone">M-Pesa number</label>
-                <input id="order-phone" type="tel" placeholder="0712 345 678" {...field('phone')} />
-                <span className="order-field-hint">
-                  The payment prompt goes to this number.
-                </span>
+                <fieldset className="order-method">
+                  <legend>Pay with</legend>
+                  {[
+                    ['mpesa', 'M-Pesa'],
+                    ['card', 'Card'],
+                  ].map(([value, label]) => (
+                    <label key={value} className="order-method__option">
+                      <input
+                        type="radio"
+                        name="order-method"
+                        value={value}
+                        checked={method === value}
+                        onChange={() => {
+                          setMethod(value);
+                          setErrors((e) => ({ ...e, phone: null }));
+                        }}
+                      />
+                      {label}
+                    </label>
+                  ))}
+                </fieldset>
+              </div>
+
+              <div className="contact-form-card__field">
+                <label htmlFor="order-phone">
+                  {card ? (
+                    <>
+                      Phone number <span className="field-optional">Optional</span>
+                    </>
+                  ) : (
+                    'M-Pesa number'
+                  )}
+                </label>
+                <input
+                  id="order-phone"
+                  type="tel"
+                  placeholder={card ? 'In case we need to reach you' : '0712 345 678'}
+                  {...field('phone')}
+                />
+                {!card && (
+                  <span className="order-field-hint">
+                    The payment prompt goes to this number.
+                  </span>
+                )}
                 {errors.phone && <span className="field-error-msg">{errors.phone}</span>}
               </div>
 
@@ -512,12 +663,14 @@ export default function CareerOrder() {
               >
                 {status === 'submitting'
                   ? 'Sending...'
-                  : `Pay ${money(chargedKES)} via M-Pesa →`}
+                  : `Pay ${money(chargedKES)} ${card ? 'by card' : 'via M-Pesa'} →`}
               </button>
 
               <p className="contact-form-card__note">
-                You will get an M-Pesa prompt on your phone. Your CV is not shared with
-                anyone outside CareerDataSolutions.
+                {card
+                  ? 'You will enter your card details on Paystack’s secure page; they never reach us.'
+                  : 'You will get an M-Pesa prompt on your phone.'}{' '}
+                Your CV is not shared with anyone outside CareerDataSolutions.
               </p>
             </form>
           )}
