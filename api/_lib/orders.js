@@ -120,7 +120,8 @@ const row = (label, value) => `
  * `safe` values are already escaped by the caller (api/order.js).
  */
 export async function createOrder({
-  id, pkg, safe, cv, amountKES, promoApplied, foundingApplied, method = 'mpesa',
+  id, pkg, safe, cv, amountKES, baseKES = amountKES, serviceChargeKES = 0,
+  promoApplied, foundingApplied, method = 'mpesa',
 }) {
   const card = method === 'card';
   const resend = resendClient();
@@ -149,16 +150,18 @@ export async function createOrder({
           ${row('Order ref', id)}
           ${row('Package', `${pkg.name} (${pkg.tier})`)}
           ${row(
-            'Amount',
+            serviceChargeKES ? 'Package price' : 'Amount',
             // Anything other than the list price is called out with what the
             // list price was, so a figure in your inbox is never just lower
             // than expected with no explanation attached to it.
             promoApplied
-              ? `${money(amountKES)} <span style="color:#B45309;font-weight:600;">(PROMO CODE · list price ${money(pkg.amountKES)})</span>`
+              ? `${money(baseKES)} <span style="color:#B45309;font-weight:600;">(PROMO CODE · list price ${money(pkg.amountKES)})</span>`
               : foundingApplied
-                ? `${money(amountKES)} <span style="color:#B45309;font-weight:600;">(FOUNDING RATE · list price ${money(pkg.amountKES)})</span>`
-                : money(amountKES)
+                ? `${money(baseKES)} <span style="color:#B45309;font-weight:600;">(FOUNDING RATE · list price ${money(pkg.amountKES)})</span>`
+                : money(baseKES)
           )}
+          ${serviceChargeKES ? row('Service charge', `${money(serviceChargeKES)} (covers Paystack's fee)`) : ''}
+          ${serviceChargeKES ? row('Total billed', money(amountKES)) : ''}
           ${row('Name', safe.name)}
           ${row('Email', safe.email)}
           ${row('Paying by', card ? 'Card' : 'M-Pesa')}
@@ -273,6 +276,7 @@ export async function markPaid({ order, receipt }) {
         <table style="width:100%;border-collapse:collapse;">
           ${row('Order ref', order.id)}
           ${row('Amount', money(order.amountKES))}
+          ${order.serviceChargeKES ? row('Of which service charge', money(order.serviceChargeKES)) : ''}
           ${row(receiptLabel, receipt || 'n/a')}
           ${row('Name', order.name)}
           ${row('Email', order.email)}
@@ -304,6 +308,9 @@ export async function markPaid({ order, receipt }) {
           <table style="width:100%;border-collapse:collapse;margin:0 0 20px;">
             ${row('Order ref', order.id)}
             ${row('Amount paid', money(order.amountKES))}
+            ${order.serviceChargeKES
+              ? row('Includes service charge', money(order.serviceChargeKES))
+              : ''}
             ${row(receiptLabel, receipt || 'n/a')}
           </table>
           <p style="font-size:15px;line-height:1.7;color:#334155;margin:0 0 24px;">

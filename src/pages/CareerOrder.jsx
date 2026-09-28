@@ -3,7 +3,12 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { careerPackages } from '../data/packages';
 import { useCvUpload, MAX_CV_MB } from '../hooks/useCvUpload';
 import { WHATSAPP_URL, CONTACT_EMAIL } from '../config';
-import { packagePricing, formatKES } from '../data/pricing';
+import {
+  packagePricing,
+  formatKES,
+  withServiceCharge,
+  SERVICE_CHARGE_RATES,
+} from '../data/pricing';
 import '../styles/contact.css';
 import '../styles/order.css';
 
@@ -186,6 +191,21 @@ export default function CareerOrder() {
      a statement about the charge rather than a second opinion on it. */
   const price = pkg ? packagePricing(pkg) : null;
   const chargedKES = promo.applied ? promo.amountKES : price?.kes;
+  // Same function api/order.js bills with, so the total shown is the charge.
+  const { totalKES, serviceChargeKES } = withServiceCharge(chargedKES, card ? 'card' : 'mpesa');
+  const serviceRatePct = +(SERVICE_CHARGE_RATES[card ? 'card' : 'mpesa'] * 100).toFixed(1);
+
+  /* What the package would have cost without whichever reduction is in play.
+     A code beats the founding rate rather than stacking with it, so when both
+     are live the struck figure is the founding price — the one the visitor
+     was actually about to pay. */
+  const wasLabel = !price
+    ? null
+    : promo.applied
+      ? money(price.kes)
+      : price.discounted
+        ? price.wasKESLabel
+        : null;
 
   const applyPromo = async () => {
     const code = promo.code.trim();
@@ -434,7 +454,7 @@ export default function CareerOrder() {
               <h2 className="order-result__title">Confirming your payment.</h2>
               <p className="order-result__body">
                 Checking your card payment of{' '}
-                <strong>{money(activeSession?.amountKES ?? chargedKES)}</strong> with Paystack.
+                <strong>{money(activeSession?.amountKES ?? totalKES)}</strong> with Paystack.
               </p>
               <p className="order-result__hint" role="status" aria-live="polite">
                 This takes a few seconds… keep this page open.
@@ -447,7 +467,7 @@ export default function CareerOrder() {
               <h2 className="order-result__title">Check your phone.</h2>
               <p className="order-result__body">
                 We sent an M-Pesa request for{' '}
-                <strong>{money(session?.amountKES ?? chargedKES)}</strong> to{' '}
+                <strong>{money(session?.amountKES ?? totalKES)}</strong> to{' '}
                 <strong>{form.phone}</strong>. Enter your PIN to complete the order.
               </p>
               <p className="order-result__hint" role="status" aria-live="polite">
@@ -639,20 +659,41 @@ export default function CareerOrder() {
                 )}
               </div>
 
+              {/* The service charge is itemised rather than folded in, so the
+                  package keeps its advertised price and the extra is visibly
+                  the payment fee — and changes as the method is switched. */}
+              {serviceChargeKES > 0 && (
+                <dl className="order-breakdown">
+                  <div>
+                    <dt>{pkg.name}</dt>
+                    <dd>
+                      {wasLabel && <s className="order-total__was">{wasLabel}</s>}
+                      {money(chargedKES)}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>
+                      Service charge{' '}
+                      <span className="order-breakdown__note">
+                        ({serviceRatePct}% {card ? 'card' : 'M-Pesa'} processing fee)
+                      </span>
+                    </dt>
+                    <dd>{money(serviceChargeKES)}</dd>
+                  </div>
+                </dl>
+              )}
+
               <div className="order-total">
                 <span>Total</span>
                 <strong>
-                  {/* What the total would have been without whichever
-                      reduction is in play. A code beats the founding rate
-                      rather than stacking with it, so when both are live the
-                      struck figure is the founding price — the one the
-                      visitor was actually about to pay. */}
-                  {(promo.applied || price.discounted) && (
-                    <s className="order-total__was">
-                      {promo.applied ? money(price.kes) : price.wasKESLabel}
-                    </s>
+                  {/* With a breakdown above, the struck price sits on the
+                      package line instead: here, beside a total that includes
+                      the service charge, it would read as a comparison it is
+                      not. */}
+                  {serviceChargeKES === 0 && wasLabel && (
+                    <s className="order-total__was">{wasLabel}</s>
                   )}
-                  {money(chargedKES)}
+                  {money(totalKES)}
                 </strong>
               </div>
 
@@ -663,7 +704,7 @@ export default function CareerOrder() {
               >
                 {status === 'submitting'
                   ? 'Sending...'
-                  : `Pay ${money(chargedKES)} ${card ? 'by card' : 'via M-Pesa'} →`}
+                  : `Pay ${money(totalKES)} ${card ? 'by card' : 'via M-Pesa'} →`}
               </button>
 
               <p className="contact-form-card__note">

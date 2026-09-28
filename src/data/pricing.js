@@ -114,6 +114,36 @@ export function packagePricing(pkg, now = new Date()) {
 }
 
 /**
+ * Service charge per payment method: Paystack Kenya's fee on each rail,
+ * passed on to the customer. Set a rate to 0 to absorb that fee instead.
+ *
+ * Cards use the international rate (3.8%) rather than the local one (2.9%)
+ * because the card is entered on Paystack's page, after the price is fixed —
+ * there is no knowing beforehand whether it is Kenyan. Paystack's
+ * international rate already covers currency conversion.
+ */
+export const SERVICE_CHARGE_RATES = { mpesa: 0.015, card: 0.038 };
+
+/**
+ * Add the payment method's service charge to a price.
+ *
+ * → { totalKES, serviceChargeKES }
+ *
+ * Grossed up, not added on: Paystack takes its percentage of the TOTAL, so
+ * the total is price ÷ (1 − rate). Adding 3.8% of the price would leave you
+ * 3.8% of the service charge short. Rounded UP to a whole shilling, so the
+ * rounding never lands below the price either.
+ */
+export function withServiceCharge(kes, method) {
+  const rate = SERVICE_CHARGE_RATES[method] ?? 0;
+  if (typeof kes !== 'number' || !Number.isFinite(kes) || rate <= 0) {
+    return { totalKES: kes, serviceChargeKES: 0 };
+  }
+  const totalKES = Math.ceil(kes / (1 - rate));
+  return { totalKES, serviceChargeKES: totalKES - kes };
+}
+
+/**
  * The integer KES to actually bill for a package, before any promo code.
  * Null for anything not sold off the page.
  *

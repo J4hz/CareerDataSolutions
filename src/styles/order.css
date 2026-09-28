@@ -172,6 +172,46 @@
   gap: 8px;
 }
 
+/* Package + service charge, above the total. Same rule line as .order-total,
+   so the two read as one block: items, then the sum. */
+.order-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 16px;
+  border-top: 1px solid var(--gl);
+  font-size: 13.5px;
+  color: var(--gd);
+}
+
+.order-breakdown > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.order-breakdown dd {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-weight: 600;
+  color: var(--dark);
+  white-space: nowrap;
+}
+
+.order-breakdown__note {
+  font-size: 12px;
+  color: var(--gm);
+}
+
+/* The breakdown already carries the rule line; a second one right under it
+   would split the total off from the figures it adds up. */
+.order-breakdown + .order-total {
+  border-top: 0;
+  padding-top: 4px;
+}
+
 /* List price kept visible beside the discounted one, so the total is never
    just a smaller number with no explanation. */
 .order-total__was {

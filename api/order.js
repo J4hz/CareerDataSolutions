@@ -26,6 +26,7 @@ import {
 import { resolveAmount } from './_lib/promo.js';
 import { limited } from './_lib/rate-limit.js';
 import { SITE_DOMAIN, SITE_URL } from '../src/config.js';
+import { withServiceCharge } from '../src/data/pricing.js';
 
 /**
  * Where the card checkout sends the customer back to. Follows the request's
@@ -112,13 +113,19 @@ export default async function handler(req, res) {
   // The charged amount is decided HERE, from the package plus the server-held
   // promo code. api/promo.js only told the browser what to display; it has no
   // say in what is billed.
-  const { amountKES, promoApplied, foundingApplied } = resolveAmount(pkg, promoCode);
+  const priced = resolveAmount(pkg, promoCode);
+  const { promoApplied, foundingApplied } = priced;
+
+  // The payment method's service charge goes on top of whatever the package
+  // came to. amountKES from here on is the full amount billed.
+  const baseKES = priced.amountKES;
+  const { totalKES: amountKES, serviceChargeKES } = withServiceCharge(baseKES, method);
 
   try {
     // The CV reaches the inbox before any payment is attempted, so a failed or
     // abandoned payment never costs us the submission.
     const stored = await createOrder({
-      id, pkg, safe, cv, amountKES, promoApplied, foundingApplied, method,
+      id, pkg, safe, cv, amountKES, baseKES, serviceChargeKES, promoApplied, foundingApplied, method,
     });
     if (!stored.ok) {
       return res.status(502).json({ error: 'We could not save your order. Please try again.' });
@@ -159,6 +166,7 @@ export default async function handler(req, res) {
       packageId: pkg.id,
       packageName: pkg.name,
       amountKES,
+      serviceChargeKES,
       promoApplied,
       timeline: pkg.timeline,
       name: safe.name,
@@ -175,6 +183,7 @@ export default async function handler(req, res) {
       // Card only: where to send the browser to enter card details.
       authorizationUrl: push.authorizationUrl,
       amountKES,
+      serviceChargeKES,
       promoApplied,
       foundingApplied,
     });
