@@ -137,20 +137,22 @@
 }
 
 .packages-page__hero {
-  background: linear-gradient(155deg, var(--navy) 0%, var(--navy2) 100%);
+  background: var(--navy);
   padding: 140px 0 80px;
   text-align: center;
 }
 
 /* The same photograph each service hero carries, so a visitor moving from
-   /data/services to /data/packages stays on one visual. The navy gradient
-   becomes a scrim over the photo; the flat gradient above is kept as the
-   fallback if the image fails. Alpha mirrors landing.css at 0.87 top / 0.82
-   bottom. The faintest text here (the eyebrow and intro, white at 0.65 alpha)
-   clears AA with room even this light, because this hero carries neither the
-   accent headline nor the stat labels that are the tight cases on the service
-   heroes. See the fuller note in landing.css. rgba values are #0B1F3A /
-   #143255. */
+   /data/services to /data/packages stays on one visual. --scrim goes over the
+   photo; the flat navy above is kept as the fallback if the image fails.
+
+   Same scrim as landing.css, because it is the same token: navy at 0.87,
+   flat. The faintest text here (the eyebrow and intro, white at 0.65 alpha)
+   cleared AA with room even under the old lighter-at-the-bottom scrim, and
+   this one is darker everywhere, because this hero carries neither the accent
+   headline nor the stat labels that are the tight cases on the service heroes.
+   See the fuller note in landing.css for the measurements and for why a
+   linear-gradient is what paints a flat colour here. */
 .theme-career .packages-page__hero,
 .theme-data .packages-page__hero {
   background-repeat: no-repeat;
@@ -162,10 +164,10 @@
    landing.css for why it is written out instead of using a variable. */
 .theme-career .packages-page__hero {
   background-image:
-    linear-gradient(155deg, rgba(11, 31, 58, 0.87) 0%, rgba(20, 50, 85, 0.82) 100%),
+    linear-gradient(var(--scrim), var(--scrim)),
     url('../assets/generated/hero-career-1600.jpg');
   background-image:
-    linear-gradient(155deg, rgba(11, 31, 58, 0.87) 0%, rgba(20, 50, 85, 0.82) 100%),
+    linear-gradient(var(--scrim), var(--scrim)),
     image-set(
       url('../assets/generated/hero-career-1600.webp') type('image/webp'),
       url('../assets/generated/hero-career-1600.jpg') type('image/jpeg')
@@ -174,10 +176,10 @@
 
 .theme-data .packages-page__hero {
   background-image:
-    linear-gradient(155deg, rgba(11, 31, 58, 0.87) 0%, rgba(20, 50, 85, 0.82) 100%),
+    linear-gradient(var(--scrim), var(--scrim)),
     url('../assets/generated/hero-data-1600.jpg');
   background-image:
-    linear-gradient(155deg, rgba(11, 31, 58, 0.87) 0%, rgba(20, 50, 85, 0.82) 100%),
+    linear-gradient(var(--scrim), var(--scrim)),
     image-set(
       url('../assets/generated/hero-data-1600.webp') type('image/webp'),
       url('../assets/generated/hero-data-1600.jpg') type('image/jpeg')
@@ -187,10 +189,10 @@
 @media (max-width: 820px) {
   .theme-career .packages-page__hero {
     background-image:
-      linear-gradient(155deg, rgba(11, 31, 58, 0.87) 0%, rgba(20, 50, 85, 0.82) 100%),
+      linear-gradient(var(--scrim), var(--scrim)),
       url('../assets/generated/hero-career-800.jpg');
     background-image:
-      linear-gradient(155deg, rgba(11, 31, 58, 0.87) 0%, rgba(20, 50, 85, 0.82) 100%),
+      linear-gradient(var(--scrim), var(--scrim)),
       image-set(
         url('../assets/generated/hero-career-800.webp') type('image/webp') 1x,
         url('../assets/generated/hero-career-1600.webp') type('image/webp') 2x,
@@ -201,10 +203,10 @@
 
   .theme-data .packages-page__hero {
     background-image:
-      linear-gradient(155deg, rgba(11, 31, 58, 0.87) 0%, rgba(20, 50, 85, 0.82) 100%),
+      linear-gradient(var(--scrim), var(--scrim)),
       url('../assets/generated/hero-data-800.jpg');
     background-image:
-      linear-gradient(155deg, rgba(11, 31, 58, 0.87) 0%, rgba(20, 50, 85, 0.82) 100%),
+      linear-gradient(var(--scrim), var(--scrim)),
       image-set(
         url('../assets/generated/hero-data-800.webp') type('image/webp') 1x,
         url('../assets/generated/hero-data-1600.webp') type('image/webp') 2x,
@@ -541,182 +543,4 @@
 
 .packages-page__group:last-of-type {
   margin-bottom: 0;
-}
-
-/* ── Horizontal card ── */
-.pkg-h-card {
-  background: var(--surface);
-  border: 1.5px solid var(--gl);
-  border-radius: 16px;
-  display: grid;
-  grid-template-columns: 1fr 280px;
-  overflow: visible;
-  position: relative;
-  transition: box-shadow 0.22s, transform 0.22s;
-  margin-bottom: 20px;
-}
-
-.pkg-h-card:last-child {
-  margin-bottom: 0;
-}
-
-.pkg-h-card--data:hover {
-  box-shadow: 0 10px 40px rgba(29,158,117,0.10);
-  transform: translateY(-2px);
-}
-
-.pkg-h-card--career:hover {
-  box-shadow: 0 10px 40px rgba(244,168,51,0.10);
-  transform: translateY(-2px);
-}
-
-/* Left panel */
-.pkg-h-left {
-  padding: 32px 36px 32px 32px;
-  border-right: 1px solid var(--gl);
-}
-
-.pkg-h-top {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 10px;
-}
-
-.pkg-h-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.pkg-h-features {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px 24px;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.pkg-h-features--single {
-  grid-template-columns: 1fr;
-}
-
-.pkg-h-feature {
-  display: flex;
-  align-items: flex-start;
-  gap: 7px;
-  font-size: 13px;
-  color: var(--gd);
-  line-height: 1.45;
-}
-
-.pkg-h-tags {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-top: 18px;
-}
-
-.pkg-h-tag {
-  background: var(--paper);
-  border: 1px solid var(--gl);
-  border-radius: 100px;
-  padding: 4px 12px;
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--gm);
-}
-
-/* Right panel */
-.pkg-h-right {
-  padding: 32px 28px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-  min-width: 0;
-}
-
-.pkg-h-timeline {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  color: var(--gm);
-  margin-bottom: 12px;
-}
-
-.pkg-h-cta {
-  width: 100%;
-  padding: 13px 20px;
-  border-radius: 10px;
-  font-weight: 700;
-  font-size: 14px;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  text-decoration: none;
-  transition: background 0.2s, transform 0.2s;
-  margin-bottom: 12px;
-}
-
-.pkg-h-cta--data:hover {
-  background: var(--teal2) !important;
-  transform: translateY(-1px);
-}
-
-.pkg-h-cta--career:hover {
-  background: var(--gold2) !important;
-  transform: translateY(-1px);
-}
-
-.pkg-h-note {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 12px;
-  color: var(--gm);
-  text-decoration: none;
-}
-
-.pkg-h-note:hover {
-  color: var(--dark);
-}
-
-/* ── Responsive ── */
-@media (max-width: 900px) {
-  .pkg-h-card {
-    grid-template-columns: 1fr;
-  }
-
-  .pkg-h-left {
-    border-right: none;
-    border-bottom: 1px solid var(--gl);
-    padding: 28px 24px;
-  }
-
-  .pkg-h-right {
-    padding: 24px;
-  }
-
-  .pkg-h-features {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 560px) {
-  .pkg-h-left {
-    padding: 24px 20px;
-  }
-
-  .pkg-h-right {
-    padding: 20px;
-  }
 }

@@ -63,7 +63,7 @@ const CTASection = memo(function CTASection({ track = null }) {
       <div className="cta-section__inner">
         <h2 id="cta-heading">{HEADLINES[key]}</h2>
         <p className="cta-section__sub">
-          Book a free 30-minute discovery call. No commitment. We'll map out exactly
+          Book a free 15-minute discovery call. No commitment. We'll map out exactly
           what's possible and what it would cost.
         </p>
         <div className="cta-section__actions">

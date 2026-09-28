@@ -9,6 +9,8 @@
 // Rendered by components/FoundingClientsCallout.jsx on exactly two
 // surfaces: the homepage (between the "One company, two services" strip
 // and the "What we do" cards) and the About page (above the stat block).
+// The homepage takes foundingClientsCopy below; the About page takes
+// discountOfferCopy, which states the same offer as a plain percentage.
 // Deliberately NOT on either packages page or in any FAQ: there it reads
 // as an excuse attached to a price, rather than a position stated up front.
 //
@@ -80,6 +82,20 @@ export const foundingClientsCopy = {
   body:
     'We’re onboarding our first CareerDataSolutions clients now. Founding clients ' +
     `get ${foundingClientsConfig.discountPercent}% off every package and priority ` +
+    'turnaround, in exchange for a testimonial and permission to feature the ' +
+    'work as a case study.',
+};
+
+/* The same offer stated as a plain discount, for every surface that should
+   lead with the number instead of the "founding client" framing. The
+   homepage card is the only one that keeps the Founding Clients wording;
+   the About page takes this. Both read the same constant above, so the two
+   can never quote different figures. */
+export const discountOfferCopy = {
+  title: `${foundingClientsConfig.discountPercent}% discount`,
+  body:
+    'We’re onboarding our first CareerDataSolutions clients now. You get ' +
+    `${foundingClientsConfig.discountPercent}% off every package and priority ` +
     'turnaround, in exchange for a testimonial and permission to feature the ' +
     'work as a case study.',
 };

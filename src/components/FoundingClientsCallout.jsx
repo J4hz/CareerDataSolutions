@@ -1,4 +1,5 @@
 import {
+  discountOfferCopy,
   foundingClientsCopy,
   isFoundingClientsActive,
 } from '../content/foundingClients';
@@ -12,6 +13,12 @@ import '../styles/founding-clients.css';
  * drift apart. If the offer has lapsed (window closed or engagement cap
  * reached) this renders nothing at all rather than stale copy.
  *
+ * VARIANT: which of the two copy blocks to state the offer with. `founding`
+ * keeps the "Founding Clients" framing and is used by the homepage alone;
+ * `discount` leads with the percentage instead and is what every other
+ * surface takes. Both are built from the same discountPercent constant, so
+ * picking the wrong one can misword the offer but never misprice it.
+ *
  * COLOUR: takes var(--accent) from the surrounding shell, so it is gold
  * inside /career/* and teal inside /data/* and on the neutral homepage.
  * Note that on the About page this is the one element that breaks that
@@ -24,10 +31,15 @@ import '../styles/founding-clients.css';
  * only the surface and text tokens change, since a paper panel dropped on
  * --navy-950 would read as a rendering fault rather than a callout.
  */
-export default function FoundingClientsCallout({ tone = 'light', className = '' }) {
+export default function FoundingClientsCallout({
+  tone = 'light',
+  variant = 'founding',
+  className = '',
+}) {
   if (!isFoundingClientsActive()) return null;
 
-  const { title, body } = foundingClientsCopy;
+  const { title, body } =
+    variant === 'discount' ? discountOfferCopy : foundingClientsCopy;
 
   return (
     <aside

@@ -1,6 +1,29 @@
-import { useState, useRef } from 'react';
+import { lazy, Suspense, useCallback, useMemo, useRef, useState } from 'react';
 import { WHATSAPP_URL, CONTACT_EMAIL } from '../config';
 import '../styles/contact.css';
+
+/* Loaded on submit, never before: see the note at the top of
+   components/BookingCalendar.jsx. */
+const BookingCalendar = lazy(() => import('../components/BookingCalendar'));
+
+/* Readable labels for the two selects, used to compose the Cal.com notes
+   field so the booking carries the answers rather than raw option values. */
+const LABELS = {
+  targetMarket: {
+    'kenya': 'Kenya',
+    'uk':    'United Kingdom',
+    'us':    'United States',
+    'uae':   'UAE / Gulf',
+    'other': 'Other international',
+  },
+  experienceLevel: {
+    '0-1':  '0-1 years (Graduate)',
+    '1-3':  '1-3 years (Junior)',
+    '3-7':  '3-7 years (Mid-level)',
+    '7-10': '7-10 years (Senior)',
+    '10+':  '10+ years (Executive)',
+  },
+};
 
 // Mirrors MAX_CV_BYTES in api/_lib/sanitize.js. The server enforces this for
 // real — this copy exists only so the user gets told before a 4MB upload.
@@ -20,7 +43,8 @@ export default function ContactCareer() {
   });
   const [cvFile,     setCvFile]     = useState(null);
   const [submitting, setSubmitting] = useState(false);
-  const [submitted,  setSubmitted]  = useState(false);
+  /* 'form' | 'booking' | 'booked' — see the same machine in ContactData.jsx. */
+  const [stage,      setStage]      = useState('form');
   const [errors,     setErrors]     = useState({});
   const fileInputRef                = useRef(null);
 
@@ -65,6 +89,34 @@ export default function ContactCareer() {
     return e;
   };
 
+  const firstName = formData.name.trim().split(' ')[0] || 'there';
+
+  /* Prefilled into the Cal.com booking form. The CV itself is not sent to
+     Cal.com -- it goes to the team with the notification email, and putting
+     a candidate's document into a third party's booking notes would be
+     both useless there and a needless disclosure. */
+  const prefill = useMemo(() => {
+    const lines = [
+      formData.targetRole && `Target role: ${formData.targetRole}`,
+      LABELS.targetMarket[formData.targetMarket] &&
+        `Market: ${LABELS.targetMarket[formData.targetMarket]}`,
+      LABELS.experienceLevel[formData.experienceLevel] &&
+        `Experience: ${LABELS.experienceLevel[formData.experienceLevel]}`,
+      formData.careerGoals && `Career goals: ${formData.careerGoals}`,
+      formData.message && `Also mentioned: ${formData.message}`,
+      cvFile && `CV sent: ${cvFile.name}`,
+    ].filter(Boolean);
+
+    return {
+      name: formData.name,
+      email: formData.email,
+      notes: lines.join('\n'),
+    };
+  }, [formData, cvFile]);
+
+  const handleBooked = useCallback(() => setStage('booked'), []);
+  const handleEdit   = useCallback(() => setStage('form'), []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const errs = validate();
@@ -102,7 +154,7 @@ export default function ContactCareer() {
         return;
       }
 
-      setSubmitted(true);
+      setStage('booking');
     } catch (err) {
       console.error('Submission error:', err);
       setErrors({ submit: 'Something went wrong. Please try again or email us directly.' });
@@ -141,17 +193,16 @@ export default function ContactCareer() {
                 for free gives away the product and removes the reason to
                 book. Findings are walked through live instead. */}
             <p className="contact-page__sub">
-              Send your CV and tell us where you want to go.
-              Within one business day we will send you a link to
-              book your free discovery call, where we walk you
-              through what is holding your CV back.
+              Send your CV and tell us where you want to go, then pick
+              a time that suits you. We will have read it before the
+              call, where we walk you through what is holding it back.
             </p>
 
             <div className="contact-expect">
               {[
                 "Upload your current CV, even if you think it needs work.",
                 "Tell us your target role, market, and experience level.",
-                "We review it and send your booking link, usually within one business day.",
+                "You pick a time for the call, and we read your CV before it.",
               ].map((text, i) => (
                 <div key={i} className="contact-expect__item">
                   <div className="contact-expect__num contact-expect__num--gold">
@@ -205,25 +256,51 @@ export default function ContactCareer() {
           {/* RIGHT COLUMN */}
           <div className="contact-page__right">
 
-            {submitted ? (
+            {stage === 'booking' && (
+              <div className="contact-booking">
+                <h2 className="contact-booking__title">
+                  Thanks, {firstName}. Pick a time for your 15-minute call below.
+                </h2>
+                <p className="contact-booking__sub">
+                  We have your CV and will have read it before the call.
+                </p>
+                <Suspense
+                  fallback={
+                    <div className="booking-cal__skeleton" aria-hidden="true">
+                      <span />
+                      <span />
+                      <span />
+                    </div>
+                  }
+                >
+                  <BookingCalendar
+                    track="career"
+                    prefill={prefill}
+                    onBooked={handleBooked}
+                    onEdit={handleEdit}
+                  />
+                </Suspense>
+              </div>
+            )}
 
+            {stage === 'booked' && (
               <div className="contact-career-success">
                 <div className="contact-career-success__icon">✓</div>
                 <h2 className="contact-career-success__title">
-                  CV received.
+                  You're booked.
                 </h2>
                 <p className="contact-career-success__body">
-                  We have your CV and details. Within one business day
-                  you will get a link to book your free discovery call,
-                  where we walk you through what we found.
-                  Check your spam folder if you do not hear from us.
+                  Your discovery call is confirmed. Cal.com has sent you a
+                  calendar invite with the time and the video link. We will
+                  have read your CV before we speak.
                 </p>
                 <p className="contact-career-success__email">
                   Sent to: {formData.email}
                 </p>
               </div>
+            )}
 
-            ) : (
+            {stage === 'form' && (
 
               <form
                 className="contact-form-card"
@@ -445,9 +522,8 @@ export default function ContactCareer() {
                 </button>
 
                 <p className="contact-form-card__note">
-                  We will respond within one business day. Your
-                  CV is not shared with anyone outside
-                  CareerDataSolutions.
+                  We read every CV before the call. Your CV is not
+                  shared with anyone outside CareerDataSolutions.
                 </p>
 
               </form>

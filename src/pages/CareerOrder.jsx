@@ -274,7 +274,7 @@ export default function CareerOrder() {
               <s className="pkg-was__price">
                 {price.wasKESLabel} / {price.wasUSDLabel}
               </s>
-              <span className="pkg-was__tag">{price.percent}% founding</span>
+              <span className="pkg-was__tag">{price.percent}% discount</span>
               <span className="sr-only">, now</span>
             </div>
           )}

@@ -88,7 +88,11 @@ export default function AboutSection() {
               the one element on this page that takes var(--accent) and so
               shifts gold/teal with the shell — see the colour note at the
               top of styles/about-section.css. */}
-          <FoundingClientsCallout tone="dark" className="about-sec__founding" />
+          <FoundingClientsCallout
+            tone="dark"
+            variant="discount"
+            className="about-sec__founding"
+          />
 
           <div className="about-sec__stat-box">
             <p className="about-sec__stat-quote">{about.statBox.quote}</p>

@@ -36,7 +36,7 @@ export default function PackageCard({ pkg, variant = 'card' }) {
         {price.wasUSDLabel ? `${price.wasUSDLabel} / ${price.wasKESLabel}` : price.wasKESLabel}
       </s>
       <span className="pkg-was__tag" style={{ color: accentInk }}>
-        {price.percent}% founding
+        {price.percent}% discount
       </span>
       <span className="sr-only">, now</span>
     </div>

@@ -6,7 +6,7 @@
   place-items: center;
   text-align: center;
   padding: 168px 24px 120px;
-  background: linear-gradient(155deg, var(--navy) 0%, var(--navy2) 60%, var(--navy-800) 100%);
+  background: var(--navy);
   position: relative;
   overflow: hidden;
 }

@@ -16,7 +16,10 @@
 //   NOTIFY_FROM=onboarding@resend.dev
 
 import { Resend } from 'resend';
-import { CALENDLY_URL, CONTACT_EMAIL, NOTIFY_FROM, SITE_DOMAIN, WHATSAPP_URL } from '../src/config.js';
+import { calUrlFor, CONTACT_EMAIL, NOTIFY_FROM, SITE_DOMAIN, WHATSAPP_URL } from '../src/config.js';
+
+// Resolved once, by track. See the same note in api/notify-data.js.
+const CAL_URL = calUrlFor('career');
 import { cleanText, cleanHeader, isValidEmail, validateCvUpload } from './_lib/sanitize.js';
 import { limited } from './_lib/rate-limit.js';
 
@@ -24,10 +27,15 @@ import { limited } from './_lib/rate-limit.js';
 // question nobody has until after they have submitted. The welcome email below
 // is where it gets read. `role` is the already-escaped safe.targetRole, folded
 // into the first line so the list keeps the personalisation the prose had.
+//
+// Unlike the data side, this list survives the move to on-site booking. The
+// booking-link promise in it is gone, but everything else is still owed: the
+// CV review is a real deliverable that Cal.com's invite says nothing about,
+// and it is the thing an applicant is actually anxious about.
 const nextSteps = (role) => [
   `We review your CV against your target role${role ? ` (${role})` : ''} and market`,
   'We identify the exact gaps holding you back',
-  'You get a link to book your free discovery call within 1 business day',
+  'We come to the call having read it, so none of the time goes on catching up',
   'On the call we walk you through what we found and what we recommend',
   'No obligation to purchase; the review and the call are free',
 ];
@@ -202,8 +210,10 @@ export default async function handler(req, res) {
               Once you have reviewed the CV
             </div>
             <div style="font-size:13px;color:#334155;line-height:1.6;">
-              Send this booking link to the applicant:<br />
-              <a href="${CALENDLY_URL}" style="color:#96702B;">${CALENDLY_URL}</a>
+              They book their own slot on the site straight after this form, so
+              a Cal.com confirmation should already have reached you. If one did
+              not, send them this:<br />
+              <a href="${CAL_URL}" style="color:#96702B;">${CAL_URL}</a>
             </div>
           </div>
           <p style="margin-top:24px;font-size:13px;
@@ -258,8 +268,10 @@ export default async function handler(req, res) {
                 Thanks, ${firstName}, we've got your CV.
               </h1>
               <p style="font-size:15px;line-height:1.7;color:#334155;margin:0 0 16px;">
-                This is a quick confirmation that your CV and details reached
-                CareerDataSolutions. There is nothing else you need to do right now.
+                Your CV and details reached CareerDataSolutions, and we will read
+                it against your target role before we speak. If you picked a time
+                on the site, Cal.com has sent you a separate calendar invite with
+                the slot and the video link.
               </p>
               ${nextStepsBlock(safe.targetRole, '#C89A44')}
               <p style="font-size:15px;line-height:1.7;color:#334155;margin:0 0 24px;">

@@ -48,7 +48,7 @@
 
 /* One mark per theme, chosen by the attribute rather than by React, so the
    server markup and the hydration pass are identical -- the same reasoning
-   as the footer toggle's icons. Both <img> elements are always in the DOM;
+   as the theme toggle's icons, now a few elements along this same bar. Both <img> elements are always in the DOM;
    only one is ever displayed. */
 .navbar__logo-img--dark {
   display: none;

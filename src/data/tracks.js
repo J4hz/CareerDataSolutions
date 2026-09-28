@@ -122,7 +122,7 @@ export const dataTrack = {
 
   closingTitle: 'Stop reporting from memory. See it live.',
   closingBody:
-    'Book a free 30-minute discovery call. No commitment: we map out exactly what is possible with your data and what it would cost. If a dashboard is not the right answer, we will tell you that.',
+    'Book a free 15-minute discovery call. No commitment: we map out exactly what is possible with your data and what it would cost. If a dashboard is not the right answer, we will tell you that.',
 };
 
 export const careerTrack = {

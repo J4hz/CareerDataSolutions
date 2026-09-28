@@ -7,7 +7,7 @@
   allowance, and that is not being loosened for a theme flash.
 
   Precedence:
-    1. an explicit choice the visitor made with the footer toggle
+    1. an explicit choice the visitor made with the header toggle
     2. the operating system setting
     3. light
 

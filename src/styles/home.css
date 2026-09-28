@@ -1,20 +1,25 @@
 /* ── HERO ──
    Two-track thesis made spatial. A left-aligned header (kicker + headline that
-   colours its own key words) sits above two side-by-side advantage columns —
-   data left/teal, career right/gold — each a bulleted pitch with its own CTA.
-   Teal and gold radial glows anchor the two sides so the split reads at a
-   glance, not from a card outline. */
+   colours its own key words) sits above two side-by-side advantage columns:
+   data left/teal, career right/gold, each a bulleted pitch with its own CTA.
+
+   Flat navy. This used to be three stacked layers, a teal radial tint on the
+   left and a gold one on the right over a diagonal navy-to-navy-800 wash, so
+   that the colour split read from the background itself. The split is carried
+   by the columns instead: their headings, bullet markers and CTAs are already
+   teal on the left and gold on the right, which says the same thing without a
+   glow behind it. */
 .hero {
-  background:
-    radial-gradient(58% 75% at 14% 20%, rgba(29,158,117, 0.10), transparent 60%),
-    radial-gradient(56% 72% at 87% 28%, rgba(244,168,51, 0.09), transparent 60%),
-    linear-gradient(155deg, var(--navy) 0%, var(--navy2) 58%, var(--navy-800) 100%);
+  background: var(--navy);
   padding: 108px 0 60px;
   position: relative;
   overflow: hidden;
 }
 
-/* A faint dot grid gives the field texture behind the glows. */
+/* A faint dot grid gives the flat navy some texture. A radial-gradient is
+   how CSS draws a dot pattern, not a gradient in the decorative sense: each
+   one is a hard 1px dot tiled every 26px, and the mask fades the field out
+   toward the bottom. */
 .hero::before {
   content: '';
   position: absolute;

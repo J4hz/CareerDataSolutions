@@ -55,7 +55,7 @@ export const staticRoutes = {
   '/data/contact': {
     title: `Book a Free Power BI Discovery Call | ${SITE_NAME}`,
     description:
-      'Tell us what you are trying to see and where your data sits, and book a free 30-minute discovery call to scope a Power BI dashboard or analytics automation project in Kenya.',
+      'Tell us what you are trying to see and where your data sits, and book a free 15-minute discovery call to scope a Power BI dashboard or analytics automation project in Kenya.',
   },
 
   // ── Career track ──

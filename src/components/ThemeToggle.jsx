@@ -18,7 +18,7 @@ function storedChoice() {
 }
 
 /**
- * The light/dark switch, in the footer's bottom bar.
+ * The light/dark switch, at the right end of the header's nav row.
  *
  * ── Why the icons swap in CSS, not in JSX ──
  *
@@ -33,9 +33,18 @@ function storedChoice() {
  * hydration pass is identical to the server's by construction, rather than
  * by us being careful.
  *
- * aria-pressed is the one thing that cannot be done in CSS. It starts false
- * in both passes and is corrected in an effect, which runs after hydration
- * and so cannot cause a mismatch.
+ * The same constraint governs the ACCESSIBLE NAME, which is why the label
+ * below is derived from React state rather than from the attribute. Both
+ * aria-pressed and aria-label start from isDark === false in the server pass
+ * and in the client's first pass, so the two are identical by construction,
+ * and an effect corrects them after hydration. A visitor in dark mode gets
+ * the light-mode name for one frame; the ICON is never wrong, because CSS
+ * reads the attribute directly and the attribute is set before first paint.
+ *
+ * The name is phrased as the action the click performs ("Switch to dark
+ * mode") rather than as a static object name. That is a change from the
+ * footer version, which used a stable "Dark mode" plus aria-pressed on the
+ * reasoning that a control should not rename itself mid-session.
  *
  * ── Storage ──
  *
@@ -90,9 +99,7 @@ const ThemeToggle = memo(function ThemeToggle() {
       type="button"
       className="theme-toggle"
       onClick={toggle}
-      /* A stable name, so the button does not rename itself under a screen
-         reader user mid-session. aria-pressed carries the state instead. */
-      aria-label="Dark mode"
+      aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
       aria-pressed={isDark}
     >
       {/* Both icons ship in both themes; theme-toggle.css shows one. */}

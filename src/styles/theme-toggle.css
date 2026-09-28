@@ -1,14 +1,19 @@
 /* ─────────────────────────────────────────────────────────────
-   The light/dark switch in the footer's bottom bar
-   (components/ThemeToggle.jsx).
+   The light/dark switch at the right end of the header
+   (components/ThemeToggle.jsx, rendered inside .navbar__end).
 
-   Quiet on purpose. It sits beside a copyright line on the deepest bar on
-   the page and is not something a visitor needs to find; it should be
-   there when they look for it and invisible when they are not. So: no
-   fill, no border, no label, muted white that comes up on hover.
+   It moved here from the footer's bottom bar. That bar was --navy-950 in
+   BOTH themes, so every colour in the old version was a white alpha and
+   none of it forked. The header is --paper, which IS themed, so this file
+   now works in tokens that follow the theme rather than in raw alphas.
 
-   The bar is --navy-950 in BOTH themes, so every colour here is a white
-   alpha and none of it forks. Same vocabulary as the rest of footer.css.
+   SECONDARY BY CONSTRUCTION. It is the last element on the bar, hard
+   against the right edge, which is a loud position for a control that
+   should not be loud -- the booking CTA beside it is the one thing there
+   that should be. So everything else about it is turned down: no fill, no
+   border, no shadow, no glow, just a bare glyph in the same quiet ink as
+   .navbar__link--switch, picking up a flat --paper-dim wash on hover.
+   Position carries it; weight does not.
    ───────────────────────────────────────────────────────────── */
 
 .theme-toggle {
@@ -17,14 +22,12 @@
   justify-content: center;
   flex-shrink: 0;
 
-  /* 44px touch target around a 16px icon. The bar's own content is a ~20px
-     line of copy, so without the negative margin this would add ~24px to
-     the height of the bar for a control nobody asked to be taller. The
-     margin pulls the box back to the copy's line height while the hit area
-     stays 44px. Reset in the stacked layout at the bottom of this file. */
+  /* 44x44 around a 16px glyph: the WCAG 2.5.5 target size, met by the
+     button box itself rather than by padding on a smaller hit area. The
+     bar is 68px tall on desktop and 88px on mobile, so unlike the footer
+     version this needs no negative margin to avoid inflating its row. */
   width: 44px;
   height: 44px;
-  margin-block: -12px;
 
   padding: 0;
   border: none;
@@ -32,20 +35,27 @@
   border-radius: var(--radius-sm);
   cursor: pointer;
 
-  /* Matches .footer__copy beside it, so the two read as one row. */
-  color: rgba(255, 255, 255, 0.35);
+  /* --ink-soft via the legacy alias, the same quiet ink the cross-track
+     link beside it uses. 6.2:1 on --paper in light and 7.3:1 in dark, so
+     it clears the 3:1 that WCAG asks of a non-text control roughly twice
+     over in both themes. */
+  color: var(--gm);
   transition: color var(--transition), background var(--transition);
 }
 
 .theme-toggle:hover {
-  color: var(--white);
-  background: rgba(255, 255, 255, 0.07);
+  color: var(--ink);
+  /* One flat step off the header, no gradient. --paper-dim is #F4F6F8 in
+     light and #0D2136 in dark, so the wash reads in both without either
+     one being a tinted overlay. */
+  background: var(--paper-dim);
 }
 
 /* The global :focus-visible ring is accent-driven, so it goes teal on the
    neutral and data shells and gold inside /career/*. Both clear 3:1
-   against --navy-950 (5.6:1 and 9.4:1). Nothing to add here beyond making
-   sure the ring is not clipped by the bar. */
+   against --paper in either theme. Nothing to add beyond making sure the
+   3px outline-offset is not clipped -- .navbar has no overflow rule, so
+   it is not. */
 
 .theme-toggle__icon {
   display: block;
@@ -78,21 +88,5 @@
 @media (prefers-reduced-motion: reduce) {
   .theme-toggle {
     transition: none;
-  }
-}
-
-/* Under 520px .footer__bottom stacks into a column with a 12px gap, and a
-   negative block margin would eat it. The bar is no longer one line, so
-   there is nothing to line up with. */
-@media (max-width: 520px) {
-  .theme-toggle {
-    /* The bar's 12px gap plus this box's own 14px of centring padding put
-       the glyph 26px under the copy, which reads as unrelated to it.
-       Half the gap back. */
-    margin-block: -10px 0;
-    /* Same correction on the other axis: pull the box left so the 16px
-       glyph lines up with the copy's left edge rather than sitting 14px
-       in from it. */
-    margin-inline-start: -14px;
   }
 }

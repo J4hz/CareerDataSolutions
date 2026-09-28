@@ -1,6 +1,11 @@
-import { useState } from 'react';
-import { WHATSAPP_URL, CONTACT_EMAIL, CALENDLY_URL } from '../config';
+import { lazy, Suspense, useCallback, useMemo, useState } from 'react';
+import { WHATSAPP_URL, CONTACT_EMAIL } from '../config';
 import '../styles/contact.css';
+
+/* Loaded on submit, never before: see the note at the top of
+   components/BookingCalendar.jsx for why the embed is kept out of the
+   initial bundle and out of the prerender. */
+const BookingCalendar = lazy(() => import('../components/BookingCalendar'));
 
 /**
  * /data/contact — the data track's own intake, mirroring ContactCareer.jsx.
@@ -11,14 +16,42 @@ import '../styles/contact.css';
  * after; this does the same with the questions that actually shape a dashboard
  * quote: what you want to see, where the data lives, what state it is in.
  *
- * The booking link is not lost — it is handed over on the success panel, so
- * anyone who wants to book immediately still can.
+ * The booking link is not lost. It is no longer handed over as a link at all:
+ * submitting now swaps the form for the Cal.com calendar in the same column,
+ * so the visitor picks their slot without leaving the page or waiting on an
+ * email. The link out survives as the embed's fallback.
  */
+
+/* Readable labels for the three selects, used to compose the Cal.com notes
+   field so the booking carries the answers rather than raw option values.
+   These mirror the maps in api/notify-data.js, which sanitises the same
+   values for the team email; that copy is the security-relevant one and
+   stays where it is. */
+const LABELS = {
+  dataLocation: {
+    'spreadsheets':    'Excel / Google Sheets',
+    'business-system': 'A business system (CRM, ERP, accounting)',
+    'database':        'A database (SQL, Access)',
+    'multiple':        'Multiple systems that do not talk to each other',
+    'unsure':          'Not sure, needs help figuring this out',
+  },
+  dataState: {
+    'clean':       'Clean and consistent',
+    'mostly-fine': 'Mostly fine, some gaps',
+    'messy':       'Messy, needs work',
+    'unsure':      'Not sure',
+  },
+  existingReport: {
+    'excel-report': 'Yes, an Excel report',
+    'dashboard':    'Yes, a dashboard',
+    'first':        'No, this would be the first one',
+  },
+};
 
 const EXPECT_ITEMS = [
   'Tell us what you want to see that you cannot see today.',
   'Mention where the data lives and roughly what state it is in.',
-  'We send you a link to book your free 30-minute discovery call.',
+  'You pick a time for your free 15-minute discovery call, right here.',
 ];
 
 // The "what happens after you submit" list that used to sit here now lives in
@@ -38,7 +71,10 @@ export default function ContactData() {
     existingReport: '',
   });
   const [submitting, setSubmitting] = useState(false);
-  const [submitted,  setSubmitted]  = useState(false);
+  /* 'form'    the intake, as before
+     'booking' the Cal.com calendar, in the form's place
+     'booked'  the confirmation, once Cal.com says the slot is taken */
+  const [stage,      setStage]      = useState('form');
   const [errors,     setErrors]     = useState({});
 
   const setField = (key) => (e) =>
@@ -55,6 +91,38 @@ export default function ContactData() {
     if (!formData.existingReport)  e.existingReport = 'Please pick one';
     return e;
   };
+
+  const firstName = formData.name.trim().split(' ')[0] || 'there';
+
+  /* Prefilled into the Cal.com booking form. name and email fill their own
+     fields; everything else goes into the notes, because those are answers
+     to OUR questions and Cal.com has no field of its own for them. Built
+     from labels rather than raw option values so the booking reads as
+     English in the calendar invite. */
+  const prefill = useMemo(() => {
+    const lines = [
+      formData.company && `Organization: ${formData.company}`,
+      formData.goal && `Wants to see: ${formData.goal}`,
+      LABELS.dataLocation[formData.dataLocation] &&
+        `Data lives in: ${LABELS.dataLocation[formData.dataLocation]}`,
+      LABELS.dataState[formData.dataState] &&
+        `State of the data: ${LABELS.dataState[formData.dataState]}`,
+      LABELS.existingReport[formData.existingReport] &&
+        `Replacing: ${LABELS.existingReport[formData.existingReport]}`,
+    ].filter(Boolean);
+
+    return {
+      name: formData.name,
+      email: formData.email,
+      notes: lines.join('\n'),
+    };
+  }, [formData]);
+
+  /* Stable identity: BookingCalendar registers this with Cal.com in an
+     effect, and a new function every render would tear the subscription
+     down and rebuild it on each keystroke behind the calendar. */
+  const handleBooked = useCallback(() => setStage('booked'), []);
+  const handleEdit   = useCallback(() => setStage('form'), []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -79,7 +147,7 @@ export default function ContactData() {
         return;
       }
 
-      setSubmitted(true);
+      setStage('booking');
     } catch (err) {
       console.error('Submission error:', err);
       setErrors({ submit: 'Something went wrong. Please try again or email us directly.' });
@@ -154,33 +222,52 @@ export default function ContactData() {
           {/* RIGHT COLUMN */}
           <div className="contact-page__right">
 
-            {submitted ? (
+            {stage === 'booking' && (
+              <div className="contact-booking">
+                <h2 className="contact-booking__title">
+                  Thanks, {firstName}. Pick a time for your 15-minute call below.
+                </h2>
+                <p className="contact-booking__sub">
+                  We already have your answers, so the call starts where your
+                  form left off.
+                </p>
+                <Suspense
+                  fallback={
+                    <div className="booking-cal__skeleton" aria-hidden="true">
+                      <span />
+                      <span />
+                      <span />
+                    </div>
+                  }
+                >
+                  <BookingCalendar
+                    track="data"
+                    prefill={prefill}
+                    onBooked={handleBooked}
+                    onEdit={handleEdit}
+                  />
+                </Suspense>
+              </div>
+            )}
 
+            {stage === 'booked' && (
               <div className="contact-career-success">
                 <div className="contact-career-success__icon">✓</div>
                 <h2 className="contact-career-success__title">
-                  Request received.
+                  You're booked.
                 </h2>
                 <p className="contact-career-success__body">
-                  We have your setup and what you are trying to see. Within one
-                  business day you will get a link to book your free 30-minute
-                  discovery call. Check your spam folder if you do not hear from us.
-                </p>
-                {/* Anyone who would rather not wait for the email can still pick
-                    a slot now: this is the same calendar the link points to. */}
-                <p className="contact-career-success__body">
-                  In a hurry?{' '}
-                  <a href={CALENDLY_URL} target="_blank" rel="noopener noreferrer">
-                    Book a time now
-                  </a>{' '}
-                  and we will come to it with your answers in hand.
+                  Your discovery call is confirmed. Cal.com has sent you a
+                  calendar invite with the time and the video link. We will come
+                  to it having read your answers.
                 </p>
                 <p className="contact-career-success__email">
                   Sent to: {formData.email}
                 </p>
               </div>
+            )}
 
-            ) : (
+            {stage === 'form' && (
 
               <form className="contact-form-card" onSubmit={handleSubmit} noValidate>
 
@@ -188,7 +275,7 @@ export default function ContactData() {
                   Book a discovery call
                 </p>
                 <p className="contact-form-card__subtitle">
-                  Free. 30 minutes. No commitment.
+                  Free. 15 minutes. No commitment.
                 </p>
 
                 {errors.submit && (

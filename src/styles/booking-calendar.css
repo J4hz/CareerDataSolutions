@@ -1,0 +1,125 @@
+/* ─────────────────────────────────────────────────────────────
+   The inline Cal.com calendar (components/BookingCalendar.jsx), shown in
+   place of the contact form once it has been submitted.
+
+   It sits inside .contact-page__right, where the form card was, so it
+   inherits that column's width and needs no positioning of its own. The
+   iframe is cross-origin: nothing in this file reaches inside it, and the
+   calendar's own colours are passed to Cal.com as config, not styled here.
+   All this does is hold the box, cover the load, and lay out the two ways
+   back out.
+   ───────────────────────────────────────────────────────────── */
+
+.booking-cal {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.booking-cal__frame {
+  position: relative;
+  /* The calendar decides its own height once it loads. Until then this
+     floor stops the panel collapsing to nothing and then shoving the page
+     down when the iframe arrives. */
+  min-height: 560px;
+  border-radius: var(--radius-md, 10px);
+  overflow: hidden;
+}
+
+.booking-cal__embed {
+  width: 100%;
+  height: 100%;
+  min-height: 560px;
+  overflow: scroll;
+}
+
+/* ── Load skeleton ──
+   Three bars in the rough rhythm of the booker's header, calendar and slot
+   column. Behind the iframe, so it is simply covered rather than needing to
+   be timed out. */
+.booking-cal__skeleton {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 24px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md, 10px);
+}
+
+.booking-cal__skeleton span {
+  display: block;
+  border-radius: var(--radius-sm);
+  background: var(--paper-dim);
+}
+
+.booking-cal__skeleton span:nth-child(1) { height: 28px; width: 55%; }
+.booking-cal__skeleton span:nth-child(2) { height: 260px; }
+.booking-cal__skeleton span:nth-child(3) { height: 120px; }
+
+/* The iframe paints over the skeleton, so it only needs to be above it. */
+.booking-cal__frame .booking-cal__embed {
+  position: relative;
+  z-index: 1;
+}
+
+.booking-cal__status {
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  min-height: 1.2em;
+}
+
+.booking-cal__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 20px;
+  padding-top: 4px;
+  border-top: 1px solid var(--line);
+}
+
+/* Both routes out are quiet text, not buttons: the loud thing on this panel
+   should be the calendar itself. --accent-ink rather than --accent, because
+   plain gold on the card is 2.0:1 and fails as text; see the note in
+   styles/theme.css. */
+.booking-cal__link,
+.booking-cal__back {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--accent-ink);
+  background: none;
+  border: none;
+  padding: 10px 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.booking-cal__back {
+  color: var(--ink-soft);
+}
+
+.booking-cal__link:hover,
+.booking-cal__back:hover {
+  color: var(--ink);
+}
+
+@media (max-width: 640px) {
+  .booking-cal__frame,
+  .booking-cal__embed {
+    /* The booker switches to its own stacked layout on a narrow screen and
+       runs shorter than the desktop month view. */
+    min-height: 460px;
+  }
+
+  .booking-cal__actions {
+    /* Side by side these two wrap awkwardly mid-phrase at ~375px. */
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+  }
+}

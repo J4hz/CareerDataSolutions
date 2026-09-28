@@ -54,7 +54,7 @@ export const packages = [
       'Up to 2 data sources',
       'Basic data cleaning included',
       '1 revision round',
-      '30-min walkthrough call',
+      '15-min walkthrough call',
     ],
     featured: false,
     badge: null,

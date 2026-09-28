@@ -91,6 +91,17 @@
   --navy-900: var(--navy);
   --navy-800: #143255;
 
+  /* The hero photo scrim: navy at 0.87 alpha, laid flat over the two hero
+     photographs on the service and packages pages.
+
+     A token rather than a literal because the same value is written into
+     sixteen background declarations across landing.css and packages.css,
+     and a scrim that drifts between them is a contrast bug nobody would
+     notice until it shipped. 0.87 is a measured floor, not a preference;
+     see the note above the hero-image block in landing.css before changing
+     it. */
+  --scrim: rgba(11, 31, 58, 0.87);
+
   /* ── Derived neutrals: navy at reduced alpha over white ──── */
   --paper:     var(--white);
   --paper-dim: #F4F6F8;

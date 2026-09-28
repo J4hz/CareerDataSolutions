@@ -57,10 +57,14 @@
     />
 
     <!--
-      The preconnects to cal.com and app.cal.com are gone with them: there is
-      no Cal.com embed on this site. Booking is an ordinary outbound link, so
-      the connection cannot be opened early anyway. Restore them alongside
-      the embed if one is ever added.
+      No preconnect to app.cal.com, deliberately, even though the booking
+      calendar is embedded again. The embed is not on any first paint: it is
+      lazy-loaded only after a visitor submits a contact form (see
+      src/components/BookingCalendar.jsx). Warming a connection here would
+      make every visitor on every route pay for a handshake that almost none
+      of them will use, to save a few hundred milliseconds for the few who
+      reach the booking step. Add one to the contact routes specifically if
+      that step ever measures slow.
     -->
   </head>
   <body>

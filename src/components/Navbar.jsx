@@ -2,6 +2,7 @@ import { memo, useState, useEffect, useCallback, useRef } from 'react';
 import { NavLink, Link } from 'react-router-dom';
 /* Shared with the closing CTA band's dropdown — see src/data/booking.js. */
 import { BOOK_OPTIONS } from '../data/booking';
+import ThemeToggle from './ThemeToggle';
 // Built from assets/logo-lockup.svg by scripts/logo-svg.js. Vector
 // wordmark, transparent background, and a reversed copy for dark mode.
 import logo from '../assets/generated/logo.svg';
@@ -184,6 +185,15 @@ const Navbar = memo(function Navbar({ track = null }) {
             <span />
             <span />
           </button>
+          {/* Last element on the bar, so it sits hard against the right
+              edge in both layouts: after the CTA on desktop, after the
+              burger below 768px. One DOM position serves both, and it
+              stays in the bar rather than falling into the drawer.
+
+              It stays visually quiet -- no fill, no border -- so that
+              being the rightmost thing does not make it compete with the
+              filled, pulsing CTA beside it. */}
+          <ThemeToggle />
         </div>
       </div>
 

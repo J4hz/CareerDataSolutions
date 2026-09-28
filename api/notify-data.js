@@ -13,7 +13,11 @@
 //   NOTIFY_FROM     — verified sender address in Resend
 
 import { Resend } from 'resend';
-import { CALENDLY_URL, CONTACT_EMAIL, NOTIFY_FROM, SITE_DOMAIN, WHATSAPP_URL } from '../src/config.js';
+import { calUrlFor, CONTACT_EMAIL, NOTIFY_FROM, SITE_DOMAIN, WHATSAPP_URL } from '../src/config.js';
+
+// Resolved once, by track. The visitor books on the site now, so this is a
+// fallback for the team rather than the main route in.
+const CAL_URL = calUrlFor('data');
 import { cleanText, cleanHeader, isValidEmail } from './_lib/sanitize.js';
 import { limited } from './_lib/rate-limit.js';
 
@@ -41,40 +45,12 @@ const EXISTING_REPORT = {
   'first':        'No, this would be the first one',
 };
 
-// Moved here off /data/contact, where it sat above the form and answered a
-// question nobody has until after they have submitted. The confirmation email
-// below is where it gets read. Static strings — nothing here is user input.
-const NEXT_STEPS = [
-  'We map your data sources against the decisions you are trying to make',
-  'We flag anything that will affect scope or timeline before the call',
-  'You get a link to book your free discovery call within 1 business day',
-  'On the call we walk through what is possible and what it would cost',
-  'No obligation. Quotes follow the discovery call, never the other way around',
-];
-
-// Table-based so Outlook keeps the bullet aligned with wrapped text; a flex or
-// list-style layout is not reliable across email clients.
-const nextStepsBlock = (accent) => `
-  <table role="presentation" cellpadding="0" cellspacing="0" border="0"
-         style="width:100%;border-collapse:separate;border:1px solid #E5E7EB;
-                border-radius:10px;margin:0 0 24px;">
-    <tr>
-      <td style="padding:18px 20px;">
-        <div style="font-size:13px;font-weight:700;color:#0B1F3A;margin-bottom:14px;">
-          What happens after you submit
-        </div>
-        <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:100%;">
-          ${NEXT_STEPS.map((item) => `
-            <tr>
-              <td style="padding:0 8px 10px 0;vertical-align:top;line-height:1.6;
-                         font-size:14px;color:${accent};font-weight:700;">&bull;</td>
-              <td style="padding:0 0 10px;font-size:14px;line-height:1.6;color:#334155;">
-                ${item}</td>
-            </tr>`).join('')}
-        </table>
-      </td>
-    </tr>
-  </table>`;
+// The "what happens after you submit" list that used to live here is gone
+// with the flow it described. It promised a booking link inside one business
+// day; the visitor now picks their slot on the site the moment they submit,
+// so every step in it was either already done or about to be, and Cal.com's
+// own invite covers the call itself. The confirmation below is deliberately
+// short: it acknowledges the answers and says nothing Cal.com will repeat.
 
 export default async function handler(req, res) {
   if (!process.env.RESEND_API_KEY) {
@@ -155,8 +131,10 @@ export default async function handler(req, res) {
               Next step
             </div>
             <div style="font-size:13px;color:#334155;line-height:1.6;">
-              Send this booking link once you have read the above:<br />
-              <a href="${CALENDLY_URL}" style="color:#17805E;">${CALENDLY_URL}</a>
+              They book their own slot on the site straight after this form, so
+              a Cal.com confirmation should already have reached you. If one did
+              not, send them this:<br />
+              <a href="${CAL_URL}" style="color:#17805E;">${CAL_URL}</a>
             </div>
           </div>
           <p style="margin-top:24px;font-size:13px;color:#6B7280;">
@@ -193,22 +171,22 @@ export default async function handler(req, res) {
         from:    configuredFrom,
         to:      email.trim(),
         replyTo: process.env.NOTIFY_EMAIL || CONTACT_EMAIL,
-        subject: cleanHeader('Your discovery call request · CareerDataSolutions'),
+        subject: cleanHeader('We have your details · CareerDataSolutions'),
         html: `
           <div style="font-family:Arial,Helvetica,sans-serif;max-width:560px;margin:0 auto;color:#0F172A;">
             <div style="height:4px;background:#1D9E75;border-radius:2px;margin-bottom:28px;"></div>
             <h1 style="color:#0B1F3A;font-size:22px;margin:0 0 16px;">
-              Thanks, ${firstName}, we have your request.
+              Thanks, ${firstName}, we have your answers.
             </h1>
             <p style="font-size:15px;line-height:1.7;color:#334155;margin:0 0 16px;">
-              This is a quick confirmation that your details reached
-              CareerDataSolutions. There is nothing else you need to do right now.
+              We have what you are trying to see and where your data sits today,
+              and we will have read it before we speak. If you picked a time on
+              the site, Cal.com has sent you a separate calendar invite with the
+              slot and the video link.
             </p>
-            ${nextStepsBlock('#1D9E75')}
             <p style="font-size:15px;line-height:1.7;color:#334155;margin:0 0 24px;">
-              In a hurry? You can
-              <a href="${CALENDLY_URL}" style="color:#17805E;">book a time directly</a>,
-              or message us on
+              Anything to add before the call? Just reply to this email, or
+              message us on
               <a href="${WHATSAPP_URL}" style="color:#17805E;">WhatsApp</a>.
             </p>
             <p style="font-size:13px;line-height:1.6;color:#6B7280;margin:0;border-top:1px solid #E5E7EB;padding-top:16px;">

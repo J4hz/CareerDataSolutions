@@ -10,8 +10,8 @@
 
 // SETUP CHECKLIST:
 // 1. Go to cal.com and create a free account
-// 2. Create an event type called "Discovery Call" (30 minutes)
-// 3. Update CAL_LINK in src/config.js with your username/event-slug
+// 2. Create an event type called "Discovery Call" (15 minutes)
+// 3. Update CAL_EVENTS in src/config.js with your username/event-slug
 //    Example: "kabiru-nyabwengi/discovery-call"
 // 4. Go to resend.com and create a free account
 // 5. Get your API key from resend.com/api-keys

@@ -56,10 +56,36 @@ export const BUSINESS = {
   addressCountry:  "KE",
 };
 
+// ─────────────────────────────────────────────────────────────
 // Cal.com — find these at cal.com/[username]/[event-slug]
-export const CAL_NAMESPACE = "careerdatasolutions";
-export const CAL_LINK      = "careerdatasolutions/discovery-call";
-export const CALENDLY_URL  = `https://cal.com/${CAL_LINK}`;
+//
+// ONE ENTRY PER TRACK, even though both currently point at the SAME event
+// type. The two are kept separate so that splitting them later is an edit
+// to this object and nothing else: the booking embed and the fallback link
+// both resolve the slug through the helpers below, by track, and no
+// component or API route builds a Cal.com URL of its own.
+//
+// If a second event type is ever created (say a longer slot for the career
+// side), change that track's value here and the whole site follows.
+// ─────────────────────────────────────────────────────────────
+export const CAL_EVENTS = {
+  data:   "careerdatasolutions/discovery-call",
+  career: "careerdatasolutions/discovery-call",
+};
+
+/** The Cal.com link ("username/event-slug") for a track. Falls back to the
+ *  data event for an unknown or absent track rather than returning
+ *  undefined, so a mis-typed prop degrades to a working calendar. */
+export function calLinkFor(track) {
+  return CAL_EVENTS[track] ?? CAL_EVENTS.data;
+}
+
+/** The full public booking page for a track. This is what opens in a new
+ *  tab when the embed cannot load, so it must always be a real, bookable
+ *  URL and never an app-internal path. */
+export function calUrlFor(track) {
+  return `https://cal.com/${calLinkFor(track)}`;
+}
 
 // Assets referenced by absolute URL (email clients and social scrapers
 // cannot resolve relative paths, so these must be fully qualified).
