@@ -7,7 +7,6 @@ import {
   packagePricing,
   formatKES,
   withServiceCharge,
-  SERVICE_CHARGE_RATES,
 } from '../data/pricing';
 import '../styles/contact.css';
 import '../styles/order.css';
@@ -193,8 +192,6 @@ export default function CareerOrder() {
   const chargedKES = promo.applied ? promo.amountKES : price?.kes;
   // Same function api/order.js bills with, so the total shown is the charge.
   const { totalKES, serviceChargeKES } = withServiceCharge(chargedKES, card ? 'card' : 'mpesa');
-  const serviceRatePct = +(SERVICE_CHARGE_RATES[card ? 'card' : 'mpesa'] * 100).toFixed(1);
-
   /* What the package would have cost without whichever reduction is in play.
      A code beats the founding rate rather than stacking with it, so when both
      are live the struck figure is the founding price — the one the visitor
@@ -672,12 +669,7 @@ export default function CareerOrder() {
                     </dd>
                   </div>
                   <div>
-                    <dt>
-                      Service charge{' '}
-                      <span className="order-breakdown__note">
-                        ({serviceRatePct}% {card ? 'card' : 'M-Pesa'} processing fee)
-                      </span>
-                    </dt>
+                    <dt>Service charge</dt>
                     <dd>{money(serviceChargeKES)}</dd>
                   </div>
                 </dl>

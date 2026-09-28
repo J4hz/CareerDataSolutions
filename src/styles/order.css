@@ -200,11 +200,6 @@
   white-space: nowrap;
 }
 
-.order-breakdown__note {
-  font-size: 12px;
-  color: var(--gm);
-}
-
 /* The breakdown already carries the rule line; a second one right under it
    would split the total off from the figures it adds up. */
 .order-breakdown + .order-total {
