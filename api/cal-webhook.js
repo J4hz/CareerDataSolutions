@@ -87,6 +87,13 @@ export default async function handler(req, res) {
     multiline: true,
   });
 
+  // Each track has its own event type (see CAL_EVENTS), so the slug says
+  // which service was booked. Anything unrecognised reads as Data Services,
+  // matching calLinkFor's fallback.
+  const service = String(booking.type || '').includes('career')
+    ? 'Career Services'
+    : 'Data Services';
+
   if (!email || !isValidEmail(email)) {
     return res.status(200).json({ ok: true, skipped: true });
   }
@@ -105,7 +112,7 @@ export default async function handler(req, res) {
     const { error } = await resend.emails.send({
       from: fromAddress,
       to: toAddress,
-      subject: "You're booked with CareerDataSolutions",
+      subject: `You're booked: ${service} discovery call`,
       html: `
         <div style="font-family: sans-serif; max-width: 560px;">
           <!-- 200x37 is the logo's real 5.44:1 shape. It was declared
@@ -115,7 +122,7 @@ export default async function handler(req, res) {
           <img src="${EMAIL_LOGO_URL}" alt="CareerDataSolutions" width="200" height="37" style="display: block; margin-bottom: 24px;" />
           <h2 style="color: #0B1F3A;">Thanks for booking, ${name}!</h2>
           <p style="color: #0F172A; font-size: 14px; line-height: 1.6;">
-            Your discovery call is confirmed. Cal.com has already sent you a
+            Your ${service} discovery call is confirmed. Cal.com has already sent you a
             separate calendar invite with the exact time and video link.
           </p>
           <p style="color: #0F172A; font-size: 14px; line-height: 1.6;">

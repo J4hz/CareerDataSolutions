@@ -59,18 +59,17 @@ export const BUSINESS = {
 // ─────────────────────────────────────────────────────────────
 // Cal.com — find these at cal.com/[username]/[event-slug]
 //
-// ONE ENTRY PER TRACK, even though both currently point at the SAME event
-// type. The two are kept separate so that splitting them later is an edit
-// to this object and nothing else: the booking embed and the fallback link
-// both resolve the slug through the helpers below, by track, and no
-// component or API route builds a Cal.com URL of its own.
+// ONE ENTRY PER TRACK, each its own Cal.com event type. The booking embed
+// and the fallback link both resolve the slug through the helpers below, by
+// track, and no component or API route builds a Cal.com URL of its own.
 //
-// If a second event type is ever created (say a longer slot for the career
-// side), change that track's value here and the whole site follows.
+// Both event types belong to the same Cal.com user, so a booking on one
+// blocks that slot on the other: Cal.com, not this site, prevents
+// double-booking.
 // ─────────────────────────────────────────────────────────────
 export const CAL_EVENTS = {
-  data:   "careerdatasolutions/discovery-call",
-  career: "careerdatasolutions/discovery-call",
+  data:   "careerdatasolutions/data-services-discovery-call",
+  career: "careerdatasolutions/career-services-discovery-call",
 };
 
 /** The Cal.com link ("username/event-slug") for a track. Falls back to the

@@ -178,8 +178,9 @@ export default function Home() {
             <span className="eyebrow" style={{ color: 'var(--ink-soft)' }}>Services</span>
             <h2 id="paths-heading">What we do</h2>
             <p className="paths__subtext">
-              Everything at this stage splits based on your needs. Pick your lane
-              and skip straight to what matters to you.
+              Whether you're running a business or building a career, start with
+              the path that fits you. Not sure which? Book a free 15-minute call
+              and we'll point you in the right direction.
             </p>
           </div>
 
