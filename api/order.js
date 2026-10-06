@@ -12,11 +12,12 @@
 //      See api/_lib/sanitize.js.
 //
 // Environment variables: RESEND_API_KEY, NOTIFY_EMAIL, NOTIFY_FROM as in
-// notify-career.js, plus the optional PAYMENT_PROVIDER and ORDER_SECRET.
+// notify-career.js, plus the optional PAYMENT_PROVIDER and ORDER_SECRET, and
+// the KV variables described in api/_lib/kv.js.
 
 import { packages } from '../src/data/packages.js';
 import { cleanText, isValidEmail, validateCvUpload } from './_lib/sanitize.js';
-import { createOrder, newOrderId, signOrder } from './_lib/orders.js';
+import { createOrder, newOrderId, saveOrder, signOrder } from './_lib/orders.js';
 import {
   normalizeMsisdn,
   requestStkPush,
@@ -160,8 +161,7 @@ export default async function handler(req, res) {
       });
     }
 
-    // Signed so the status poll can trust these values without a database.
-    const token = signOrder({
+    const order = {
       id,
       packageId: pkg.id,
       packageName: pkg.name,
@@ -174,7 +174,15 @@ export default async function handler(req, res) {
       phone: safe.phone,
       method,
       providerRef: push.providerRef,
-    });
+    };
+
+    // Stored so the payment webhook can find it if the browser never comes
+    // back. Best effort: without KV, or with KV down, the token below still
+    // carries everything the status poll needs.
+    await saveOrder(order);
+
+    // Signed so the status poll can trust these values without a lookup.
+    const token = signOrder(order);
 
     return res.status(200).json({
       orderId: id,

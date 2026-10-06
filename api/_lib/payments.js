@@ -410,8 +410,16 @@ const paystack = {
     const tx = body.data ?? {};
     if (tx.status === 'success') {
       // The M-Pesa receipt, when Paystack passes it through, is on the
-      // authorization; the Paystack reference is the fallback handle.
-      return { status: 'paid', receipt: tx.authorization?.receipt_number || tx.reference };
+      // authorization; the Paystack reference is the fallback handle. The
+      // amount (subunits, converted back to KES) and currency let the
+      // settlement check them against the order, whichever path gets there
+      // first.
+      return {
+        status: 'paid',
+        receipt: tx.authorization?.receipt_number || tx.reference,
+        amount: Number.isFinite(Number(tx.amount)) ? Number(tx.amount) / 100 : undefined,
+        currency: tx.currency,
+      };
     }
     // Only definite outcomes end the wait. "abandoned" is deliberately treated
     // as pending — Paystack can report it before the customer has answered the
@@ -482,7 +490,8 @@ export async function startCardCheckout(args) {
 
 /**
  * Ask the rail what happened to a payment, M-Pesa or card.
- * → { status: 'pending' | 'paid' | 'failed', receipt?, error? }
+ * → { status: 'pending' | 'paid' | 'failed', receipt?, amount?, currency?, error? }
+ *   amount (KES) and currency only from rails that report them (Paystack).
  */
 export async function checkStatus(args) {
   try {

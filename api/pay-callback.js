@@ -20,17 +20,28 @@
 // Rather than guess (matching on phone and amount would eventually pair the
 // wrong two orders), this emails you everything Daraja provided, to reconcile
 // against the "AWAITING PAYMENT" email carrying the same phone number. At this
-// volume that is a handful of seconds. Adding the KV store described in
-// api/_lib/orders.js is what removes the manual step — the callback would then
-// look up the order and send the customer their receipt automatically.
+// volume that is a handful of seconds. The KV store in api/_lib/orders.js now
+// indexes orders by CheckoutRequestID, so routing this branch through
+// settlePayment() the way Paystack's is would remove the manual step; it has
+// not been done because Daraja is not the live rail.
 //
 // ── Paystack ─────────────────────────────────────────────────
 //
-// Paystack does echo our reference ("CDS-XXXXXX-…"), so its email names the
-// order directly. It still goes to you only, not the customer: the browser poll
-// has usually already receipted them, and with no store there is nothing to
-// stop a second receipt. Register https://<domain>/api/pay-callback as the
-// webhook URL under Paystack Settings > API Keys & Webhooks.
+// Paystack echoes the reference we gave the charge ("CDS-XXXXXX-…"), which is
+// the providerRef the order was stored under, so with KV configured this IS a
+// main path: settlePayment() looks the order up and, if the browser poll has
+// not already settled it, sends the "PAID" email and the customer receipt.
+// That is what covers the customer who closed the tab. If the poll got there
+// first, or this is one of Paystack's retries, it sends nothing.
+//
+// Without KV it falls back to emailing you the payment unmatched, as before.
+//
+// Responses: 200 for anything that has been dealt with, including an event
+// that was already settled. 500 only when the email to you failed, because
+// that is the one case where Paystack retrying can change the outcome.
+//
+// Register https://<domain>/api/pay-callback as the webhook URL under
+// Paystack Settings > API Keys & Webhooks.
 //
 // ── Authenticating the callback ──────────────────────────────
 //
@@ -47,7 +58,7 @@
 // api/cal-webhook.js.
 
 import crypto from 'node:crypto';
-import { notifyUnmatchedPayment } from './_lib/orders.js';
+import { notifyUnmatchedPayment, settlePayment } from './_lib/orders.js';
 import { activeProviderName } from './_lib/payments.js';
 
 export const config = {
@@ -87,6 +98,7 @@ function parsePaystack(event) {
     receipt: d.authorization?.receipt_number || d.reference,
     // Paystack reports subunits.
     amount: Number.isFinite(Number(d.amount)) ? Number(d.amount) / 100 : null,
+    currency: d.currency ?? null,
     phone: d.authorization?.mobile_money_number || d.customer?.phone || null,
     email: d.customer?.email ?? null,
   };
@@ -165,7 +177,21 @@ export default async function handler(req, res) {
     const result = parsePaystack(event);
     if (!result) return res.status(200).json(ack);
 
-    await notifyUnmatchedPayment(result);
+    const settled = await settlePayment({
+      orderId: result.orderId,
+      providerRef: result.providerRef,
+      receipt: result.receipt,
+      amount: result.amount,
+      currency: result.currency,
+      payer: { phone: result.phone, email: result.email },
+      source: 'webhook',
+    });
+
+    if (!settled.ok) {
+      // settlePayment has already released its claim, so the retry this asks
+      // for will try the email again rather than find it "already settled".
+      return res.status(500).json({ error: 'Failed to record payment' });
+    }
     return res.status(200).json(ack);
   } catch (err) {
     console.error('Pay callback error:', err);

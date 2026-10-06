@@ -5,37 +5,139 @@
 // api/order-status.js and api/pay-callback.js call the functions below and
 // never touch storage directly.
 //
-// ── Why there is no database ─────────────────────────────────
+// ── Where an order lives ─────────────────────────────────────
 //
 // An STK push is asynchronous: one request asks the rail to ring the phone,
 // and a *separate* request minutes later says whether it was paid. Serverless
 // functions share no memory between the two, so something has to remember what
 // order #abc was.
 //
-// Rather than add a datastore for that alone, the order is carried by the
-// client in a signed token (sign/verify below). The browser holds it as an
-// opaque string and posts it back when polling; the HMAC proves the contents
-// are the ones this server issued, so the amount, package and customer cannot
-// be edited in the round trip. The CV is emailed at creation and never needs
-// to be held anywhere.
+// Two things do, for different readers:
 //
-// ── Swapping in a real store ─────────────────────────────────
+//   The signed token (sign/verify below) is the CLIENT's handle. The browser
+//   holds it as an opaque string and posts it back when polling; the HMAC
+//   proves the contents are the ones this server issued, so the amount,
+//   package and customer cannot be edited in the round trip.
 //
-// If you later want order history, an admin view, or protection against a
-// duplicate callback double-firing the emails, add Upstash/Vercel KV and give
-// createOrder a `KV.set(id, order)` plus a `getOrder(id)` that reads it back.
-// The signed token can stay as the client-side handle. Nothing outside this
-// file changes.
+//   KV (saveOrder/getOrder below, over api/_lib/kv.js) is the RECORD. It is
+//   what lets the payment webhook find an order with no browser involved —
+//   the customer who closed the tab mid-PIN still gets their receipt — and
+//   it is what makes settling a payment idempotent.
+//
+// The CV is emailed at creation and is never stored in either.
+//
+// ── Without KV ───────────────────────────────────────────────
+//
+// KV is optional. With no KV_REST_API_* or UPSTASH_REDIS_REST_* configured,
+// or with KV down, everything here falls back to the token alone, which is
+// how checkout worked before KV existed: orders still go through and still
+// get confirmed, the webhook just cannot find them and emails you the
+// payment unmatched instead. Each fallback is logged. The rule throughout is
+// to fail towards a possible duplicate email, never towards sending nothing.
 // ─────────────────────────────────────────────────────────────
 
 import crypto from 'node:crypto';
 import { Resend } from 'resend';
 import { CONTACT_EMAIL, NOTIFY_FROM, SITE_DOMAIN, WHATSAPP_URL } from '../../src/config.js';
 import { cleanHeader } from './sanitize.js';
+import * as kv from './kv.js';
 
 /** Tokens stop verifying after this long, so an abandoned checkout tab cannot
  *  be replayed days later. Comfortably longer than any STK prompt. */
 const TOKEN_TTL_MS = 2 * 60 * 60 * 1000;
+
+/**
+ * How long a stored order (and every key derived from it) stays in KV.
+ *
+ * The record holds the customer's name, email and phone, so this is a
+ * privacy decision as much as a technical one: it should match whatever the
+ * privacy policy says about how long order details are kept. 90 days covers
+ * a late webhook retry, a refund or chargeback query, and the first month's
+ * reconciliation with room to spare. Change it here and nowhere else.
+ */
+const ORDER_TTL_SECONDS = 90 * 24 * 60 * 60;
+
+// ── KV record ────────────────────────────────────────────────
+
+let warnedNoKv = false;
+
+/** Whether KV can be used, warning once per instance when it cannot. */
+function kvAvailable() {
+  if (kv.isConfigured()) return true;
+  if (!warnedNoKv) {
+    warnedNoKv = true;
+    console.warn(
+      '[orders] No KV_REST_API_* or UPSTASH_REDIS_REST_* configured. Orders are ' +
+        'not stored: payments cannot be de-duplicated, and a webhook for a closed ' +
+        'tab is emailed as unmatched instead of receipting the customer.'
+    );
+  }
+  return false;
+}
+
+/**
+ * Store an order once the payment rail has given it a reference.
+ *
+ * Writes two keys, both with ORDER_TTL_SECONDS:
+ *   order:<orderId>         the order itself, the same fields the token carries
+ *   order-ref:<providerRef> the order id, so a webhook (which knows only the
+ *                           provider's reference) can find it
+ *
+ * Never throws and never blocks the checkout: a KV failure is logged and the
+ * order carries on through the token, exactly as it would with no KV at all.
+ * → true if both keys were written.
+ */
+export async function saveOrder(order) {
+  if (!kvAvailable()) return false;
+
+  const record = { ...order, createdAt: new Date().toISOString() };
+  try {
+    await Promise.all([
+      kv.set(`order:${order.id}`, record, { ttlSeconds: ORDER_TTL_SECONDS }),
+      order.providerRef
+        ? kv.set(`order-ref:${order.providerRef}`, order.id, { ttlSeconds: ORDER_TTL_SECONDS })
+        : null,
+    ]);
+    return true;
+  } catch (err) {
+    console.error(`[orders] Could not store order ${order.id}; continuing without it:`, err.message);
+    return false;
+  }
+}
+
+/**
+ * Read a stored order back, by our id or by the provider's reference.
+ *
+ * The provider reference is preferred when both are given: it is unique per
+ * payment attempt, whereas order ids are only 3 random bytes. For the same
+ * reason a lookup by reference checks the order it lands on really carries
+ * that reference — if two orders ever drew the same id, the later one would
+ * have overwritten the earlier, and confirming the wrong customer's order is
+ * worse than not finding one.
+ *
+ * → the order, or null when KV is not configured, unreachable, or has nothing.
+ */
+export async function getOrder({ orderId, providerRef } = {}) {
+  if (!kvAvailable()) return null;
+
+  try {
+    const id = providerRef ? await kv.get(`order-ref:${providerRef}`) : orderId;
+    if (!id) return null;
+
+    const order = await kv.get(`order:${id}`);
+    if (!order || typeof order !== 'object') return null;
+    if (providerRef && order.providerRef !== providerRef) {
+      console.warn(`[orders] order-ref:${providerRef} points at ${id}, which has a different ref.`);
+      return null;
+    }
+    return order;
+  } catch (err) {
+    console.error('[orders] Could not read order from KV:', err.message);
+    return null;
+  }
+}
+
+// ── Token ────────────────────────────────────────────────────
 
 /**
  * Key for the order HMAC.
@@ -107,6 +209,11 @@ const row = (label, value) => `
     <td style="padding:8px 0;color:#6B7280;font-size:14px;width:150px;">${label}</td>
     <td style="padding:8px 0;color:#0F172A;font-size:14px;font-weight:600;">${value}</td>
   </tr>`;
+
+/** For provider-supplied text (references, receipts, phone numbers). It
+ *  arrives authenticated, but it is still not ours, so it is escaped before it
+ *  goes into an HTML email. */
+const esc = (v) => String(v).replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
 
 /**
  * Record a new order: emails you the details with the CV attached, marked as
@@ -193,24 +300,24 @@ export async function createOrder({
 }
 
 /**
- * A confirmed M-Pesa payment that could not be tied to an order.
+ * A confirmed payment that could not be tied to a stored order.
  *
- * Daraja's callback echoes CheckoutRequestID, amount, phone and receipt, but
- * not the AccountReference and not our order token — so with no store there is
- * nothing to join on. See the note at the top of api/pay-callback.js.
+ * Reached when the webhook has nothing to look up: always for Daraja (whose
+ * branch in api/pay-callback.js does not use the store yet), and for Paystack
+ * when KV is not configured, is down, or no longer holds the order. Daraja's
+ * callback echoes CheckoutRequestID, amount, phone and receipt but not our
+ * order id; Paystack's echoes the order id in its metadata.
  *
- * Normally harmless: the browser poll has usually already confirmed the same
- * payment and receipted the customer, making this a duplicate you can ignore.
- * It earns its place when the customer closed the tab mid-payment, which is the
- * one case where nothing else would tell you the money arrived.
+ * Without KV this can duplicate the "PAID" email from the browser poll, which
+ * the footer says. It earns its place when the customer closed the tab
+ * mid-payment, which is the one case where nothing else would tell you the
+ * money arrived.
+ *
+ * → { ok } — false if Resend refused the email.
  */
 export async function notifyUnmatchedPayment({ orderId, providerRef, receipt, amount, phone, email }) {
   const resend = resendClient();
   const from = process.env.NOTIFY_FROM || NOTIFY_FROM;
-
-  // Paystack echoes our order id; Daraja does not. Neither is escaped upstream,
-  // and although both arrive authenticated, they are still provider-supplied text.
-  const esc = (v) => String(v).replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
 
   const { error } = await resend.emails.send({
     from,
@@ -244,6 +351,62 @@ export async function notifyUnmatchedPayment({ orderId, providerRef, receipt, am
       </div>`,
   });
   if (error) console.error('Unmatched payment notification error:', error);
+  return { ok: !error };
+}
+
+/**
+ * A payment whose amount or currency does not match the order it names.
+ *
+ * Goes to you only — the customer is deliberately NOT receipted, because a
+ * receipt says "confirmed" and this needs a person to look at it first. In
+ * practice it means a misconfiguration (a price changed between checkout and
+ * payment, a wrong currency on the account) rather than fraud, since the
+ * amount is set server side on both rails, but either way the work should
+ * not start until someone has checked the Paystack dashboard.
+ *
+ * → { ok } — false if Resend refused the email.
+ */
+async function notifyAmountMismatch({ order, providerRef, receipt, amount, currency }) {
+  const resend = resendClient();
+  const configuredFrom = process.env.NOTIFY_FROM || NOTIFY_FROM;
+  const paid = `${currency ? esc(currency) : 'KES'} ${esc(Number(amount).toLocaleString('en-KE'))}`;
+
+  const { error } = await resend.emails.send({
+    from: configuredFrom,
+    to: process.env.NOTIFY_EMAIL || CONTACT_EMAIL,
+    replyTo: order.email,
+    subject: cleanHeader(
+      `CHECK AMOUNT · Order ${order.id} · paid ${paid}, expected ${money(order.amountKES)}`
+    ),
+    html: `
+      <div style="font-family:sans-serif;max-width:560px;">
+        <div style="background:#FEE2E2;border-left:4px solid #DC2626;padding:12px 16px;margin-bottom:24px;">
+          <strong style="color:#991B1B;font-size:14px;">Amount mismatch: check before delivering</strong>
+          <div style="color:#991B1B;font-size:13px;margin-top:2px;">
+            The customer has NOT been sent a receipt.
+          </div>
+        </div>
+        <h2 style="color:#0B1F3A;margin:0 0 16px;">${order.packageName}</h2>
+        <table style="width:100%;border-collapse:collapse;">
+          ${row('Order ref', order.id)}
+          ${row('Expected', money(order.amountKES))}
+          ${row('Paid', paid)}
+          ${row('Payment ref', providerRef ? esc(providerRef) : 'n/a')}
+          ${row('Receipt', receipt ? esc(receipt) : 'n/a')}
+          ${row('Name', order.name)}
+          ${row('Email', order.email)}
+          ${row('Phone', order.phone)}
+        </table>
+        <p style="margin-top:24px;font-size:13px;color:#6B7280;line-height:1.6;">
+          Look the payment up in the Paystack dashboard. If it is genuinely short,
+          refund it or ask the customer for the balance; if it is fine, reply to
+          the customer yourself to confirm. The CV is on the earlier
+          "awaiting payment" email for this ref.
+        </p>
+      </div>`,
+  });
+  if (error) console.error('Amount mismatch notification error:', error);
+  return { ok: !error };
 }
 
 /**
@@ -254,6 +417,10 @@ export async function notifyUnmatchedPayment({ orderId, providerRef, receipt, am
  * account owner, so sending a customer receipt from it is guaranteed to fail.
  * A failure there is logged, not thrown: the money has moved and the internal
  * record already exists, so it must not surface as a checkout error.
+ *
+ * → { ok } — whether the internal "PAID" email went out. That is the record
+ * that matters for a retry decision; a failed receipt is logged above and
+ * does not change it (see settlePayment).
  */
 export async function markPaid({ order, receipt }) {
   // Card payments have no M-Pesa receipt; the Paystack reference stands in.
@@ -330,5 +497,151 @@ export async function markPaid({ order, receipt }) {
     if (receiptError) console.error('Customer receipt error:', receiptError);
   } catch (err) {
     console.error('Customer receipt error:', err);
+  }
+
+  return { ok: !error };
+}
+
+// ── Settling a payment ───────────────────────────────────────
+
+/** Same amount, compared in Paystack's subunits so the check is integer
+ *  arithmetic rather than floating point. Currency is only compared when the
+ *  caller has one; every order here is billed in KES. */
+function amountMatches(order, amount, currency) {
+  if (currency && String(currency).toUpperCase() !== 'KES') return false;
+  return Math.round(Number(amount) * 100) === Math.round(Number(order.amountKES) * 100);
+}
+
+/** Today's behaviour, used whenever there is no claim to rely on: the poll
+ *  confirms the order it holds, the webhook emails you the payment unmatched.
+ *  Either may duplicate the other, which is the price of having no store. */
+async function settleWithoutClaim({ order, source, unmatched }) {
+  if (source === 'poll' && order) {
+    const sent = await markPaid({ order, receipt: unmatched.receipt });
+    return { alreadySettled: false, ok: sent.ok, outcome: 'paid' };
+  }
+  const sent = await notifyUnmatchedPayment(unmatched);
+  return { alreadySettled: false, ok: sent.ok, outcome: 'unmatched' };
+}
+
+/**
+ * Settle a confirmed payment. The ONE path to the "paid" emails, called by
+ * both the browser poll (api/order-status.js) and the webhook
+ * (api/pay-callback.js), whichever gets there first.
+ *
+ * ── Exactly once ─────────────────────────────────────────────
+ *
+ * The poll can see the same payment as paid many times (a refresh, a second
+ * tab, a response lost on the way back), and Paystack retries webhooks. So
+ * the first thing this does is claim the payment with SET paid:<ref> NX. That
+ * is atomic in Redis: of any number of concurrent callers, exactly one writes
+ * the key. Everyone else gets { alreadySettled: true } and sends nothing.
+ *
+ * The winner then sends one of three things:
+ *   - the order is known, and the amount matches (or the caller had no amount
+ *     to compare): markPaid(), the "PAID" email and the customer receipt
+ *   - the order is known, the amount or currency does not match: a "CHECK
+ *     AMOUNT" email to you, and no receipt
+ *   - the order cannot be found (KV empty or expired): the unmatched email
+ *
+ * ── When the email fails ─────────────────────────────────────
+ *
+ * If the email to you fails, the claim is released before returning, so the
+ * next poll or the webhook retry can try again. Holding it would make the
+ * retry a silent no-op and the payment would be confirmed nowhere. Releasing
+ * it can mean the customer receives a second receipt if theirs did go out,
+ * and a duplicate beats nothing. A failed customer receipt alone does not
+ * release the claim: retrying would re-send your "PAID" email too, and the
+ * usual cause (a mistyped address) does not get better with time.
+ *
+ * ── Without KV ───────────────────────────────────────────────
+ *
+ * No KV configured, or the claim call failing, means there is nothing to
+ * de-duplicate against, so this behaves exactly as the code did before KV:
+ * see settleWithoutClaim above.
+ *
+ * @param {object}  args
+ * @param {object}  [args.order]       full order, when the caller has one (the
+ *                                     poll does, from the signed token)
+ * @param {string}  [args.orderId]     our id, when that is all the caller has
+ * @param {string}  args.providerRef   the rail's payment reference — the key
+ * @param {string}  [args.receipt]
+ * @param {number}  [args.amount]      KES as the rail reports it, if it does
+ * @param {string}  [args.currency]
+ * @param {object}  [args.payer]       { phone, email } for the unmatched email
+ * @param {'poll'|'webhook'} args.source
+ *
+ * → { alreadySettled, ok, outcome }, where ok is false only if the email to
+ *   you failed to send, and outcome is 'paid' | 'mismatch' | 'unmatched' |
+ *   'already-settled'. Throws only if Resend itself throws, after releasing
+ *   the claim.
+ */
+export async function settlePayment({
+  order, orderId, providerRef, receipt, amount, currency, payer = {}, source,
+}) {
+  const unmatched = {
+    orderId: orderId ?? order?.id ?? null,
+    providerRef,
+    receipt,
+    amount,
+    phone: payer.phone ?? null,
+    email: payer.email ?? null,
+  };
+
+  if (!providerRef || !kvAvailable()) {
+    return settleWithoutClaim({ order, source, unmatched });
+  }
+
+  const claimKey = `paid:${providerRef}`;
+  let claimed;
+  try {
+    claimed = await kv.set(claimKey, source, { ttlSeconds: ORDER_TTL_SECONDS, nx: true });
+  } catch (err) {
+    console.error(`[orders] Could not claim payment ${providerRef}; settling without a claim:`, err.message);
+    return settleWithoutClaim({ order, source, unmatched });
+  }
+
+  if (!claimed) {
+    console.log(`[orders] Payment ${providerRef} already settled; ${source} sends nothing.`);
+    return { alreadySettled: true, ok: true, outcome: 'already-settled' };
+  }
+
+  const release = async () => {
+    try {
+      await kv.del(claimKey);
+    } catch (err) {
+      // Nothing more to do: the next attempt will find the claim held and
+      // stop, and the error above this is already in the logs.
+      console.error(`[orders] Could not release claim on ${providerRef}:`, err.message);
+    }
+  };
+
+  try {
+    // The token's copy is fine for the poll; the webhook has to look it up.
+    // A passed-in order is trusted only for the payment it was issued for.
+    const known =
+      order && order.providerRef === providerRef ? order : await getOrder({ providerRef });
+
+    let result;
+    if (!known) {
+      result = { ...(await notifyUnmatchedPayment(unmatched)), outcome: 'unmatched' };
+    } else if (amount != null && !amountMatches(known, amount, currency)) {
+      console.warn(
+        `[orders] Amount mismatch on ${known.id} (${providerRef}): ` +
+          `paid ${currency || 'KES'} ${amount}, expected KES ${known.amountKES}. No receipt sent.`
+      );
+      result = {
+        ...(await notifyAmountMismatch({ order: known, providerRef, receipt, amount, currency })),
+        outcome: 'mismatch',
+      };
+    } else {
+      result = { ...(await markPaid({ order: known, receipt })), outcome: 'paid' };
+    }
+
+    if (!result.ok) await release();
+    return { alreadySettled: false, ...result };
+  } catch (err) {
+    await release();
+    throw err;
   }
 }

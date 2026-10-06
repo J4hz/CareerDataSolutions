@@ -9,10 +9,11 @@
 // needs somewhere outside the function to keep the count.
 //
 // WHICH STORE
-// This talks the Upstash Redis REST protocol over plain fetch — no SDK, no
-// new dependency. Vercel KV speaks that same protocol, so ONE
-// implementation covers both of the options that were on the table; which
-// one is in use is decided entirely by which environment variables exist:
+// This talks the Upstash Redis REST protocol over plain fetch, through the
+// shared client in api/_lib/kv.js — no SDK, no new dependency. Vercel KV
+// speaks that same protocol, so ONE implementation covers both of the
+// options that were on the table; which one is in use is decided entirely
+// by which environment variables exist:
 //
 //   KV_REST_API_URL + KV_REST_API_TOKEN            Vercel KV
 //   UPSTASH_REDIS_REST_URL + UPSTASH_REDIS_REST_TOKEN   Upstash direct
@@ -34,18 +35,14 @@
 // straddling a boundary.
 // ─────────────────────────────────────────────────────────────
 
-const store = (() => {
-  const url = process.env.KV_REST_API_URL ?? process.env.UPSTASH_REDIS_REST_URL;
-  const token = process.env.KV_REST_API_TOKEN ?? process.env.UPSTASH_REDIS_REST_TOKEN;
-  return url && token ? { url: url.replace(/\/$/, ''), token } : null;
-})();
+import * as kv from './kv.js';
 
 let warned = false;
 const memory = new Map();
 
 /** One pipelined round trip: bump this window's counter, read the previous. */
 async function counts(currentKey, previousKey, ttlSeconds) {
-  if (!store) {
+  if (!kv.isConfigured()) {
     if (!warned) {
       warned = true;
       console.warn(
@@ -63,23 +60,15 @@ async function counts(currentKey, previousKey, ttlSeconds) {
     return { current: entry.hits, previous: memory.get(previousKey)?.hits ?? 0 };
   }
 
-  const res = await fetch(`${store.url}/pipeline`, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${store.token}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify([
-      ['INCR', currentKey],
-      // NX so the window keeps its original expiry instead of sliding
-      // forward on every hit, which would let a steady stream keep it alive.
-      ['EXPIRE', currentKey, String(ttlSeconds), 'NX'],
-      ['GET', previousKey],
-    ]),
-  });
-
-  if (!res.ok) throw new Error(`store responded ${res.status}`);
-  const [incr, , prev] = await res.json();
+  // kv.pipeline throws on a non-2xx, which rateLimit() below turns into
+  // "allow the request".
+  const [incr, , prev] = await kv.pipeline([
+    ['INCR', currentKey],
+    // NX so the window keeps its original expiry instead of sliding
+    // forward on every hit, which would let a steady stream keep it alive.
+    ['EXPIRE', currentKey, String(ttlSeconds), 'NX'],
+    ['GET', previousKey],
+  ]);
   return { current: Number(incr?.result ?? 0), previous: Number(prev?.result ?? 0) };
 }
 

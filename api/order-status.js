@@ -17,8 +17,16 @@
 // What is never authoritative is the request itself. The token below is held by
 // the client, so it is only trusted to say *which* order is being asked about;
 // whether it was paid always comes from the provider.
+//
+// ── Settling more than once ──────────────────────────────────
+//
+// A paid order keeps answering "paid" for as long as anyone polls it, and the
+// webhook may confirm the same payment too. settlePayment() claims each
+// payment once (see api/_lib/orders.js), so only the first of them sends the
+// emails; every later poll still reports "paid" to the browser and sends
+// nothing.
 
-import { verifyOrderToken, markPaid } from './_lib/orders.js';
+import { verifyOrderToken, settlePayment } from './_lib/orders.js';
 import { checkStatus, settlesOnStatusCheck } from './_lib/payments.js';
 import { limited } from './_lib/rate-limit.js';
 
@@ -50,7 +58,17 @@ export default async function handler(req, res) {
     const result = await checkStatus({ providerRef: order.providerRef });
 
     if (result.status === 'paid' && settlesOnStatusCheck()) {
-      await markPaid({ order, receipt: result.receipt });
+      // The browser is told "paid" whatever this decides: it describes the
+      // payment, and the payment has happened. Which emails go out is
+      // settlePayment's business.
+      await settlePayment({
+        order,
+        providerRef: order.providerRef,
+        receipt: result.receipt,
+        amount: result.amount,
+        currency: result.currency,
+        source: 'poll',
+      });
     }
 
     return res.status(200).json({
