@@ -1,31 +1,24 @@
 // ─────────────────────────────────────────────────────────────
-// Builds the two shipped logo assets from src/assets/logo-lockup.svg.
+// Builds every logo asset from the vector brand definition in
+// scripts/brand/ (the mark in mark.js, the wordmark outlines in wordmark.js).
 //
 // Run with:  npm run logo
 //
-// Outputs src/assets/generated/logo.svg and logo-reversed.svg.
+// Outputs, all committed:
 //
-// ── What the master actually is ──
+//   src/assets/generated/logo.svg            navbar, light theme
+//   src/assets/generated/logo-reversed.svg   navbar dark theme, and footer
+//   public/logo-email.png                    transactional emails (see below)
+//   Career Data Solutions Logos svg/         the brand kit: horizontal and
+//                                            stacked lockups, each light and
+//                                            reversed, plus the icon alone
 //
-// Not a hand-drawn vector. It is a converter's output, and it is a mix:
+// ── Pure vectors ──
 //
-//   - The WORDMARK is genuine vector, one <path> per letter, and the fills
-//     are already the site's own brand values: #0b1f3a is --navy and
-//     #1d9e75 is --teal, to the digit. That is what makes a reversed
-//     version a recolour rather than a redraw.
-//   - The ICON and the divider rule are RASTERS, each stored twice: a
-//     colour image, plus a greyscale image used as a luminance mask. Two
-//     filters turn that mask into alpha.
-//   - On top of both sits a full-canvas 1774x887 image that is blank
-//     white. It contributes nothing, it is 614 KB of the 757 KB file, and
-//     it is the only reason the master renders as an opaque rectangle
-//     rather than a transparent logo.
-//   - A 22 KB <metadata> block of C2PA provenance.
-//
-// So this script drops the backdrop and the metadata, flattens each
-// colour-plus-mask pair into one image at the size the page actually draws
-// it, crops the viewBox to the artwork, and emits the light and reversed
-// variants.
+// The previous master was a converter's output with the icon embedded as
+// rasters. These are true vectors end to end: the mark is drawn from
+// measured geometry and the wordmark is font outlines, so every file is a
+// few KB and sharp at any size.
 //
 // ── Why two files rather than one that themes itself ──
 //
@@ -37,159 +30,81 @@
 // files, switched by CSS on data-theme, is the honest version.
 //
 // Not part of `npm run build`: the output is committed, like everything in
-// src/assets/generated. Re-run only when the master changes.
+// src/assets/generated. Re-run only when the brand definition changes.
 // ─────────────────────────────────────────────────────────────
 
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, writeFile } from 'node:fs/promises';
 import sharp from 'sharp';
+import { markElements, TILE } from './brand/mark.js';
+import { WORDS, WIDTH as WORD_WIDTH, CAP } from './brand/wordmark.js';
 
 const root = dirname(fileURLToPath(new URL('.', import.meta.url)));
-const assets = join(root, 'src', 'assets');
-const outDir = join(assets, 'generated');
-const SOURCE = join(assets, 'logo-lockup.svg');
+const generated = join(root, 'src', 'assets', 'generated');
+const kit = join(root, 'Career Data Solutions Logos svg');
 
-/* Each embedded raster is resized to the pixels it can actually use, which
-   means working out how big it lands on screen rather than picking a
-   number. The navbar draws the whole lockup about 245 CSS px wide, so a
-   layer placed W user units wide inside a viewBox VW units wide renders at
-   W / VW * 245 px, times DPR for retina.
+const NAVY = '#0B1F3A'; // --navy
+const TEAL = '#1D9E75'; // --teal
+const WHITE = '#FFFFFF';
 
-   Doing this per layer is not fussiness. The three layers are 310x323,
-   291x223 and 21x283, and one fixed width for all of them UPSCALES the
-   last one, the divider hairline, from 21px to 160px wide. That single
-   mistake added 137 KB to the output. Never enlarge. */
-const NAV_CSS_WIDTH = 245;
-const DPR = 3;
+const THEMES = {
+  // Divider: --ink-soft in each theme. Rim: --line-dark.
+  light: { ink: NAVY, accent: TEAL, divider: 'rgba(11,31,58,0.7)', outline: null },
+  /* Teal is left alone in the reversed version: teal on navy is 5.1:1, and
+     keeping the accent bright in dark is the same call theme.css makes for
+     --accent-ink. The tile gets a faint rim because it is --navy-950, the
+     footer's own background, and would otherwise vanish into it. At the navbar's
+     45px height, 5 units is just under a pixel. */
+  reversed: { ink: WHITE, accent: TEAL, divider: 'rgba(255,255,255,0.62)', outline: { color: 'rgba(255,255,255,0.14)', width: 5 } },
+};
 
-/* The wordmark fill in the master, which is --navy exactly. In the
-   reversed asset it becomes white. --teal is left alone: teal on navy is
-   5.1:1, and leaving the brand accent bright in dark is the same call
-   theme.css already makes for --accent-ink. */
-const WORDMARK_INK = '#0b1f3a';
-const WORDMARK_INK_REVERSED = '#ffffff';
+/* Lockup geometry, in the designer's export pixels with the tile's top-left
+   at the origin. */
+const HORIZONTAL = {
+  divider: { x: 320, y: 9, w: 3, h: 250 },
+  word: { x: 391.5, baseline: 179 },
+};
+const STACKED_GAP = 68; // tile bottom to cap top
 
 const kb = (n) => `${(n / 1024).toFixed(1)} KB`;
 
-/**
- * Flatten a colour image plus its luminance mask into one RGBA PNG, sized
- * to what the page can actually show.
- *
- * Palette PNG, not truecolour: this is flat artwork, a navy tile with
- * three solid bars and a white arrow, so indexing it costs nothing
- * visually while cutting the payload by roughly 5x. It also stays a PNG,
- * which is the one raster format certain to decode inside an SVG
- * everywhere.
- */
-async function flatten(colourB64, maskB64, targetWidth) {
-  const colour = Buffer.from(colourB64, 'base64');
-  const mask = Buffer.from(maskB64, 'base64');
-  const meta = await sharp(colour).metadata();
-
-  const width = Math.max(1, Math.min(meta.width, targetWidth));   // never enlarge
-  const height = Math.max(1, Math.round((meta.height / meta.width) * width));
-
-  const rgb = await sharp(colour).resize({ width, height }).removeAlpha().toBuffer();
-  /* The master's two filters compute alpha as the mask's LUMINANCE
-     (0.2126/0.7152/0.0722), which is what greyscale conversion does. */
-  const alpha = await sharp(mask).resize({ width, height }).greyscale().toColourspace('b-w').toBuffer();
-
-  const png = await sharp(rgb).joinChannel(alpha)
-    .png({ compressionLevel: 9, palette: true, colours: 128, effort: 10 })
-    .toBuffer();
-
-  return { png, width, height, from: `${meta.width}x${meta.height}` };
+function wordmark(theme, x, baseline) {
+  const paths = WORDS.map((w) => `<path fill="${w.ink === 'accent' ? theme.accent : theme.ink}" d="${w.d}"/>`).join('');
+  return `<g transform="translate(${x} ${baseline})">${paths}</g>`;
 }
 
-async function main() {
-  await mkdir(outDir, { recursive: true });
-  const original = await readFile(SOURCE, 'utf8');
-  let svg = original;
-  console.log(`\nmaster  ${kb(original.length)}`);
+function mark(theme, x = 0, y = 0) {
+  const inner = markElements({ outline: theme.outline });
+  return x || y ? `<g transform="translate(${x} ${y})">${inner}</g>` : inner;
+}
 
-  // ── 1. C2PA provenance block ────────────────────────────────────────
-  let before = svg.length;
-  svg = svg.replace(/<metadata>[\s\S]*?<\/metadata>/, '');
-  console.log(`  metadata stripped          -${kb(before - svg.length)}`);
+function horizontal(theme) {
+  const { divider: d, word } = HORIZONTAL;
+  return mark(theme)
+    + `<rect x="${d.x}" y="${d.y}" width="${d.w}" height="${d.h}" rx="${d.w / 2}" fill="${theme.divider}"/>`
+    + wordmark(theme, word.x, word.baseline);
+}
 
-  // ── 2. the blank full-canvas backdrop ───────────────────────────────
-  const wAttr = svg.match(/<svg[^>]*?\swidth="(\d+)"/);
-  const hAttr = svg.match(/<svg[^>]*?\sheight="(\d+)"/);
-  if (!wAttr || !hAttr) throw new Error('could not read the svg width/height');
-  const cw = Number(wAttr[1]), ch = Number(hAttr[1]);
+function stacked(theme) {
+  return mark(theme, (WORD_WIDTH - TILE) / 2, 0) + wordmark(theme, 0, TILE + STACKED_GAP + CAP);
+}
 
-  const backdrop = new RegExp(
-    '<g clip-path="url\\(#[0-9a-f]+\\)">\\s*<g transform="[^"]*">\\s*'
-    + `<image[^>]*width="${cw}"[^>]*height="${ch}"[^>]*/>\\s*</g>\\s*</g>`
-  );
-  if (!backdrop.test(svg)) {
-    throw new Error(`no ${cw}x${ch} blank backdrop found; has the master changed shape?`);
-  }
-  before = svg.length;
-  svg = svg.replace(backdrop, '');
-  console.log(`  ${cw}x${ch} backdrop removed  -${kb(before - svg.length)}`);
-
-  // ── 3. flatten every colour + luminance-mask pair ───────────────────
-  const masks = [...svg.matchAll(
-    /<mask id="([0-9a-f]+)">[\s\S]*?<image[^>]*?(?:xlink:href|href)="data:image\/png;base64,([^"]*)"[^>]*\/>[\s\S]*?<\/mask>/g
-  )];
-  if (!masks.length) throw new Error('no masked images found; has the master changed shape?');
-
-  const viewBoxWidth = Number(svg.match(/viewBox="([\d.\-\s]+)"/)[1].trim().split(/\s+/)[2]);
-  let saved = 0;
-
-  for (const [, id, maskB64] of masks) {
-    const group = new RegExp(
-      `<g mask="url\\(#${id}\\)">\\s*(<g transform="([^"]*)">)\\s*`
-      + '(<image[^>]*?(?:xlink:href|href)="data:image/png;base64,([^"]*)"[^>]*/>)\\s*</g>\\s*</g>'
-    );
-    const m = svg.match(group);
-    if (!m) throw new Error(`mask ${id} has no matching masked group`);
-    const [whole, openG, transform, imageTag, colourB64] = m;
-
-    /* How wide this layer lands in user units: its own width attribute,
-       times the scale in its transform matrix. */
-    const placedWidth = Number(imageTag.match(/\swidth="([\d.]+)"/)[1])
-      * Number(transform.match(/matrix\(([-\d.]+)/)[1]);
-    const target = Math.ceil((placedWidth / viewBoxWidth) * NAV_CSS_WIDTH * DPR);
-
-    const flat = await flatten(colourB64, maskB64, target);
-    /* width/height on the <image> are USER units and fix the placement, so
-       they must survive untouched even though the pixels behind them
-       shrink. Only the data URI changes. */
-    const newImage = imageTag.replace(
-      /(?:xlink:href|href)="data:image\/png;base64,[^"]*"/,
-      `xlink:href="data:image/png;base64,${flat.png.toString('base64')}"`
-    );
-    const replacement = `${openG}${newImage}</g>`;
-    saved += whole.length - replacement.length;
-    svg = svg.replace(whole, replacement);
-
-    console.log(`    layer ${flat.from.padEnd(8)} -> ${`${flat.width}x${flat.height}`.padEnd(9)}`
-      + `${kb(flat.png.length).padStart(8)}   (renders ${(placedWidth / viewBoxWidth * NAV_CSS_WIDTH).toFixed(0)}px wide)`);
-
-    svg = svg.replace(new RegExp(`<mask id="${id}">[\\s\\S]*?</mask>`), '');
-  }
-
-  for (const fid of [...svg.matchAll(/<filter[^>]*id="([0-9a-f]+)"/g)].map((x) => x[1])) {
-    if (!svg.includes(`url(#${fid})`)) {
-      svg = svg.replace(new RegExp(`<filter[^>]*id="${fid}"[\\s\\S]*?</filter>`), '');
-    }
-  }
-  console.log(`  ${masks.length} mask pairs flattened      -${kb(saved)}`);
-
-  // ── 4. crop the viewBox to the artwork ──────────────────────────────
-  const vbParts = svg.match(/viewBox="([\d.\-\s]+)"/)[1].trim().split(/\s+/).map(Number);
-  const vw = vbParts[2], vh = vbParts[3];
-
-  const probeScale = 4;
-  const { data, info } = await sharp(Buffer.from(svg), { density: 72 * probeScale })
+/**
+ * Wrap artwork in an <svg> whose viewBox is cropped to what it actually
+ * draws. Measured by rendering rather than computed, because the glyphs'
+ * round overshoot past the baseline and cap line is not in any number above.
+ */
+async function toDocument(body, title) {
+  const loose = (vb) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${vb}">${body}</svg>`;
+  const probe = loose('-50 -50 2000 1000');
+  const scale = 2;
+  const { data, info } = await sharp(Buffer.from(probe), { density: 72 * scale })
     .ensureAlpha().raw().toBuffer({ resolveWithObject: true });
   let x0 = info.width, x1 = -1, y0 = info.height, y1 = -1;
   for (let y = 0; y < info.height; y++) {
     for (let x = 0; x < info.width; x++) {
-      if (data[(y * info.width + x) * info.channels + 3] > 8) {
+      if (data[(y * info.width + x) * info.channels + 3] > 0) {
         if (x < x0) x0 = x;
         if (x > x1) x1 = x;
         if (y < y0) y0 = y;
@@ -197,44 +112,52 @@ async function main() {
       }
     }
   }
-  if (x1 < 0) throw new Error('the cleaned svg renders as fully transparent');
+  if (x1 < 0) throw new Error(`${title} renders as fully transparent`);
+  const k = 2000 / info.width;
+  const r = (v) => Math.round(v * 2) / 2;
+  const box = { x: r(x0 * k - 50), y: r(y0 * k - 50), w: r((x1 - x0 + 1) * k), h: r((y1 - y0 + 1) * k) };
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${box.x} ${box.y} ${box.w} ${box.h}" `
+    + `width="${Math.round(box.w)}" height="${Math.round(box.h)}" role="img" aria-label="${title}">`
+    + `<title>${title}</title>${body}</svg>\n`;
+  return { svg, w: Math.round(box.w), h: Math.round(box.h) };
+}
 
-  const k = vw / info.width;
-  const pad = 0.5;
-  const box = {
-    x: Math.max(0, x0 * k - pad),
-    y: Math.max(0, y0 * k - pad),
-    w: Math.min(vw, (x1 - x0 + 1) * k + pad * 2),
-    h: Math.min(vh, (y1 - y0 + 1) * k + pad * 2),
-  };
-  const r = (n) => Number(n.toFixed(2));
-  console.log(`  viewBox cropped to artwork   ${r(box.w)} x ${r(box.h)}`
-    + `  aspect ${(box.w / box.h).toFixed(2)}:1`
-    + `  (dropped ${(100 * (1 - (box.w * box.h) / (vw * vh))).toFixed(0)}% empty canvas)`);
+async function emit(dir, name, body, title = 'Career Data Solutions') {
+  const doc = await toDocument(body, title);
+  await writeFile(join(dir, name), doc.svg);
+  console.log(`  ${name.padEnd(30)} ${`${doc.w}x${doc.h}`.padEnd(10)} ${kb(doc.svg.length)}`);
+  return doc;
+}
 
-  svg = svg
-    .replace(/viewBox="[^"]*"/, `viewBox="${r(box.x)} ${r(box.y)} ${r(box.w)} ${r(box.h)}"`)
-    .replace(/\swidth="\d+"/, ` width="${Math.round(box.w)}"`)
-    .replace(/\sheight="\d+"/, ` height="${Math.round(box.h)}"`)
-    .replace(/\szoomAndPan="[^"]*"/, '')
-    .replace(/<defs>\s*<g\/>\s*/, '<defs>')
-    .replace(/>\s+</g, '><')
-    .trim();
+async function main() {
+  await mkdir(generated, { recursive: true });
+  await mkdir(kit, { recursive: true });
 
-  // ── 5. the two variants ─────────────────────────────────────────────
-  const ink = new RegExp(WORDMARK_INK, 'gi');
-  const swaps = (svg.match(ink) ?? []).length;
-  if (!swaps) throw new Error(`no ${WORDMARK_INK} wordmark fills found to reverse`);
+  console.log('\nsrc/assets/generated');
+  const light = await emit(generated, 'logo.svg', horizontal(THEMES.light));
+  await emit(generated, 'logo-reversed.svg', horizontal(THEMES.reversed));
 
-  const light = svg;
-  const reversed = svg.replace(ink, WORDMARK_INK_REVERSED);
+  console.log('\nCareer Data Solutions Logos svg');
+  await emit(kit, 'logo-horizontal.svg', horizontal(THEMES.light));
+  await emit(kit, 'logo-horizontal-reversed.svg', horizontal(THEMES.reversed));
+  await emit(kit, 'logo-stacked.svg', stacked(THEMES.light));
+  await emit(kit, 'logo-stacked-reversed.svg', stacked(THEMES.reversed));
+  await emit(kit, 'icon.svg', mark(THEMES.light));
 
-  await writeFile(join(outDir, 'logo.svg'), light);
-  await writeFile(join(outDir, 'logo-reversed.svg'), reversed);
-
-  console.log(`\n  logo.svg           ${kb(light.length)}`);
-  console.log(`  logo-reversed.svg  ${kb(reversed.length)}   (${swaps} wordmark fills navy -> white)`);
-  console.log(`  master was ${kb(original.length)}: ${(original.length / light.length).toFixed(0)}x smaller\n`);
+  /* public/logo-email.png is referenced by absolute URL from the
+     transactional emails (config.js EMAIL_LOGO_URL), so it needs a stable
+     public path rather than a hashed build asset, and it must be a PNG
+     because email clients cannot be relied on for SVG or WebP. 400px wide
+     covers its 200px slot at 2x. Flattened onto white, because a
+     transparent logo with navy lettering disappears in dark-mode inboxes. */
+  const EMAIL_WIDTH = 400;
+  const email = await sharp(Buffer.from(light.svg), { density: 72 * (EMAIL_WIDTH / light.w) * 1.5 })
+    .resize({ width: EMAIL_WIDTH })
+    .flatten({ background: WHITE })
+    .png({ compressionLevel: 9, palette: true, effort: 10 })
+    .toFile(join(root, 'public', 'logo-email.png'));
+  console.log(`\npublic/logo-email.png  ${email.width}x${email.height}  ${kb(email.size)}`
+    + `   (email <img> slot: 200x${Math.round((200 * light.h) / light.w)})\n`);
 }
 
 main().catch((err) => {

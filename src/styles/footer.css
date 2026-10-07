@@ -147,8 +147,3 @@
     gap: 12px;
   }
 }
-
-/* See the note in navbar.css — the img inside carries the sizing. */
-.footer__brand-logo picture {
-  display: block;
-}
