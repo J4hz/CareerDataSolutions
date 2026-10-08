@@ -144,6 +144,14 @@
 
 /* ── Form extras ── */
 
+/* "Their details" on an order paid for someone else. A rule above it marks
+   where the payer's fields end and the recipient's begin. */
+.order-section-title {
+  margin-top: 6px;
+  padding-top: 22px;
+  border-top: 1px solid var(--gl);
+}
+
 .order-field-hint {
   font-size: 12px;
   color: var(--gm);

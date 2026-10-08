@@ -64,7 +64,21 @@ export default function CareerOrder() {
   const [searchParams] = useSearchParams();
   const pkg = careerPackages.find((p) => p.id === searchParams.get('pkg'));
 
-  const [form, setForm] = useState({ name: '', email: '', phone: '', message: '' });
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    message: '',
+    recipientName: '',
+    recipientEmail: '',
+    recipientPhone: '',
+  });
+  /* Paying for someone else. The name, email and phone above are then the
+     payer's, the recipient fields are the client's, and the CV is optional:
+     the payer may not have it, and api/_lib/orders.js emails the recipient
+     for it once the payment clears. */
+  const [forWhom, setForWhom] = useState('self'); // self | other
+  const gift = forWhom === 'other';
   const [errors, setErrors] = useState({});
 
   /* Promo code. The code itself lives only on the server (TEST_PROMO_CODE);
@@ -246,7 +260,12 @@ export default function CareerOrder() {
     if (!form.name.trim()) e.name = 'Name is required';
     if (!form.email.trim()) e.email = 'Email is required';
     if (!card && !form.phone.trim()) e.phone = 'M-Pesa number is required';
-    if (!cvFile) e.cv = 'Please upload your CV';
+    if (gift) {
+      if (!form.recipientName.trim()) e.recipientName = 'Their name is required';
+      if (!form.recipientEmail.trim()) e.recipientEmail = 'Their email is required';
+    } else if (!cvFile) {
+      e.cv = 'Please upload your CV';
+    }
     return e;
   };
 
@@ -262,7 +281,7 @@ export default function CareerOrder() {
     setStatus('submitting');
 
     try {
-      const cvBase64 = await toBase64();
+      const cvBase64 = cvFile ? await toBase64() : undefined;
       const res = await fetch('/api/order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -270,13 +289,22 @@ export default function CareerOrder() {
         // so the total cannot be edited on the way through.
         body: JSON.stringify({
           packageId: pkg.id,
-          ...form,
+          name: form.name,
+          email: form.email,
+          phone: form.phone,
+          message: form.message,
           method,
+          forWhom,
+          ...(gift && {
+            recipientName: form.recipientName,
+            recipientEmail: form.recipientEmail,
+            recipientPhone: form.recipientPhone,
+          }),
           // Sent as typed. The server re-checks it and decides the price.
           promoCode: promo.applied ? promo.code.trim() : undefined,
           cvBase64,
-          cvName: cvFile.name,
-          cvType: cvFile.type,
+          cvName: cvFile?.name,
+          cvType: cvFile?.type,
         }),
       });
       const body = await res.json().catch(() => ({}));
@@ -429,8 +457,20 @@ export default function CareerOrder() {
               <div className="order-result__icon">✓</div>
               <h2 className="order-result__title">Payment received.</h2>
               <p className="order-result__body">
-                Your {pkg.name} order is confirmed and your CV is with us. A receipt is on
-                its way to {form.email}. We will come back to you within {pkg.timeline}.
+                {gift ? (
+                  <>
+                    Your {pkg.name} order for {form.recipientName} is confirmed. A receipt
+                    is on its way to {form.email}.{' '}
+                    {cvFile
+                      ? `We have their CV and will deliver to them within ${pkg.timeline}.`
+                      : `We are emailing ${form.recipientEmail} to ask for their CV, and will deliver within ${pkg.timeline} of receiving it.`}
+                  </>
+                ) : (
+                  <>
+                    Your {pkg.name} order is confirmed and your CV is with us. A receipt is on
+                    its way to {form.email}. We will come back to you within {pkg.timeline}.
+                  </>
+                )}
               </p>
               <dl className="order-result__meta">
                 <div>
@@ -476,12 +516,43 @@ export default function CareerOrder() {
             <form className="contact-form-card" onSubmit={handleSubmit} noValidate>
               <p className="contact-form-card__title">Your details</p>
               <p className="contact-form-card__subtitle">
-                We need your CV to start. Pay by M-Pesa or card.
+                {gift
+                  ? 'You pay, and we work with them. Pay by M-Pesa or card.'
+                  : 'We need your CV to start. Pay by M-Pesa or card.'}
               </p>
 
               {errors.submit && (
                 <div className="contact-form-card__error-banner">{errors.submit}</div>
               )}
+
+              <div className="contact-form-card__field">
+                <fieldset className="order-method">
+                  <legend>Who is this for?</legend>
+                  {[
+                    ['self', 'Myself'],
+                    ['other', 'Someone else'],
+                  ].map(([value, label]) => (
+                    <label key={value} className="order-method__option">
+                      <input
+                        type="radio"
+                        name="order-for"
+                        value={value}
+                        checked={forWhom === value}
+                        onChange={() => {
+                          setForWhom(value);
+                          setErrors((e) => ({
+                            ...e,
+                            cv: null,
+                            recipientName: null,
+                            recipientEmail: null,
+                          }));
+                        }}
+                      />
+                      {label}
+                    </label>
+                  ))}
+                </fieldset>
+              </div>
 
               <div className="contact-form-card__field">
                 <label htmlFor="order-name">Your name</label>
@@ -543,8 +614,63 @@ export default function CareerOrder() {
                 {errors.phone && <span className="field-error-msg">{errors.phone}</span>}
               </div>
 
+              {gift && (
+                <>
+                  <p className="contact-form-card__title order-section-title">Their details</p>
+                  <p className="contact-form-card__subtitle">
+                    We email them once you have paid, and deliver the work to them.
+                  </p>
+
+                  <div className="contact-form-card__field">
+                    <label htmlFor="order-recipient-name">Their name</label>
+                    <input
+                      id="order-recipient-name"
+                      type="text"
+                      placeholder="First and last name"
+                      {...field('recipientName')}
+                    />
+                    {errors.recipientName && (
+                      <span className="field-error-msg">{errors.recipientName}</span>
+                    )}
+                  </div>
+
+                  <div className="contact-form-card__field">
+                    <label htmlFor="order-recipient-email">Their email address</label>
+                    <input
+                      id="order-recipient-email"
+                      type="email"
+                      placeholder="their@email.com"
+                      {...field('recipientEmail')}
+                    />
+                    {errors.recipientEmail && (
+                      <span className="field-error-msg">{errors.recipientEmail}</span>
+                    )}
+                  </div>
+
+                  <div className="contact-form-card__field">
+                    <label htmlFor="order-recipient-phone">
+                      Their phone number <span className="field-optional">Optional</span>
+                    </label>
+                    <input
+                      id="order-recipient-phone"
+                      type="tel"
+                      placeholder="In case email does not reach them"
+                      {...field('recipientPhone')}
+                    />
+                  </div>
+                </>
+              )}
+
               <div className="contact-form-card__field">
-                <label>Upload your CV</label>
+                <label>
+                  {gift ? (
+                    <>
+                      Their CV <span className="field-optional">If you have it</span>
+                    </>
+                  ) : (
+                    'Upload your CV'
+                  )}
+                </label>
                 <div
                   className={[
                     'cv-dropzone',
@@ -584,6 +710,11 @@ export default function CareerOrder() {
                     </div>
                   )}
                 </div>
+                {gift && !cvFile && (
+                  <span className="order-field-hint">
+                    No CV? No problem. We will email them to ask for it.
+                  </span>
+                )}
                 <input
                   ref={inputRef}
                   type="file"
@@ -601,7 +732,11 @@ export default function CareerOrder() {
                 <textarea
                   id="order-notes"
                   rows={3}
-                  placeholder="Target role, deadline, specific concerns..."
+                  placeholder={
+                    gift
+                      ? 'Their target role, deadline, anything we should know...'
+                      : 'Target role, deadline, specific concerns...'
+                  }
                   {...field('message')}
                 />
               </div>
@@ -703,7 +838,8 @@ export default function CareerOrder() {
                 {card
                   ? 'You will enter your card details on Paystack’s secure page; they never reach us.'
                   : 'You will get an M-Pesa prompt on your phone.'}{' '}
-                Your CV is not shared with anyone outside CareerDataSolutions.
+                {gift ? 'Their' : 'Your'} CV is not shared with anyone outside
+                CareerDataSolutions.
               </p>
             </form>
           )}

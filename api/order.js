@@ -65,9 +65,24 @@ export default async function handler(req, res) {
     req.body ?? {};
   const method = req.body?.method === 'card' ? 'card' : 'mpesa';
 
+  // Paying for someone else. name/email/phone above are then the payer's, and
+  // the recipient is the client the work is for. The payer may not have the
+  // recipient's CV, so it is optional here: markPaid() emails the recipient
+  // to ask for it.
+  const gift = req.body?.forWhom === 'other';
+  const { recipientName, recipientEmail, recipientPhone } = req.body ?? {};
+
   // A card payer has no M-Pesa prompt to receive, so the phone is optional.
-  if (!packageId || !name || !email || !cvBase64 || (method === 'mpesa' && !phone)) {
-    return res.status(400).json({ error: 'Please complete every field and attach your CV.' });
+  if (!packageId || !name || !email || (method === 'mpesa' && !phone)) {
+    return res.status(400).json({ error: 'Please complete every field.' });
+  }
+  if (!gift && !cvBase64) {
+    return res.status(400).json({ error: 'Please attach your CV.' });
+  }
+  if (gift && (!recipientName || !recipientEmail)) {
+    return res.status(400).json({
+      error: 'Please enter the name and email of the person this is for.',
+    });
   }
 
   if (method === 'card' && !supportsCard()) {
@@ -84,6 +99,11 @@ export default async function handler(req, res) {
   if (!isValidEmail(email)) {
     return res.status(400).json({ error: 'Please enter a valid email address.' });
   }
+  if (gift && !isValidEmail(recipientEmail)) {
+    return res.status(400).json({
+      error: 'Please enter a valid email address for the person this is for.',
+    });
+  }
 
   // Card payers may be abroad, so their number is kept as typed for contact
   // rather than forced into Kenyan form.
@@ -94,8 +114,9 @@ export default async function handler(req, res) {
     });
   }
 
-  const cv = validateCvUpload({ cvBase64, cvName, cvType });
-  if (!cv.ok) {
+  // Absent only on a gift order (checked above); anything sent is validated.
+  const cv = cvBase64 ? validateCvUpload({ cvBase64, cvName, cvType }) : null;
+  if (cv && !cv.ok) {
     return res.status(400).json({ error: cv.error });
   }
 
@@ -106,8 +127,20 @@ export default async function handler(req, res) {
     email: cleanText(email, { maxLength: 254 }),
     phone: cleanText(msisdn, { maxLength: 20 }),
     message: cleanText(message, { maxLength: 2000, multiline: true }),
-    filename: cleanText(cv.filename, { maxLength: 100 }),
+    filename: cv ? cleanText(cv.filename, { maxLength: 100 }) : '',
   };
+
+  // Kept as typed, like a card payer's phone: the recipient may be abroad and
+  // is only ever contacted, never charged.
+  const recipient = gift
+    ? {
+        name: cleanText(recipientName, { maxLength: 120 }),
+        email: String(recipientEmail).trim(),
+        phone: cleanText(normalizeMsisdn(recipientPhone) || recipientPhone || '', {
+          maxLength: 20,
+        }),
+      }
+    : null;
 
   const id = newOrderId();
 
@@ -126,7 +159,8 @@ export default async function handler(req, res) {
     // The CV reaches the inbox before any payment is attempted, so a failed or
     // abandoned payment never costs us the submission.
     const stored = await createOrder({
-      id, pkg, safe, cv, amountKES, baseKES, serviceChargeKES, promoApplied, foundingApplied, method,
+      id, pkg, safe, cv, recipient, amountKES, baseKES, serviceChargeKES, promoApplied,
+      foundingApplied, method,
     });
     if (!stored.ok) {
       return res.status(502).json({ error: 'We could not save your order. Please try again.' });
@@ -174,6 +208,10 @@ export default async function handler(req, res) {
       phone: safe.phone,
       method,
       providerRef: push.providerRef,
+      // Gift orders only. The recipient's email is the validated raw address,
+      // like the payer's; everything else in here is already escaped.
+      recipient,
+      cvAttached: Boolean(cv),
     };
 
     // Stored so the payment webhook can find it if the browser never comes

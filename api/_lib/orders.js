@@ -24,7 +24,9 @@
 //   the customer who closed the tab mid-PIN still gets their receipt — and
 //   it is what makes settling a payment idempotent.
 //
-// The CV is emailed at creation and is never stored in either.
+// The CV is emailed at creation and is never stored in either. A gift order
+// (paid for by someone other than the client) may have no CV at all; the
+// recipient is emailed for it once the payment clears, from markPaid().
 //
 // ── Without KV ───────────────────────────────────────────────
 //
@@ -39,7 +41,7 @@
 import crypto from 'node:crypto';
 import { Resend } from 'resend';
 import { CONTACT_EMAIL, NOTIFY_FROM, SITE_DOMAIN, WHATSAPP_URL } from '../../src/config.js';
-import { cleanHeader } from './sanitize.js';
+import { cleanHeader, unescapeHtml } from './sanitize.js';
 import * as kv from './kv.js';
 
 /** Tokens stop verifying after this long, so an abandoned checkout tab cannot
@@ -215,6 +217,23 @@ const row = (label, value) => `
  *  goes into an HTML email. */
 const esc = (v) => String(v).replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
 
+const firstNameOf = (name) => String(name || '').split(' ')[0] || 'there';
+
+/** Rows naming the client on a gift order, for the internal emails. Empty for
+ *  an ordinary order, where the payer is the client. */
+const recipientRows = (recipient) =>
+  recipient
+    ? `
+          ${row('For', recipient.name)}
+          ${row('Their email', recipient.email)}
+          ${recipient.phone ? row('Their phone', recipient.phone) : ''}`
+    : '';
+
+/** Subject tags for the internal emails, so a gift order without a CV stands
+ *  out in the inbox before anyone opens it. */
+const giftTags = ({ recipient, cvAttached }) =>
+  `${recipient ? ' · GIFT' : ''}${cvAttached === false ? ' · CV NEEDED' : ''}`;
+
 /**
  * Record a new order: emails you the details with the CV attached, marked as
  * awaiting payment.
@@ -227,7 +246,7 @@ const esc = (v) => String(v).replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`)
  * `safe` values are already escaped by the caller (api/order.js).
  */
 export async function createOrder({
-  id, pkg, safe, cv, amountKES, baseKES = amountKES, serviceChargeKES = 0,
+  id, pkg, safe, cv, recipient = null, amountKES, baseKES = amountKES, serviceChargeKES = 0,
   promoApplied, foundingApplied, method = 'mpesa',
 }) {
   const card = method === 'card';
@@ -239,7 +258,8 @@ export async function createOrder({
     to: process.env.NOTIFY_EMAIL || CONTACT_EMAIL,
     replyTo: safe.email,
     subject: cleanHeader(
-      `Order ${id} · AWAITING PAYMENT · ${pkg.name}${promoApplied ? ' · PROMO' : ''} · ${safe.name}`
+      `Order ${id} · AWAITING PAYMENT · ${pkg.name}${promoApplied ? ' · PROMO' : ''}` +
+        `${giftTags({ recipient, cvAttached: Boolean(cv) })} · ${unescapeHtml(recipient ? recipient.name : safe.name)}`
     ),
     attachments: cv ? [{ filename: cv.filename, content: cv.buffer.toString('base64') }] : [],
     html: `
@@ -269,13 +289,22 @@ export async function createOrder({
           )}
           ${serviceChargeKES ? row('Service charge', `${money(serviceChargeKES)} (covers Paystack's fee)`) : ''}
           ${serviceChargeKES ? row('Total billed', money(amountKES)) : ''}
-          ${row('Name', safe.name)}
-          ${row('Email', safe.email)}
+          ${recipientRows(recipient)}
+          ${row(recipient ? 'Paid for by' : 'Name', safe.name)}
+          ${row(recipient ? 'Payer email' : 'Email', safe.email)}
           ${row('Paying by', card ? 'Card' : 'M-Pesa')}
           ${card ? (safe.phone ? row('Phone', safe.phone) : '') : row('M-Pesa phone', safe.phone)}
           ${row('Timeline', pkg.timeline)}
           ${safe.message ? row('Notes', safe.message) : ''}
         </table>
+        ${
+          recipient && !cv
+            ? `<p style="margin-top:24px;font-size:14px;color:#92400E;">
+          <strong>No CV attached.</strong> Once this is paid, ${recipient.name} is emailed
+          automatically to ask for it, and the reply comes to this inbox.
+        </p>`
+            : ''
+        }
         <p style="margin-top:24px;font-size:13px;color:#6B7280;">
           ${cv ? `Attached: ${safe.filename} · ` : ''}Sent from ${SITE_DOMAIN}
         </p>
@@ -396,9 +425,10 @@ async function notifyAmountMismatch({ order, providerRef, receipt, amount, curre
           ${row('Name', order.name)}
           ${row('Email', order.email)}
           ${row('Phone', order.phone)}
+          ${recipientRows(order.recipient)}
         </table>
         <p style="margin-top:24px;font-size:13px;color:#6B7280;line-height:1.6;">
-          Look the payment up in the Paystack dashboard. If it is genuinely short,
+          ${order.recipient ? 'The recipient has NOT been emailed either. ' : ''}Look the payment up in the Paystack dashboard. If it is genuinely short,
           refund it or ask the customer for the balance; if it is fine, reply to
           the customer yourself to confirm. The CV is on the earlier
           "awaiting payment" email for this ref.
@@ -410,13 +440,96 @@ async function notifyAmountMismatch({ order, providerRef, receipt, amount, curre
 }
 
 /**
- * Confirm a paid order: tells you, then receipts the customer.
+ * A gift order's recipient: tells them someone has paid for their package
+ * and, unless the payer attached it, asks them to reply with their CV.
  *
- * The customer receipt is attempted from the configured sender only, never the
- * sandbox address — onboarding@resend.dev can only deliver to the Resend
- * account owner, so sending a customer receipt from it is guaranteed to fail.
- * A failure there is logged, not thrown: the money has moved and the internal
- * record already exists, so it must not surface as a checkout error.
+ * Replies go to you, which is how the CV arrives. Sent from the configured
+ * sender only, for the same reason as the customer receipt in markPaid().
+ *
+ * → true if it went out. Never throws.
+ */
+async function emailRecipient({ resend, from, owner, order }) {
+  const { recipient } = order;
+  const payer = order.name;
+  try {
+    const { error } = await resend.emails.send({
+      from,
+      to: recipient.email,
+      replyTo: owner,
+      subject: cleanHeader(
+        `${unescapeHtml(payer)} has bought you ${order.packageName} · CareerDataSolutions`
+      ),
+      html: `
+        <div style="font-family:Arial,Helvetica,sans-serif;max-width:560px;margin:0 auto;color:#0F172A;">
+          <div style="height:4px;background:#C89A44;border-radius:2px;margin-bottom:28px;"></div>
+          <h1 style="color:#0B1F3A;font-size:22px;margin:0 0 16px;">
+            Hi ${firstNameOf(recipient.name)}, ${payer} has bought you a career package.
+          </h1>
+          <p style="font-size:15px;line-height:1.7;color:#334155;margin:0 0 16px;">
+            Your <strong>${order.packageName}</strong> package from CareerDataSolutions is
+            paid in full. There is nothing for you to pay.
+          </p>
+          <p style="font-size:15px;line-height:1.7;color:#334155;margin:0 0 24px;">
+            <strong style="color:#0B1F3A;">To get started:</strong>
+            ${
+              order.cvAttached
+                ? `${firstNameOf(payer)} sent us your CV with the order, so we are already
+                   on it. Reply to this email with the role and country you are aiming for,
+                   and a newer CV if you have one. We deliver within ${order.timeline}.`
+                : `reply to this email with your current CV (PDF or Word), plus the role and
+                   country you are aiming for. We start as soon as it arrives and deliver
+                   within ${order.timeline} of receiving it.`
+            }
+          </p>
+          <table style="width:100%;border-collapse:collapse;margin:0 0 20px;">
+            ${row('Order ref', order.id)}
+            ${row('Package', order.packageName)}
+          </table>
+          <p style="font-size:15px;line-height:1.7;color:#334155;margin:0 0 24px;">
+            Questions? Reply here, or message us on
+            <a href="${WHATSAPP_URL}" style="color:#96702B;">WhatsApp</a>.
+          </p>
+          <p style="font-size:13px;line-height:1.6;color:#6B7280;margin:0;border-top:1px solid #E5E7EB;padding-top:16px;">
+            CareerDataSolutions · Nairobi, Kenya<br />${SITE_DOMAIN}
+          </p>
+        </div>`,
+    });
+    if (error) console.error('Recipient email error:', error);
+    return !error;
+  } catch (err) {
+    console.error('Recipient email error:', err);
+    return false;
+  }
+}
+
+/** The "What happens next" paragraph of the customer receipt. */
+function receiptNextSteps(order, recipientEmailed) {
+  const { recipient } = order;
+  if (!recipient) {
+    return `we start work straight away and come back to you within ${order.timeline}. If we
+            need anything else from you first, we will ask by reply to this email.`;
+  }
+  const them = firstNameOf(recipient.name);
+  if (order.cvAttached) {
+    return `we have ${them}'s CV and start work straight away. We will deliver to ${them}
+            within ${order.timeline}${recipientEmailed ? ', and have emailed them to let them know' : ''}.`;
+  }
+  return `${recipientEmailed ? 'we have emailed' : 'we will contact'} ${them} at
+          ${recipient.email} to ask for their CV, and will deliver within ${order.timeline}
+          of receiving it. If you can get it to us sooner, reply to this email with it attached.`;
+}
+
+/**
+ * Confirm a paid order: tells you, then receipts the customer. On a gift
+ * order the recipient is emailed first, so your "PAID" email can say whether
+ * that went out.
+ *
+ * The customer receipt and the recipient email are attempted from the
+ * configured sender only, never the sandbox address — onboarding@resend.dev
+ * can only deliver to the Resend account owner, so sending to a customer from
+ * it is guaranteed to fail. A failure there is logged, not thrown: the money
+ * has moved and the internal record already exists, so it must not surface as
+ * a checkout error.
  *
  * → { ok } — whether the internal "PAID" email went out. That is the record
  * that matters for a retry decision; a failed receipt is logged above and
@@ -428,12 +541,32 @@ export async function markPaid({ order, receipt }) {
   const resend = resendClient();
   const configuredFrom = process.env.NOTIFY_FROM || NOTIFY_FROM;
   const owner = process.env.NOTIFY_EMAIL || CONTACT_EMAIL;
+  const { recipient } = order;
+
+  const recipientEmailed = recipient
+    ? await emailRecipient({ resend, from: configuredFrom, owner, order })
+    : false;
+
+  const cvNote = !recipient
+    ? 'The CV was attached to the earlier "awaiting payment" email for this ref.'
+    : order.cvAttached
+      ? `The CV was attached to the earlier "awaiting payment" email for this ref.
+         ${recipient.name} ${recipientEmailed ? 'has been' : 'could NOT be'} emailed
+         to say the package is paid for.`
+      : recipientEmailed
+        ? `<strong style="color:#92400E;">No CV yet.</strong> ${recipient.name} has been
+           emailed to ask for it; their reply comes to this inbox.`
+        : `<strong style="color:#991B1B;">No CV yet, and the email asking ${recipient.name}
+           for it FAILED.</strong> Contact them directly at ${recipient.email}.`;
 
   const { error } = await resend.emails.send({
     from: configuredFrom,
     to: owner,
     replyTo: order.email,
-    subject: cleanHeader(`PAID · Order ${order.id} · ${order.packageName} · ${order.name}`),
+    subject: cleanHeader(
+      `PAID · Order ${order.id} · ${order.packageName}${giftTags(order)} · ` +
+        `${unescapeHtml(recipient ? recipient.name : order.name)}`
+    ),
     html: `
       <div style="font-family:sans-serif;max-width:560px;">
         <div style="background:#DCFCE7;border-left:4px solid #1D9E75;padding:12px 16px;margin-bottom:24px;">
@@ -445,19 +578,19 @@ export async function markPaid({ order, receipt }) {
           ${row('Amount', money(order.amountKES))}
           ${order.serviceChargeKES ? row('Of which service charge', money(order.serviceChargeKES)) : ''}
           ${row(receiptLabel, receipt || 'n/a')}
-          ${row('Name', order.name)}
-          ${row('Email', order.email)}
-          ${row('Phone', order.phone)}
+          ${recipientRows(recipient)}
+          ${row(recipient ? 'Paid for by' : 'Name', order.name)}
+          ${row(recipient ? 'Payer email' : 'Email', order.email)}
+          ${row(recipient ? 'Payer phone' : 'Phone', order.phone)}
         </table>
-        <p style="margin-top:24px;font-size:13px;color:#6B7280;">
-          The CV was attached to the earlier "awaiting payment" email for this ref.
+        <p style="margin-top:24px;font-size:13px;color:#6B7280;line-height:1.6;">
+          ${cvNote}
         </p>
       </div>`,
   });
   if (error) console.error('Paid notification error:', error);
 
   try {
-    const firstName = String(order.name || '').split(' ')[0] || 'there';
     const { error: receiptError } = await resend.emails.send({
       from: configuredFrom,
       to: order.email,
@@ -467,10 +600,14 @@ export async function markPaid({ order, receipt }) {
         <div style="font-family:Arial,Helvetica,sans-serif;max-width:560px;margin:0 auto;color:#0F172A;">
           <div style="height:4px;background:#C89A44;border-radius:2px;margin-bottom:28px;"></div>
           <h1 style="color:#0B1F3A;font-size:22px;margin:0 0 16px;">
-            Thanks, ${firstName}, payment received.
+            Thanks, ${firstNameOf(order.name)}, payment received.
           </h1>
           <p style="font-size:15px;line-height:1.7;color:#334155;margin:0 0 16px;">
-            Your <strong>${order.packageName}</strong> order is confirmed and your CV is with us.
+            ${
+              recipient
+                ? `Your <strong>${order.packageName}</strong> order for ${recipient.name} is confirmed.`
+                : `Your <strong>${order.packageName}</strong> order is confirmed and your CV is with us.`
+            }
           </p>
           <table style="width:100%;border-collapse:collapse;margin:0 0 20px;">
             ${row('Order ref', order.id)}
@@ -481,9 +618,8 @@ export async function markPaid({ order, receipt }) {
             ${row(receiptLabel, receipt || 'n/a')}
           </table>
           <p style="font-size:15px;line-height:1.7;color:#334155;margin:0 0 24px;">
-            <strong style="color:#0B1F3A;">What happens next:</strong> we start work straight
-            away and come back to you within ${order.timeline}. If we need anything else from
-            you first, we will ask by reply to this email.
+            <strong style="color:#0B1F3A;">What happens next:</strong>
+            ${receiptNextSteps(order, recipientEmailed)}
           </p>
           <p style="font-size:15px;line-height:1.7;color:#334155;margin:0 0 24px;">
             Questions in the meantime? Reply here, or message us on

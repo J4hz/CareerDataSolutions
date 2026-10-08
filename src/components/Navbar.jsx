@@ -3,9 +3,8 @@ import { NavLink, Link } from 'react-router-dom';
 /* Shared with the closing CTA band's dropdown — see src/data/booking.js. */
 import { BOOK_OPTIONS } from '../data/booking';
 import ThemeToggle from './ThemeToggle';
-// Built from the vector brand definition in scripts/brand/ by
-// scripts/logo-svg.js: transparent background, and a reversed copy for dark
-// mode.
+// Built from assets/logo-lockup.svg by scripts/logo-svg.js. Vector
+// wordmark, transparent background, and a reversed copy for dark mode.
 import logo from '../assets/generated/logo.svg';
 import logoReversed from '../assets/generated/logo-reversed.svg';
 import '../styles/navbar.css';
@@ -114,8 +113,8 @@ const Navbar = memo(function Navbar({ track = null }) {
             src={logo}
             alt="CareerDataSolutions"
             className="navbar__logo-img navbar__logo-img--light"
-            width="1609"
-            height="270"
+            width="1239"
+            height="231"
           />
           <img
             src={logoReversed}
@@ -123,8 +122,8 @@ const Navbar = memo(function Navbar({ track = null }) {
             aria-hidden="true"
             loading="lazy"
             className="navbar__logo-img navbar__logo-img--dark"
-            width="1609"
-            height="270"
+            width="1239"
+            height="231"
           />
         </NavLink>
 

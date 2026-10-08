@@ -22,6 +22,18 @@ export function escapeHtml(value) {
     .replace(/'/g, '&#39;');
 }
 
+/** The inverse of escapeHtml, for putting an already-escaped value somewhere
+ *  that is plain text, such as a subject line: there "&#39;" would show as
+ *  typed. Always pass the result through cleanHeader. */
+export function unescapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&#39;/g, "'")
+    .replace(/&quot;/g, '"')
+    .replace(/&gt;/g, '>')
+    .replace(/&lt;/g, '<')
+    .replace(/&amp;/g, '&');
+}
+
 // C0/C1 control characters. \n and \r are excluded so multiline text can keep
 // its line breaks; cleanText and cleanHeader handle those separately.
 const CONTROL_CHARS = /[\x00-\x09\x0B\x0C\x0E-\x1F\x7F-\x9F]/g;
