@@ -4,9 +4,14 @@
 // cannot change what gets billed. Keep the two in step when a price changes.
 //
 // Only the CAREER packages carry an `amountKES`, because only they are bought
-// off the page. The data tiers are quoted, not sold: `pricePrefix` marks them
-// as starting points, the real number is fixed in writing after the discovery
-// call, and api/order.js refuses any id whose track is not 'career'.
+// off the page. The data tiers are quoted, not sold: they carry no price, the
+// real number is fixed in writing after the discovery call, and api/order.js
+// refuses any id whose track is not 'career'.
+
+// The single figure the data pricing sections publish, above the cards.
+// Non-breaking space so the figure never splits from its currency.
+export const DATA_PACKAGES_FROM = 'Data packages start from KES 120,000.';
+
 export const packages = [
 
   // ── DATA ANALYTICS ──────────────────────────────────────
@@ -15,27 +20,11 @@ export const packages = [
   // self-select before the call. See track.packagesNote in data/tracks.js for
   // the framing that runs above the cards.
   //
-  // THE NUMBERS. Set by the business, not derived from a rate card:
-  //
-  //   Starter    7–21 days               → KES 90,000 / $700
-  //   Growth     3–6 weeks               → KES 160,000 / $1,250
-  //   Automation build, then ongoing     → KES 60,000 / $450, per month
-  //
-  // For reference when they next move: costed against the timelines above,
-  // Growth lands near KES 1,600/hr, under a full Nairobi BI consultant rate
-  // of KES 2,500–3,000/hr, because a 3–6 week window spreads the same fee
-  // over roughly twice the days.
-  //
-  // STARTER NEEDS RECOSTING. It was quoted at 5–10 business days and worked
-  // out near KES 4,000/hr, comfortably above that consultant rate. The
-  // window is now 7–21 days — close to twice the midpoint — so the same
-  // KES 90,000 buys roughly half the hourly it used to, which puts it at or
-  // below the rate it was priced to beat. Either the fee or the window is
-  // the thing to move; nothing here has been adjusted to compensate.
-  //
-  // USD is a conversion at ~130 KES/USD rounded to the nearest $50, on the
-  // same basis for every tier, so an overseas client and a local one are
-  // quoted the same work at the same price. Re-round if the rate moves.
+  // NO PRICES ON THE CARDS. The tiers publish no figure of their own; the
+  // one number shown is the floor in DATA_PACKAGES_FROM above, which the
+  // pricing sections state once above the cards. priceKES / priceUSD are null
+  // so PackageCard skips the price line and schema.js emits no offer price.
+  // `priceNote`, where set, stands in the price slot instead.
 
   {
     id: 'starter-dashboard',
@@ -44,17 +33,15 @@ export const packages = [
     tier: '2–3 departments',
     name: 'Starter Dashboard',
     audience: 'Operations, Finance, Sales',
-    pricePrefix: 'Starting at',
-    priceKES: 'KES 90,000',
+    priceKES: null,
     amountKES: null,
-    priceUSD: '$700 USD',
+    priceUSD: null,
     timeline: '7–21 days',
     features: [
-      '1 Power BI dashboard',
-      'Up to 2 data sources',
-      'Basic data cleaning included',
-      '1 revision round',
-      '15-min walkthrough call',
+      '3 data sources',
+      'One revision round',
+      '3-in-1 dashboard',
+      '30-minute walkthrough',
     ],
     featured: false,
     badge: null,
@@ -64,21 +51,20 @@ export const packages = [
     id: 'growth-dashboard',
     track: 'data',
     trackLabel: 'Data Analytics',
-    tier: 'Multi-department (2–7)',
+    tier: '3–7 sources',
     name: 'Growth Dashboard',
     audience: 'Multi-source reporting across teams',
-    pricePrefix: 'Starting at',
-    priceKES: 'KES 160,000',
+    priceKES: null,
     amountKES: null,
-    priceUSD: '$1,250 USD',
+    priceUSD: null,
     timeline: '3–6 weeks',
     features: [
-      'Multiple linked dashboards',
-      'Up to 5 data sources',
-      'Full data cleaning and structuring',
+      'Data cleaning',
+      'Up to 7 data sources',
       '2 revision rounds',
-      '45-min training session',
-      '30 days of post-delivery support',
+      'Multiple linked dashboards',
+      '1-hour training session for department heads',
+      '30-day post-delivery support',
     ],
     // No badge and no featured treatment: the three tiers are scope brackets a
     // visitor self-selects into, so singling one out pushes a choice that only
@@ -94,16 +80,12 @@ export const packages = [
     tier: 'Ongoing reporting',
     name: 'Automation Partner',
     audience: 'Monthly retainer',
-    // The cadence rides on the prefix, not on either figure. A "/mo" hung off
-    // one of the two currencies binds to that currency and reads as though the
-    // other is a one-off, and repeating it on both makes the longest price
-    // string on the page. Up here it covers the pair once and keeps them
-    // symmetric with the other tiers.
-    pricePrefix: 'Monthly, starting at',
-    priceKES: 'KES 60,000',
+    priceKES: null,
     amountKES: null,
-    // Same ~130 KES/USD basis rounded to the nearest $50 as the other two tiers.
-    priceUSD: '$450 USD',
+    priceUSD: null,
+    // A retainer, so the KES 120,000 floor above does not describe it. Says
+    // so on the card rather than leaving it to read as part of that figure.
+    priceNote: 'Monthly, quoted after the discovery call',
     timeline: 'Build: 3–4 weeks, then ongoing',
     features: [
       'Dashboards plus Excel/Power Query automation',
@@ -134,6 +116,7 @@ export const packages = [
       'Cover letter',
       'LinkedIn optimization',
       '15 interview questions and answers shared as PDF',
+      'One revision round',
     ],
     featured: false,
     badge: null,
@@ -186,8 +169,90 @@ export const packages = [
     badge: null,
   },
 
+  {
+    id: 'career-strategic-growth',
+    track: 'career',
+    trackLabel: 'Career Services',
+    tier: 'Senior',
+    name: 'Career Strategic Growth',
+    audience: '8–12 years experience',
+    priceKES: 'KES 22,000',
+    amountKES: 22000,
+    // Same ~125 KES/USD basis as the other career tiers, rounded.
+    priceUSD: '$175 USD',
+    timeline: '7–10 business days',
+    features: [
+      'Everything in Career Pro',
+      'Executive positioning',
+    ],
+    featured: false,
+    badge: null,
+  },
+
 ];
 
 // Convenience exports for filtered views
 export const dataPackages   = packages.filter(p => p.track === 'data');
 export const careerPackages = packages.filter(p => p.track === 'career');
+
+// ── À LA CARTE ──────────────────────────────────────────────
+// Single career services at one flat price each. The visitor picks any mix,
+// so there is no fixed package to look up: alaCartePackage() builds one from
+// the chosen ids, and the server rebuilds it from the same ids (never from an
+// amount the browser sends), so the total cannot be edited on the way through.
+export const A_LA_CARTE_ID = 'a-la-carte';
+export const A_LA_CARTE_PRICE_KES = 3000;
+
+export const alaCarteServices = [
+  { id: 'cv',             name: 'ATS-optimized CV writing' },
+  { id: 'resume',         name: 'Modern resume' },
+  { id: 'cover-letter',   name: 'Tailored cover letter' },
+  { id: 'linkedin',       name: 'LinkedIn profile optimization' },
+  { id: 'interview-call', name: 'Interview preparation call (45 mins)' },
+  { id: 'interview-qa',   name: '15 interview questions and answers (PDF)' },
+  { id: 'job-search',     name: 'Job search strategy' },
+  { id: 'positioning',    name: 'Career positioning strategy note' },
+];
+
+/**
+ * The package for a set of à la carte service ids, or null when none of them
+ * is a real service. Unknown ids are dropped and duplicates collapse, because
+ * the list is filtered rather than the input mapped.
+ */
+export function alaCartePackage(ids) {
+  const wanted = Array.isArray(ids) ? ids.map(String) : [];
+  const chosen = alaCarteServices.filter((s) => wanted.includes(s.id));
+  if (chosen.length === 0) return null;
+
+  const amountKES = chosen.length * A_LA_CARTE_PRICE_KES;
+  const names = chosen.map((s) => s.name);
+  return {
+    id: A_LA_CARTE_ID,
+    track: 'career',
+    trackLabel: 'Career Services',
+    tier: `${chosen.length} service${chosen.length === 1 ? '' : 's'}`,
+    name: 'À la carte',
+    // What the order emails and receipts call it, so the inbox shows what
+    // was actually bought.
+    orderLabel: `À la carte: ${names.join(', ')}`,
+    audience: `KES ${A_LA_CARTE_PRICE_KES.toLocaleString('en-KE')} per service`,
+    priceKES: `KES ${amountKES.toLocaleString('en-KE')}`,
+    amountKES,
+    priceUSD: null,
+    timeline: '3–5 business days',
+    features: names,
+    services: chosen.map((s) => s.id),
+    featured: false,
+    badge: null,
+  };
+}
+
+/**
+ * Any purchasable career package by id: a fixed tier, or an à la carte
+ * selection when the id is A_LA_CARTE_ID. Used by the checkout page and by
+ * api/order.js and api/promo.js, so all three resolve a package the same way.
+ */
+export function findCareerPackage(packageId, services) {
+  if (packageId === A_LA_CARTE_ID) return alaCartePackage(services);
+  return careerPackages.find((p) => p.id === packageId) ?? null;
+}

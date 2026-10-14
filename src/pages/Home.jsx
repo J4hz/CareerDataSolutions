@@ -44,7 +44,6 @@ export default function Home() {
           glow and track-coloured CTA. Teal glow anchors the left, gold the
           right, so the split reads before a single word is. */}
       <section className="hero" aria-labelledby="hero-heading">
-        <span className="hero__wm" aria-hidden="true">13+</span>
         <div className="hero__inner">
           <div className="hero__head">
             {/* One sentence, not two: the kicker plus the h1 below make the
@@ -108,7 +107,7 @@ export default function Home() {
               </div>
               <ul className="hero__track-list">
                 <li>CV and LinkedIn optimisation</li>
-                <li>Cover letter/Resume tailored for specific roles</li>
+                <li>Cover letter and Resume tailored for specific roles</li>
                 <li>Interview coaching and job search strategy</li>
               </ul>
               <Link to="/career/services" className="btn btn--gold btn--lg hero__track-cta">
@@ -179,8 +178,7 @@ export default function Home() {
             <h2 id="paths-heading">What we do</h2>
             <p className="paths__subtext">
               Whether you're running a business or building a career, start with
-              the path that fits you. Not sure which? Book a free 15-minute call
-              and we'll point you in the right direction.
+              the path that fits you.
             </p>
           </div>
 
@@ -194,7 +192,7 @@ export default function Home() {
                 <li>We clean and structure messy or scattered data as part of the engagement, so you don't need it "ready" first</li>
                 {/* Starter and Growth from src/data/packages.js, restated for
                     the homepage. Move these when those timelines move. */}
-                <li>Single-department builds in 7–21 days; multi-source builds in 3–6 weeks</li>
+                <li>3-in-1 dashboards in 7–21 days; multi-source builds in 3–6 weeks</li>
                 <li>Live, visual reporting that replaces "we think" with "we know"</li>
               </ul>
               <Link to="/data/services" className="btn btn--teal">

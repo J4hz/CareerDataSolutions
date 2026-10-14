@@ -15,7 +15,7 @@
 // notify-career.js, plus the optional PAYMENT_PROVIDER and ORDER_SECRET, and
 // the KV variables described in api/_lib/kv.js.
 
-import { packages } from '../src/data/packages.js';
+import { findCareerPackage } from '../src/data/packages.js';
 import { cleanText, isValidEmail, validateCvUpload } from './_lib/sanitize.js';
 import { createOrder, newOrderId, saveOrder, signOrder } from './_lib/orders.js';
 import {
@@ -34,7 +34,7 @@ import { withServiceCharge } from '../src/data/pricing.js';
  * host so a preview deploy returns to itself, but only for hosts that are
  * ours — anything else falls back to the production site.
  */
-function returnUrl(req, pkgId) {
+function returnUrl(req, pkg) {
   const host = String(req.headers['x-forwarded-host'] || req.headers.host || '').toLowerCase();
   const ours =
     host === SITE_DOMAIN ||
@@ -42,7 +42,9 @@ function returnUrl(req, pkgId) {
     host.endsWith('.vercel.app') ||
     /^localhost(:\d+)?$/.test(host);
   const origin = !ours ? SITE_URL : host.startsWith('localhost') ? `http://${host}` : `https://${host}`;
-  return `${origin}/career/order?pkg=${encodeURIComponent(pkgId)}`;
+  // An à la carte order is only a package together with its services.
+  const services = pkg.services ? `&services=${encodeURIComponent(pkg.services.join(','))}` : '';
+  return `${origin}/career/order?pkg=${encodeURIComponent(pkg.id)}${services}`;
 }
 
 export default async function handler(req, res) {
@@ -61,7 +63,7 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'Server is not configured to take orders yet.' });
   }
 
-  const { packageId, name, email, phone, message, promoCode, cvBase64, cvName, cvType } =
+  const { packageId, services, name, email, phone, message, promoCode, cvBase64, cvName, cvType } =
     req.body ?? {};
   const method = req.body?.method === 'card' ? 'card' : 'mpesa';
 
@@ -90,8 +92,12 @@ export default async function handler(req, res) {
   }
 
   // The package is the price. Only career packages are purchasable — the data
-  // track is still "coming soon" (see src/App.jsx).
-  const pkg = packages.find((p) => p.id === packageId && p.track === 'career');
+  // track is still "coming soon" (see src/App.jsx). An à la carte order is
+  // rebuilt here from its service ids; the browser never sends an amount.
+  const found = findCareerPackage(packageId, services);
+  // orderLabel names what was bought on an à la carte order; it stands in for
+  // the name in the emails, the M-Pesa description and the stored order.
+  const pkg = found?.orderLabel ? { ...found, name: found.orderLabel } : found;
   if (!pkg) {
     return res.status(400).json({ error: 'That package is not available.' });
   }
@@ -172,7 +178,7 @@ export default async function handler(req, res) {
             amount: amountKES,
             email: email.trim(),
             reference: id,
-            callbackUrl: returnUrl(req, pkg.id),
+            callbackUrl: returnUrl(req, pkg),
           })
         : await requestStkPush({
             amount: amountKES,

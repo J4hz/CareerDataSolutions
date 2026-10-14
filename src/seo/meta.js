@@ -33,7 +33,7 @@ export const staticRoutes = {
   '/': {
     title: `Power BI Dashboards & CV Writing, Nairobi | ${SITE_NAME}`,
     description:
-      'CareerDataSolutions builds Power BI dashboards and ATS-optimized CVs from Nairobi, Kenya. Grounded in 12 years of Emergency Medical Services operational experience, working with clients locally and internationally.',
+      'CareerDataSolutions builds Power BI dashboards and ATS-optimized CVs from Nairobi, Kenya. Grounded in 13 years of Emergency Medical Services operational experience, working with clients locally and internationally.',
   },
 
   // ── Data track ──
@@ -45,7 +45,7 @@ export const staticRoutes = {
   '/data/packages': {
     title: `Power BI Dashboard Pricing, Kenya | ${SITE_NAME}`,
     description:
-      'What a Power BI dashboard costs in Kenya: scope tiers from a single-department starter build to an ongoing automation retainer, priced in KES and USD.',
+      'What a Power BI dashboard costs in Kenya: scope tiers from a 3-in-1 starter build to an ongoing automation retainer, quoted after a free discovery call.',
   },
   '/data/about': {
     title: `About Kabiru Nyabwengi · ${SITE_NAME} | Nairobi, Kenya`,

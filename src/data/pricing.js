@@ -37,7 +37,7 @@ import {
   isFoundingRateHonoured,
 } from '../content/foundingClients.js';
 
-/** 90000 → "90,000" */
+/** 15000 → "15,000" */
 function group(n) {
   return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
@@ -50,7 +50,7 @@ export function formatUSD(n) {
   return `$${group(n)} USD`;
 }
 
-/** "KES 90,000" → 90000, "$1,250 USD" → 1250, anything else → null. */
+/** "KES 15,000" → 15000, "$115 USD" → 115, anything else → null. */
 function parseAmount(str) {
   const digits = String(str ?? '').replace(/[^0-9]/g, '');
   return digits ? Number(digits) : null;

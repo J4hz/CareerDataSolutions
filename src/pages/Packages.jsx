@@ -1,5 +1,6 @@
-import { dataPackages, careerPackages } from '../data/packages';
+import { dataPackages, careerPackages, DATA_PACKAGES_FROM } from '../data/packages';
 import PackageCard from '../components/ui/PackageCard';
+import AlaCarte from '../components/ui/AlaCarte';
 import CTASection from '../components/CTASection';
 import '../styles/packages.css';
 
@@ -17,7 +18,7 @@ const COPY = {
     heading: 'Scope tiers built for every stage',
     sectionTitle: 'Dashboard and automation scope tiers',
     intro:
-      'Local KES pricing for Kenya. USD rates for international and Upwork projects. These are starting points rather than fixed packages: dashboard work varies too much by data complexity to price sight-unseen.',
+      `${DATA_PACKAGES_FROM} These tiers are starting points rather than fixed packages: dashboard work varies too much by data complexity to price sight-unseen.`,
     // Data work is quoted, not bought off the page, so the note leads with how
     // the number gets fixed before it closes on how it gets paid.
     note:
@@ -62,11 +63,12 @@ export default function Packages({ track = 'data' }) {
               {copy.trackLabel}
             </p>
             <h3 className="packages-page__section-title">{copy.sectionTitle}</h3>
-            <div className="packages-page__grid">
+            <div className={`packages-page__grid${packages.length === 4 ? ' packages-page__grid--four' : ''}`}>
               {packages.map((pkg) => (
                 <PackageCard key={pkg.id} pkg={pkg} />
               ))}
             </div>
+            {track === 'career' && <AlaCarte />}
           </div>
 
           <p className="packages-page__note">{copy.note}</p>

@@ -12,6 +12,7 @@
 
 import { dataProcess, careerProcess } from './process.js';
 import { dataFaqs, careerFaqs } from './faqs.js';
+import { DATA_PACKAGES_FROM } from './packages.js';
 
 export const dataTrack = {
   id: 'data',
@@ -47,12 +48,15 @@ export const dataTrack = {
 
   primaryCta: { label: 'Book a free discovery call', to: '/data/contact' },
   secondaryCta: { label: 'See scope tiers & pricing', to: '/data/packages' },
+  // Scope before the call: the pricing link sits first, each button keeping
+  // its own style.
+  secondaryCtaFirst: true,
 
   /* Two stats, not three: the hero runs beside the source-data visual on this
      track (showHeroViz below), so the row has half the width it does on the
      career page. */
   stats: [
-    { num: '7–21 days', label: 'Turnaround on a single-department dashboard' },
+    { num: '7–21 days', label: 'Turnaround on a 3-in-1 dashboard' },
     { num: 'Free', label: 'Discovery call before you commit to anything' },
   ],
 
@@ -69,16 +73,16 @@ export const dataTrack = {
     'Four things every engagement is built around, whichever tier fits your situation.',
   deliverables: [
     {
-      title: 'Custom Power BI dashboards',
-      body: 'Built from your existing data (e.g. sales, operations, HR or finance). Live and interactive, not a static export you have to re-request every week.',
+      title: 'Data cleaning & structuring',
+      body: 'Messy, scattered or multi-source data sorted, standardized and connected as part of the engagement. You do not need clean data to start.',
     },
     {
       title: 'Excel automation & reporting',
       body: 'The manual weekly report, rebuilt so it updates itself. Less time copying and pasting, more time using the numbers.',
     },
     {
-      title: 'Data cleaning & structuring',
-      body: 'Messy, scattered or multi-source data sorted, standardized and connected as part of the engagement. You do not need clean data to start.',
+      title: 'Custom Power BI dashboards',
+      body: 'Built from your existing data (e.g. sales, operations, HR or finance). Live and interactive, not a static export you have to re-request every week.',
     },
     {
       title: 'Forecasting & performance analysis',
@@ -96,7 +100,7 @@ export const dataTrack = {
   packagesIntro:
     'Every engagement starts with a free discovery call, where we look at your real data before anything is quoted.',
   packagesNote: {
-    lead: 'These are starting points, not fixed packages.',
+    lead: DATA_PACKAGES_FROM,
     body: 'Dashboard and automation work varies too much by data complexity to price sight-unseen. The tiers below help you self-select. You get an exact quote and timeline after the discovery call, before any work begins.',
   },
   packagesFine:
@@ -167,7 +171,7 @@ export const careerTrack = {
     },
     {
       title: 'Interview prep & job search strategy',
-      body: 'Where to apply, how to position 12 years of experience for a market that has never heard of your last employer, and how to answer the question you are dreading.',
+      body: 'How to position your years of experience, and how to answer the interview questions most candidates dread.',
     },
   ],
 

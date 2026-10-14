@@ -19,18 +19,18 @@
 export const dataFaqs = [
   {
     q: 'What is a Power BI dashboard, and why does my business actually need one?',
-    a: 'A Power BI dashboard pulls your existing data (sales, operations, HR, finance) into a single, live, visual report so you can see trends and make decisions without digging through spreadsheets. Businesses need one when they are making decisions based on outdated reports, gut feeling, or data scattered across multiple systems. A well-built dashboard turns "we think" into "we know."',
+    a: 'A Power BI dashboard consolidates your existing data (sales, operations, HR, finance) into a single, live, visual report so you can see trends and make decisions without digging through spreadsheets. Businesses need one when they are making decisions based on outdated reports, gut feeling, or data scattered across multiple systems. A well-built dashboard turns "we think" into "we know."',
   },
   {
     q: 'How long does it take to build a custom dashboard?',
     // The two figures here are the Starter and Growth tiers in
     // src/data/packages.js. They are the same promise stated in prose, so
     // they move when those timelines move.
-    a: 'A standard single-department dashboard (for example, sales or operations) typically takes 7–21 days from data access to delivery. More complex, multi-source dashboards can take 3–6 weeks. Timelines depend on how clean and accessible your existing data is, which is assessed on the discovery call, so you get a realistic date before anything is committed.',
+    a: 'A standard three-in-one dashboard (for example, sales, operations and finance) typically takes 7–21 days from data access to delivery. More complex, multi-source dashboards can take 3–6 weeks. Timelines depend on how clean and accessible your existing data is, which is assessed on the discovery call, so you get a realistic date before anything is committed.',
   },
   {
     q: 'What if our data is messy or spread across multiple systems?',
-    a: 'That is normal, and it is part of the job. Cleaning and structuring scattered or inconsistent data is built into every engagement rather than treated as a prerequisite you need to solve first. The discovery call is where we map out what sources exist and how they will be brought together. If your data is in a genuinely unusable state (for example, no digital records at all), that gets flagged upfront so expectations on timeline and cost stay realistic.',
+    a: 'That is normal, and it is part of the scope. Cleaning and structuring scattered or inconsistent data is built into every engagement rather than treated as a prerequisite you need to solve first. The discovery call is where we map out what sources exist and how they will be brought together. If your data is in a genuinely unusable state (for example, no digital records at all), that gets flagged upfront so expectations on timeline and cost stay realistic.',
   },
   {
     q: 'How is the work priced, and when do I know what it will cost?',

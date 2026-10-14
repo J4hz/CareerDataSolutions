@@ -5,7 +5,7 @@
 // charge time and prices from that, so a forged "valid" response here cannot
 // change what is actually billed.
 
-import { packages } from '../src/data/packages.js';
+import { findCareerPackage } from '../src/data/packages.js';
 import { resolveAmount } from './_lib/promo.js';
 import { limited } from './_lib/rate-limit.js';
 
@@ -20,9 +20,9 @@ export default async function handler(req, res) {
   // whatever rate the network allows.
   if (await limited(req, res, 'promo', { limit: 20, windowSeconds: 600 })) return;
 
-  const { code, packageId } = req.body ?? {};
+  const { code, packageId, services } = req.body ?? {};
 
-  const pkg = packages.find((p) => p.id === packageId && p.track === 'career');
+  const pkg = findCareerPackage(packageId, services);
   if (!pkg) {
     return res.status(400).json({ error: 'That package is not available.' });
   }

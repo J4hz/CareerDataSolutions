@@ -28,6 +28,9 @@ export default function PackageCard({ pkg, variant = 'card' }) {
   const price = packagePricing(pkg);
   const priceLead = price.usdLabel || price.kesLabel;
   const priceTrail = price.usdLabel ? price.kesLabel : null;
+  // Data tiers publish no figure (see DATA_PACKAGES_FROM in data/packages.js).
+  // A card with no price shows its priceNote in that slot, or nothing.
+  const hasPrice = Boolean(priceLead);
 
   const wasLine = price.discounted ? (
     <div className="pkg-was">
@@ -81,15 +84,19 @@ export default function PackageCard({ pkg, variant = 'card' }) {
         <div className="pkg-row__side">
           {pkg.pricePrefix && <div className="pkg-row__price-prefix">{pkg.pricePrefix}</div>}
           {wasLine}
-          <div className="pkg-row__price" style={{ color: accent }}>
-            <span className="pkg-row__price-part">{priceLead}</span>
-            {priceTrail && (
-              <>
-                {' / '}
-                <span className="pkg-row__price-part">{priceTrail}</span>
-              </>
-            )}
-          </div>
+          {hasPrice ? (
+            <div className="pkg-row__price" style={{ color: accent }}>
+              <span className="pkg-row__price-part">{priceLead}</span>
+              {priceTrail && (
+                <>
+                  {' / '}
+                  <span className="pkg-row__price-part">{priceTrail}</span>
+                </>
+              )}
+            </div>
+          ) : (
+            pkg.priceNote && <div className="pkg-row__price-prefix">{pkg.priceNote}</div>
+          )}
           <div className="pkg-row__timeline">{pkg.timeline}</div>
           <Link
             to={contactPath}
@@ -160,15 +167,23 @@ export default function PackageCard({ pkg, variant = 'card' }) {
             single price rather than a headline with a footnote. Sized in
             packages.css, where a media query can hold the longest string — the
             retainer's two /mo figures — on one line in a third-width card. */}
-        <div className="pkg-card__price" style={{ color: accentInk }}>
-          <span className="pkg-card__price-part">{priceLead}</span>
-          {priceTrail && (
-            <>
-              {' / '}
-              <span className="pkg-card__price-part">{priceTrail}</span>
-            </>
-          )}
-        </div>
+        {hasPrice ? (
+          <div className="pkg-card__price" style={{ color: accentInk }}>
+            <span className="pkg-card__price-part">{priceLead}</span>
+            {priceTrail && (
+              <>
+                {' / '}
+                <span className="pkg-card__price-part">{priceTrail}</span>
+              </>
+            )}
+          </div>
+        ) : (
+          pkg.priceNote && (
+            <div style={{ fontSize: '11px', fontWeight: 600, color: 'var(--gm)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '2px' }}>
+              {pkg.priceNote}
+            </div>
+          )
+        )}
         <div style={{ fontSize: '12px', color: 'var(--gm)' }}>
           {pkg.timeline}
         </div>

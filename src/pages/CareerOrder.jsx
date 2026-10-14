@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { careerPackages } from '../data/packages';
+import { careerPackages, findCareerPackage } from '../data/packages';
 import { useCvUpload, MAX_CV_MB } from '../hooks/useCvUpload';
 import { WHATSAPP_URL, CONTACT_EMAIL } from '../config';
 import {
@@ -62,7 +62,13 @@ function clearCardSession() {
  */
 export default function CareerOrder() {
   const [searchParams] = useSearchParams();
-  const pkg = careerPackages.find((p) => p.id === searchParams.get('pkg'));
+  // ?pkg=a-la-carte comes with ?services=cv,linkedin,…; any other id is a
+  // fixed tier. Memoised on the raw strings so the package keeps one identity
+  // across renders.
+  const pkgParam = searchParams.get('pkg');
+  const servicesParam = searchParams.get('services') ?? '';
+  const services = useMemo(() => servicesParam.split(',').filter(Boolean), [servicesParam]);
+  const pkg = useMemo(() => findCareerPackage(pkgParam, services), [pkgParam, services]);
 
   const [form, setForm] = useState({
     name: '',
@@ -94,14 +100,15 @@ export default function CareerOrder() {
      'idle', the saved checkout drives it: straight into the wait, where the
      poll below settles it and adopts it into state. */
   const savedRaw = useSyncExternalStore(subscribeNever, readCardSessionRaw, noCardSession);
+  const pkgId = pkg?.id;
   const resumed = useMemo(() => {
     try {
       const saved = JSON.parse(savedRaw || 'null');
-      return saved?.pkgId === pkg?.id && saved.session?.token ? saved : null;
+      return saved?.pkgId === pkgId && saved.session?.token ? saved : null;
     } catch {
       return null;
     }
-  }, [savedRaw, pkg?.id]);
+  }, [savedRaw, pkgId]);
   const resuming = resumed !== null && status === 'idle';
   const activeStatus = resuming ? 'awaiting' : status;
   const activeSession = resuming ? resumed.session : session;
@@ -227,7 +234,7 @@ export default function CareerOrder() {
       const res = await fetch('/api/promo', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code, packageId: pkg.id }),
+        body: JSON.stringify({ code, packageId: pkg.id, services: pkg.services }),
       });
       // A transport failure must not read as "wrong code". /api/* does not
       // exist under `npm run dev` (Vite alone serves no functions), so without
@@ -289,6 +296,7 @@ export default function CareerOrder() {
         // so the total cannot be edited on the way through.
         body: JSON.stringify({
           packageId: pkg.id,
+          services: pkg.services,
           name: form.name,
           email: form.email,
           phone: form.phone,
@@ -416,7 +424,7 @@ export default function CareerOrder() {
             <div className="pkg-was order-summary__was">
               <span className="sr-only">Regular price </span>
               <s className="pkg-was__price">
-                {price.wasKESLabel} / {price.wasUSDLabel}
+                {price.wasUSDLabel ? `${price.wasKESLabel} / ${price.wasUSDLabel}` : price.wasKESLabel}
               </s>
               <span className="pkg-was__tag">{price.percent}% discount</span>
               <span className="sr-only">, now</span>

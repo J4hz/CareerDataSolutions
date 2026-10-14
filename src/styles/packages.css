@@ -64,7 +64,7 @@
    reads as a single price. The size is set here rather than inline because it
    has to react to the card width — the three-across grid squeezes hardest
    just above the 900px breakpoint. Each figure is nowrap, so if it ever does
-   wrap the break lands on the slash and never inside "KES 160,000". */
+   wrap the break lands on the slash and never inside "KES 15,000". */
 .pkg-card__price {
   font-family: var(--font-display);
   font-weight: 800;
@@ -283,6 +283,31 @@
   }
 }
 
+/* Four tiers (the career track since Career Strategic Growth) go four across
+   on a full-width desktop rather than leaving one card alone on a second
+   row. Under 1100px the shared rules above take over: two across, then one. */
+@media (min-width: 1101px) {
+  .packages-page__grid--four {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+  .packages-page__grid--four .pkg-card {
+    padding: 26px 20px 22px;
+  }
+  .packages-page__grid--four .pkg-card__price {
+    font-size: 16px;
+    letter-spacing: -0.3px;
+  }
+}
+@media (max-width: 1100px) and (min-width: 901px) {
+  .packages-page__grid--four {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .packages-page__grid--four .pkg-card__price {
+    font-size: 18px;
+  }
+}
+
 /* ── LIST LAYOUT ── */
 .pkg-list-block {
   margin-bottom: 48px;
@@ -446,7 +471,7 @@
 }
 
 /* Each figure held together, so a forced break lands on the slash and never
-   inside "KES 160,000". */
+   inside "KES 15,000". */
 .pkg-row__price-part {
   white-space: nowrap;
 }
@@ -543,4 +568,119 @@
 
 .packages-page__group:last-of-type {
   margin-bottom: 0;
+}
+
+/* ── À LA CARTE ──────────────────────────────────────────────
+   ui/AlaCarte.jsx, under the career package cards. Same surface, border and
+   radius as .pkg-card so it reads as part of the same set. */
+.alacarte {
+  margin-top: 32px;
+  border-radius: 14px;
+  border: 1.5px solid var(--gl);
+  background: var(--surface);
+  padding: 28px 24px 24px;
+}
+
+.alacarte__title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 20px;
+  color: var(--dark);
+  letter-spacing: -0.4px;
+  margin-bottom: 4px;
+}
+
+.alacarte__intro {
+  font-size: 14px;
+  color: var(--gm);
+  line-height: 1.6;
+  margin: 0 0 18px;
+}
+
+.alacarte__options {
+  border: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px 24px;
+}
+
+@media (max-width: 600px) {
+  .alacarte__options {
+    grid-template-columns: 1fr;
+  }
+}
+
+.alacarte__option {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--gd);
+  cursor: pointer;
+  /* A comfortable tap target without changing how the row looks. */
+  padding: 6px 0;
+}
+
+.alacarte__checkbox {
+  width: 18px;
+  height: 18px;
+  margin: 2px 0 0;
+  flex-shrink: 0;
+  accent-color: var(--gold-deep);
+  cursor: pointer;
+}
+
+.alacarte__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--gl);
+}
+
+.alacarte__total {
+  margin: 0;
+  font-size: 14px;
+  color: var(--gd);
+}
+
+.alacarte__amount {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 18px;
+  color: var(--accent-ink);
+}
+
+.alacarte__was {
+  color: var(--gm);
+}
+
+.alacarte__cta {
+  width: auto;
+  margin-top: 0;
+  background: var(--gold);
+  color: var(--navy);
+}
+
+.alacarte__cta:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.alacarte__cta:disabled:hover {
+  background: var(--gold) !important;
+  transform: none;
+}
+
+@media (max-width: 600px) {
+  .alacarte__cta {
+    width: 100%;
+  }
 }

@@ -7,6 +7,7 @@ import PackageCard from './ui/PackageCard';
 import DataFlowViz from './ui/DataFlowViz';
 // import { testimonials } from '../data/testimonials';  — restore with the testimonials section
 import { dataPackages, careerPackages } from '../data/packages';
+import AlaCarte from './ui/AlaCarte';
 import '../styles/packages.css';
 import '../styles/landing.css';
 import '../styles/button.css';
@@ -40,6 +41,14 @@ export default function ServiceLanding({ track }) {
   const ownTestimonials = testimonials.filter((t) => t.track === track.id);
   const shownTestimonials = ownTestimonials.length >= 2 ? ownTestimonials : testimonials;
   */
+
+  const shownPackages = track.id === 'career' ? careerPackages : dataPackages;
+
+  const secondaryCta = (
+    <Link to={track.secondaryCta.to} className="btn btn--lg btn--ghost">
+      {track.secondaryCta.label}
+    </Link>
+  );
 
   return (
     <main className="lp" style={accentVars} data-track={track.id}>
@@ -82,12 +91,11 @@ export default function ServiceLanding({ track }) {
             )}
 
             <div className="lp-hero__actions">
+              {track.secondaryCtaFirst && secondaryCta}
               <Link to={track.primaryCta.to} className={`btn btn--lg ${track.buttonClass}`}>
                 {track.primaryCta.label} →
               </Link>
-              <Link to={track.secondaryCta.to} className="btn btn--lg btn--ghost">
-                {track.secondaryCta.label}
-              </Link>
+              {!track.secondaryCtaFirst && secondaryCta}
             </div>
 
             <dl className="lp-hero__stats">
@@ -154,11 +162,13 @@ export default function ServiceLanding({ track }) {
               </p>
             )}
 
-            <div className="packages-page__grid">
-              {(track.id === 'career' ? careerPackages : dataPackages).map((pkg) => (
+            <div className={`packages-page__grid${shownPackages.length === 4 ? ' packages-page__grid--four' : ''}`}>
+              {shownPackages.map((pkg) => (
                 <PackageCard key={pkg.id} pkg={pkg} />
               ))}
             </div>
+
+            {track.id === 'career' && <AlaCarte />}
 
             {track.packagesFine && (
               <p className="lp-packages__fine">{track.packagesFine}</p>
