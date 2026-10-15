@@ -15,8 +15,7 @@ import '../styles/about-section.css';
  * Unlike the rest of the site, this section does NOT take var(--accent) from
  * the surrounding shell. There is one About page and it belongs to both
  * tracks, so tinting it teal or gold would make it look like it belonged to
- * whichever track you arrived from. It is monochrome instead, with the stat
- * numbers in the booking orange as the single point of colour.
+ * whichever track you arrived from. It is monochrome instead.
  *
  * The photo is shot against black, which sits almost exactly on --navy-950
  * behind it, so the panel needs no frame beyond the existing hairline.
@@ -84,10 +83,7 @@ export default function AboutSection() {
 
           {/* FOUNDING CLIENTS. Sits between the founder copy and the proof
               block on purpose: it says where the business is today, right
-              before the numbers say where Kabiru has already been. This is
-              the one element on this page that takes var(--accent) and so
-              shifts gold/teal with the shell — see the colour note at the
-              top of styles/about-section.css. */}
+              before the proof block says where Kabiru has already been. */}
           <FoundingClientsCallout
             tone="dark"
             variant="discount"
@@ -96,22 +92,6 @@ export default function AboutSection() {
 
           <div className="about-sec__stat-box">
             <p className="about-sec__stat-quote">{about.statBox.quote}</p>
-
-            {/* Says whose numbers these are. Sits on the numbers rather than
-                on the whole box, so it reads as their attribution and not as
-                a second heading over the quote above. */}
-            <p className="about-sec__stat-label-lead" id="about-stats-source">
-              {about.statBox.statsLabel}
-            </p>
-
-            <dl className="about-sec__stat-row" aria-labelledby="about-stats-source">
-              {about.statBox.stats.map((stat) => (
-                <div key={stat.label} className="about-sec__stat">
-                  <dt className="about-sec__stat-num">{stat.num}</dt>
-                  <dd className="about-sec__stat-label">{stat.label}</dd>
-                </div>
-              ))}
-            </dl>
           </div>
         </div>
       </div>

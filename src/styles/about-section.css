@@ -13,12 +13,6 @@
    So the page is MONOCHROME: white and grey on navy, with hierarchy
    carried by brightness and weight rather than hue. Neither teal nor
    gold appears anywhere below.
-
-   The single exception is the stat numbers, which take var(--cta), the
-   same orange as the booking buttons. That colour is already the site's
-   one track-independent accent, so it is the only one that can be used
-   here without implying a track. Being the lone colour on the page, it
-   also puts the eye exactly where the proof is.
    ───────────────────────────────────────────────────────────── */
 
 .about-sec {
@@ -144,13 +138,10 @@
 }
 
 /* ── Founding clients ──
-   The one exception to the monochrome rule above: this panel takes
-   var(--accent) and so goes gold on /career/about and teal on /data/about.
-   That is deliberate. It is a statement about the business rather than part
-   of the founder copy, and the whole point of the panel is that it does not
-   read as more body text. Everything around it stays monochrome.
-   Constrained to the same 620px measure as the copy above it. */
-.about-sec__founding {
+   A plain note between hairline rules (see styles/founding-clients.css),
+   monochrome like the rest of the section. Constrained to the same 620px
+   measure as the copy above it. */
+.about-sec__copy .about-sec__founding {
   max-width: 620px;
   margin: 4px 0 28px;
 }
@@ -170,50 +161,7 @@
   font-size: 0.95rem;
   line-height: 1.7;
   color: rgba(255, 255, 255, 0.9);
-  margin: 0 0 20px;
-}
-
-/* Attribution for the three numbers: they are what Kabiru has shipped in the
-   job he currently holds, not CareerDataSolutions client work. Secondary by
-   construction — small, uppercase, and dimmer than the body copy — so it
-   labels the numbers without competing with them for the eye. It carries the
-   rule that used to sit on .about-sec__stat-row, so the divider still lands
-   above the label rather than between it and the numbers it belongs to. */
-.about-sec__stat-label-lead {
-  padding-top: 18px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  margin: 0 0 14px;
-  font-size: 11.5px;
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  line-height: 1.5;
-  color: rgba(255, 255, 255, 0.5);
-}
-
-.about-sec__stat-row {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
   margin: 0;
-}
-
-/* The only colour on the page. var(--cta) is the booking orange, the site's
-   one accent that belongs to neither track. */
-.about-sec__stat-num {
-  font-family: var(--font-display);
-  font-size: 1.9rem;
-  font-weight: 700;
-  line-height: 1.1;
-  color: var(--cta);
-}
-
-.about-sec__stat-label {
-  margin: 4px 0 0;
-  font-size: 12px;
-  letter-spacing: 0.03em;
-  line-height: 1.4;
-  color: rgba(255, 255, 255, 0.45);
 }
 
 /* ── Responsive ── */
@@ -236,14 +184,6 @@
 @media (max-width: 560px) {
   .about-sec__stat-box {
     padding: 20px;
-  }
-
-  .about-sec__stat-row {
-    gap: 10px;
-  }
-
-  .about-sec__stat-num {
-    font-size: 1.4rem;
   }
 }
 

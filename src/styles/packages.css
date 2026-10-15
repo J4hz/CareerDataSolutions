@@ -283,7 +283,7 @@
   }
 }
 
-/* Four tiers (the career track since Career Strategic Growth) go four across
+/* Four tiers (the career track since Career Executive) go four across
    on a full-width desktop rather than leaving one card alone on a second
    row. Under 1100px the shared rules above take over: two across, then one. */
 @media (min-width: 1101px) {

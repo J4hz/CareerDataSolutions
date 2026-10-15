@@ -74,9 +74,9 @@ export function applyFoundingDiscount(amount, config = foundingClientsConfig) {
  * `discounted` is false and the labels are the package's own strings
  * untouched — so a caller can render the result unconditionally.
  *
- * The USD figure is discounted exactly rather than re-rounded to the nearest
- * $50 that src/data/packages.js quotes list prices on. Re-rounding $630 up to
- * $650 would advertise 10% off and hand over 7%.
+ * The USD figure is discounted exactly rather than re-rounded to the next
+ * $5 that src/data/packages.js quotes list prices on. Re-rounding $41 up to
+ * $45 would advertise 10% off and hand over nothing.
  */
 export function packagePricing(pkg, now = new Date()) {
   const listKES = typeof pkg.amountKES === 'number' ? pkg.amountKES : parseAmount(pkg.priceKES);

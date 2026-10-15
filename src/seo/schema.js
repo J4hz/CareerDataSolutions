@@ -19,6 +19,7 @@ import {
   BUSINESS,
   absoluteUrl,
   OG_IMAGE_URL,
+  SOCIAL_LINKS,
 } from '../config.js';
 import { posts } from '../data/blog.js';
 import { dataFaqs, careerFaqs } from '../data/faqs.js';
@@ -35,12 +36,10 @@ const LOCAL_BUSINESS_ID = `${SITE_URL}/#localbusiness`;
 const DATA_SERVICE_ID   = `${SITE_URL}/#data-service`;
 const CAREER_SERVICE_ID = `${SITE_URL}/#career-service`;
 
-/** Social/external profiles. Empty entries are dropped — a sameAs pointing
- *  at a placeholder is worse than an absent one. Fill these in as they go live. */
-const SAME_AS = [
-  // 'https://www.linkedin.com/company/careerdatasolutions',
-  // 'https://www.upwork.com/agencies/careerdatasolutions',
-].filter(Boolean);
+/** Social/external profiles, from the same list the footer renders. Empty
+ *  entries are dropped: a sameAs pointing at a placeholder is worse than an
+ *  absent one. */
+const SAME_AS = SOCIAL_LINKS.map((link) => link.url).filter(Boolean);
 
 /* Both tracks serve the same areas, and so does the business itself. One
    array rather than three copies, so they cannot drift apart.
@@ -171,7 +170,7 @@ function localBusiness() {
  * string, which is exactly the figure this schema is meant to mirror.
  *
  * USD is not emitted as a second Offer. src/data/packages.js documents it as
- * a conversion at ~130 KES/USD rounded to the nearest $50, so it is the same
+ * a conversion at 131 KES/USD rounded up to the next $5, so it is the same
  * price restated, not a separate one to advertise.
  */
 function kesAmount(pkg) {
