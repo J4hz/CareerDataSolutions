@@ -5,8 +5,9 @@ import {
   alaCartePackage,
   A_LA_CARTE_ID,
   A_LA_CARTE_PRICE_KES,
+  A_LA_CARTE_PRICE_USD,
 } from '../../data/packages';
-import { packagePricing, formatKES } from '../../data/pricing';
+import { packagePricing, formatKES, formatUSD } from '../../data/pricing';
 
 /**
  * À la carte career services: pick any mix at one flat price each and see the
@@ -40,7 +41,7 @@ export default function AlaCarte() {
         <h3 id="alacarte-heading" className="alacarte__title">À la carte</h3>
         <p className="alacarte__intro">
           Need one or two things rather than a package? Choose the services you want,{' '}
-          {formatKES(A_LA_CARTE_PRICE_KES)} each.
+          {formatKES(A_LA_CARTE_PRICE_KES)} / {formatUSD(A_LA_CARTE_PRICE_USD)} each.
         </p>
       </div>
 
@@ -71,11 +72,15 @@ export default function AlaCarte() {
               {price.discounted && (
                 <>
                   <span className="sr-only">regular price </span>
-                  <s className="alacarte__was">{price.wasKESLabel}</s>{' '}
+                  <s className="alacarte__was">
+                    {price.wasKESLabel} / {price.wasUSDLabel}
+                  </s>{' '}
                   <span className="sr-only">, now </span>
                 </>
               )}
-              <strong className="alacarte__amount">{price.kesLabel}</strong>
+              <strong className="alacarte__amount">
+                {price.kesLabel} / {price.usdLabel}
+              </strong>
             </>
           )}
         </p>

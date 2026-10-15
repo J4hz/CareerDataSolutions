@@ -9,8 +9,12 @@
 // refuses any id whose track is not 'career'.
 
 // The single figure the data pricing sections publish, above the cards.
-// Non-breaking space so the figure never splits from its currency.
-export const DATA_PACKAGES_FROM = 'Data packages start from KES 120,000.';
+// Non-breaking spaces so each figure never splits from its currency.
+// USD follows the site rule: KES ÷ 131, rounded UP to the next multiple of 5.
+export const DATA_PACKAGES_FROM = 'Data packages start from KES 120,000 / USD 920.';
+
+// USD on every price below is KES ÷ 131, rounded UP to the next multiple of 5.
+// Hand-entered, so redo the sum here whenever a KES price changes.
 
 export const packages = [
 
@@ -38,6 +42,7 @@ export const packages = [
     priceUSD: null,
     timeline: '7–21 days',
     features: [
+      'Data cleaning',
       '3 data sources',
       'One revision round',
       '3-in-1 dashboard',
@@ -51,7 +56,7 @@ export const packages = [
     id: 'growth-dashboard',
     track: 'data',
     trackLabel: 'Data Analytics',
-    tier: '3–7 sources',
+    tier: '3–7 departments',
     name: 'Growth Dashboard',
     audience: 'Multi-source reporting across teams',
     priceKES: null,
@@ -154,7 +159,7 @@ export const packages = [
     audience: '3–7 years experience',
     priceKES: 'KES 15,000',
     amountKES: 15000,
-    priceUSD: '$120 USD',
+    priceUSD: '$115 USD',
     timeline: '5–7 business days',
     features: [
       'ATS-optimized CV',
@@ -170,16 +175,15 @@ export const packages = [
   },
 
   {
-    id: 'career-strategic-growth',
+    id: 'career-executive',
     track: 'career',
     trackLabel: 'Career Services',
     tier: 'Senior',
-    name: 'Career Strategic Growth',
-    audience: '8–12 years experience',
+    name: 'Career Executive',
+    audience: 'For professionals with 8–12 years of experience ready for senior roles.',
     priceKES: 'KES 22,000',
     amountKES: 22000,
-    // Same ~125 KES/USD basis as the other career tiers, rounded.
-    priceUSD: '$175 USD',
+    priceUSD: '$170 USD',
     timeline: '7–10 business days',
     features: [
       'Everything in Career Pro',
@@ -202,6 +206,9 @@ export const careerPackages = packages.filter(p => p.track === 'career');
 // amount the browser sends), so the total cannot be edited on the way through.
 export const A_LA_CARTE_ID = 'a-la-carte';
 export const A_LA_CARTE_PRICE_KES = 3000;
+// 3,000 ÷ 131 = 22.9, rounded up to the next 5. The total is this times the
+// number of services, so the per-service and total figures always agree.
+export const A_LA_CARTE_PRICE_USD = 25;
 
 export const alaCarteServices = [
   { id: 'cv',             name: 'ATS-optimized CV writing' },
@@ -235,10 +242,10 @@ export function alaCartePackage(ids) {
     // What the order emails and receipts call it, so the inbox shows what
     // was actually bought.
     orderLabel: `À la carte: ${names.join(', ')}`,
-    audience: `KES ${A_LA_CARTE_PRICE_KES.toLocaleString('en-KE')} per service`,
+    audience: `KES ${A_LA_CARTE_PRICE_KES.toLocaleString('en-KE')} / $${A_LA_CARTE_PRICE_USD} USD per service`,
     priceKES: `KES ${amountKES.toLocaleString('en-KE')}`,
     amountKES,
-    priceUSD: null,
+    priceUSD: `$${chosen.length * A_LA_CARTE_PRICE_USD} USD`,
     timeline: '3–5 business days',
     features: names,
     services: chosen.map((s) => s.id),

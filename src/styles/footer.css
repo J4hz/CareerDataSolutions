@@ -114,19 +114,35 @@
   color: rgba(255,255,255,0.35);
 }
 
+/* Social icon links. The footer is navy in both themes, so the icons take
+   the same white-alpha text colours as the links above via currentColor.
+   Each link is a 36px square on desktop and 44px on touch widths (below),
+   so the visible gap between icons comes from the box, not from margins.
+   Focus uses the global :focus-visible ring in globals.css. */
 .footer__platforms {
   display: flex;
-  gap: 20px;
+  flex-wrap: wrap;
+  gap: 2px;
+  margin-right: -9px; /* lines the last glyph up with the container edge */
 }
 
 .footer__platforms a {
-  font-size: 0.8rem;
-  color: rgba(255,255,255,0.35);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  color: rgba(255,255,255,0.55);
   transition: color var(--transition);
 }
 
 .footer__platforms a:hover {
   color: var(--white);
+}
+
+.footer__platforms svg {
+  display: block;
 }
 
 @media (max-width: 900px) {
@@ -141,10 +157,33 @@
     grid-template-columns: 1fr;
     gap: 32px;
   }
+}
+
+/* Touch widths: 44px targets, and the bar stacks so the icons get a row of
+   their own instead of squeezing the copyright line. The negative margin
+   lines the first glyph up with the text edge above it. */
+@media (max-width: 900px) {
   .footer__bottom {
     flex-direction: column;
     align-items: flex-start;
-    gap: 12px;
+    gap: 8px;
+  }
+  .footer__platforms {
+    margin: 0 0 0 -12px;
+  }
+  .footer__platforms a {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+/* Eight 44px targets do not fit one row on a phone, so they go to two even
+   rows of four rather than wrapping seven-and-one. */
+@media (max-width: 420px) {
+  .footer__platforms {
+    display: grid;
+    grid-template-columns: repeat(4, 44px);
+    gap: 4px 12px;
   }
 }
 

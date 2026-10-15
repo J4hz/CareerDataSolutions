@@ -18,6 +18,23 @@ export function absoluteUrl(path = "/") {
 export const CONTACT_EMAIL = "kabiru@careerdatasolutions.com";
 export const WHATSAPP_URL  = "https://wa.me/254791910398";
 
+// Social and marketplace profiles. Rendered as icon links in the footer
+// (components/Footer.jsx) and emitted as `sameAs` on the Organization and
+// LocalBusiness JSON-LD (src/seo/schema.js), so this list is the only place
+// a profile is added or removed. `id` picks the icon in
+// components/SocialIcons.jsx; `name` is the platform as spoken in the
+// aria-label ("Career Data Solutions on LinkedIn").
+export const SOCIAL_LINKS = [
+  { id: "facebook",  name: "Facebook",  url: "https://www.facebook.com/CareerDataSolutions" },
+  { id: "linkedin",  name: "LinkedIn",  url: "https://www.linkedin.com/in/career-data-solutions-187605442/" },
+  { id: "instagram", name: "Instagram", url: "https://www.instagram.com/careerdatasolutions/" },
+  { id: "tiktok",    name: "TikTok",    url: "https://www.tiktok.com/@career_data_solutions" },
+  { id: "x",         name: "X",         url: "https://x.com/CareerDataSol" },
+  { id: "github",    name: "GitHub",    url: "https://github.com/kabirunyabwengi" },
+  { id: "upwork",    name: "Upwork",    url: "https://www.upwork.com/freelancers/~0108f91fcc48134463" },
+  { id: "fiverr",    name: "Fiverr",    url: "https://www.fiverr.com/wycliffe_n" },
+];
+
 // ─────────────────────────────────────────────────────────────
 // Registered business details, for the LocalBusiness JSON-LD on the
 // homepage (src/seo/schema.js).
