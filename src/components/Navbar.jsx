@@ -113,7 +113,7 @@ const Navbar = memo(function Navbar({ track = null }) {
             src={logo}
             alt="CareerDataSolutions"
             className="navbar__logo-img navbar__logo-img--light"
-            width="1239"
+            width="812"
             height="231"
           />
           <img
@@ -122,7 +122,7 @@ const Navbar = memo(function Navbar({ track = null }) {
             aria-hidden="true"
             loading="lazy"
             className="navbar__logo-img navbar__logo-img--dark"
-            width="1239"
+            width="812"
             height="231"
           />
         </NavLink>

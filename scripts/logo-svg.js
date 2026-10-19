@@ -63,11 +63,13 @@ const SOURCE = join(assets, 'logo-lockup.svg');
 const NAV_CSS_WIDTH = 245;
 const DPR = 3;
 
-/* The wordmark fill in the master, which is --navy exactly. In the
-   reversed asset it becomes white. --teal is left alone: teal on navy is
-   5.1:1, and leaving the brand accent bright in dark is the same call
-   theme.css already makes for --accent-ink. */
-const WORDMARK_INK = '#0b1f3a';
+/* The wordmark fills in the master. "Career" is --navy exactly; the
+   stacked lockup's "Solutions" line came out of the converter as a
+   near-identical #02223d. In the reversed asset both become white. --teal
+   is left alone: teal on navy is 5.1:1, and leaving the brand accent
+   bright in dark is the same call theme.css already makes for
+   --accent-ink. */
+const WORDMARK_INKS = ['#0b1f3a', '#02223d'];
 const WORDMARK_INK_REVERSED = '#ffffff';
 
 const kb = (n) => `${(n / 1024).toFixed(1)} KB`;
@@ -222,9 +224,9 @@ async function main() {
     .trim();
 
   // ── 5. the two variants ─────────────────────────────────────────────
-  const ink = new RegExp(WORDMARK_INK, 'gi');
+  const ink = new RegExp(WORDMARK_INKS.join('|'), 'gi');
   const swaps = (svg.match(ink) ?? []).length;
-  if (!swaps) throw new Error(`no ${WORDMARK_INK} wordmark fills found to reverse`);
+  if (!swaps) throw new Error(`no ${WORDMARK_INKS.join(' / ')} wordmark fills found to reverse`);
 
   const light = svg;
   const reversed = svg.replace(ink, WORDMARK_INK_REVERSED);

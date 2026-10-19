@@ -10,7 +10,7 @@ import '../styles/packages.css';
    all, which read as though the options were narrower on that side.
    Same sentence, same position (end of .packages-page__note), same styling. */
 const PAYMENT_METHODS =
-  'Payment accepted via M-Pesa, Payoneer, and bank transfer.';
+  'Payment accepted via M-Pesa, PayPal, and bank transfer.';
 
 const COPY = {
   data: {
@@ -30,7 +30,7 @@ const COPY = {
     heading: 'Packages built for every stage',
     sectionTitle: 'CV, LinkedIn, and coaching packages',
     intro:
-      'Local KES pricing for Kenya. USD rates for international clients. All packages include clear timelines, defined revision rounds, and delivery via email. Payment accepted via M-Pesa, Payoneer, and bank transfer.',
+      'Local KES pricing for Kenya. USD rates for international clients. All packages include clear timelines, defined revision rounds, and delivery via email. Payment accepted via M-Pesa, PayPal, and bank transfer.',
   },
 };
 

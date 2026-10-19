@@ -31,15 +31,15 @@ const Footer = memo(function Footer({ track = null }) {
       <div className="footer__main">
         <div className="footer__brand">
           <div className="footer__brand-logo">
-            {/* The horizontal lockup is wide (5.4:1), so it sits shorter here
-                than the old stacked mark did while occupying similar width. */}
+            {/* The lockup is 3.5:1 with a two-line wordmark, so at this
+                height its type matches the navbar's while taking less width. */}
             <picture>
               <source srcSet={logoWebp} type="image/webp" />
               <img
                 src={logo}
                 alt="CareerDataSolutions"
                 width="490"
-                height="90"
+                height="139"
                 style={{
                   height: '38px',
                   width: 'auto',
