@@ -177,8 +177,8 @@ export default function Home() {
             <span className="eyebrow" style={{ color: 'var(--ink-soft)' }}>Services</span>
             <h2 id="paths-heading">What we do</h2>
             <p className="paths__subtext">
-              Whether you're running a business or building a career, start with
-              the path that fits you.
+              Data and careers often stall for the same reason: nobody translated
+              them into something decision-makers and employers can use.
             </p>
           </div>
 
