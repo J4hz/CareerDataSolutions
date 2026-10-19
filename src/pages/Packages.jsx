@@ -30,10 +30,7 @@ const COPY = {
     heading: 'Packages built for every stage',
     sectionTitle: 'CV, LinkedIn, and coaching packages',
     intro:
-      'Local KES pricing for Kenya. USD rates for international clients. Every package includes clear timelines and revision rounds.',
-    note:
-      'All packages include clear timelines, defined revision rounds, and delivery via email. ' +
-      PAYMENT_METHODS,
+      'Local KES pricing for Kenya. USD rates for international clients. All packages include clear timelines, defined revision rounds, and delivery via email. Payment accepted via M-Pesa, Payoneer, and bank transfer.',
   },
 };
 
@@ -71,7 +68,7 @@ export default function Packages({ track = 'data' }) {
             {track === 'career' && <AlaCarte />}
           </div>
 
-          <p className="packages-page__note">{copy.note}</p>
+          {copy.note && <p className="packages-page__note">{copy.note}</p>}
         </div>
       </section>
 

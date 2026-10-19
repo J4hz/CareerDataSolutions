@@ -63,10 +63,10 @@ export default function Home() {
                 cannot fall into three lines at an awkward width. */}
             <h1 id="hero-heading" className="hero__title">
               <span className="hero__title-line">
-                We turn <span className="hero__hl hero__hl--data">data</span> into decisions,
+                Turning your <span className="hero__hl hero__hl--data">data</span> into decisions
               </span>
               <span className="hero__title-line">
-                and potential into <span className="hero__hl hero__hl--career">career</span> growth.
+                and your skills into <span className="hero__hl hero__hl--career">career</span> growth.
               </span>
             </h1>
           </div>
