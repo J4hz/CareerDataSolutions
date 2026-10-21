@@ -7,8 +7,8 @@
 // hardcodes the dates or the numbers.
 //
 // Rendered by components/FoundingClientsCallout.jsx on exactly two
-// surfaces: the homepage (under the "What we do" heading) and the About
-// page (above the proof quote). Both take foundingClientsCopy below.
+// surfaces: the homepage (in its own band just before the "What we do"
+// section) and the About page (above the proof quote). Both take foundingClientsCopy below.
 // Deliberately NOT on either packages page or in any FAQ: there it reads
 // as an excuse attached to a price, rather than a position stated up front.
 //
