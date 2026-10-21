@@ -27,7 +27,7 @@ export const about = {
   eyebrow: 'The founder',
 
   pullQuote:
-    '"Data and careers fail for the same reason: no one translated them properly."',
+    '"Data and careers often stall for the same reason: nobody translated them into something decision-makers and employers can use."',
 
   /* Paragraphs before the two-track pivot below. */
   bioBefore: [
@@ -58,6 +58,10 @@ export const about = {
     'Kabiru Nyabwengi',
     'Founder, CareerDataSolutions',
     '13+ years · Emergency Medical Services operations',
-    'Business intelligence analyst, healthcare analytics, career advancement strategist',
+    /* A word joiner and non-breaking space (\u2060\u00A0) after each | keep the bar
+       with the role after it, so a wrap never leaves one hanging at the end
+       of a line. The joiner is needed because a line may break after a | even
+       when a non-breaking space follows it. */
+    'Business Intelligence & Data Analytics Professional |\u2060\u00A0Career Coach |\u2060\u00A0Emergency Healthcare Practitioner',
   ],
 };

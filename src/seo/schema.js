@@ -73,7 +73,7 @@ function organization() {
     founder: {
       '@type': 'Person',
       name: 'Kabiru Nyabwengi',
-      jobTitle: 'Founder & Principal Consultant',
+      jobTitle: 'Business Intelligence & Data Analytics Professional | Career Coach | Emergency Healthcare Practitioner',
     },
     address: {
       '@type': 'PostalAddress',

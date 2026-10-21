@@ -8,9 +8,11 @@ import '../styles/packages.css';
    closing notes, so the two pricing pages cannot end up telling a visitor
    different things about payment — the data page previously said nothing at
    all, which read as though the options were narrower on that side.
-   Same sentence, same position (end of .packages-page__note), same styling. */
+   Same sentence, same position (end of .packages-page__note), same styling.
+   Word joiners (\u2060) either side of the hyphen stop M-Pesa breaking
+   across two lines. */
 const PAYMENT_METHODS =
-  'Payment accepted via M-Pesa, PayPal, and bank transfer.';
+  'Payment accepted via M\u2060-\u2060Pesa, PayPal, and bank transfer.';
 
 const COPY = {
   data: {
@@ -18,7 +20,7 @@ const COPY = {
     heading: 'Scope tiers built for every stage',
     sectionTitle: 'Dashboard and automation scope tiers',
     intro:
-      `${DATA_PACKAGES_FROM} These tiers are starting points rather than fixed packages: dashboard work varies too much by data complexity to price sight-unseen.`,
+      `These tiers are starting points rather than fixed packages: dashboard work varies too much by data complexity to price sight-unseen. ${DATA_PACKAGES_FROM}`,
     // Data work is quoted, not bought off the page, so the note leads with how
     // the number gets fixed before it closes on how it gets paid.
     note:
@@ -30,7 +32,7 @@ const COPY = {
     heading: 'Packages built for every stage',
     sectionTitle: 'CV, LinkedIn, and coaching packages',
     intro:
-      'Local KES pricing for Kenya. USD rates for international clients. All packages include clear timelines, defined revision rounds, and delivery via email. Payment accepted via M-Pesa, PayPal, and bank transfer.',
+      'All packages include clear timelines, defined revision rounds, and delivery via email. Payment accepted via M\u2060-\u2060Pesa, PayPal, and bank transfer. Local KES pricing for Kenya. USD rates for international clients.',
   },
 };
 

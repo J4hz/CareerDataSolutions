@@ -5,7 +5,6 @@ import { useInView } from '../hooks/useInView';
 import FaqAccordion from '../components/FaqAccordion';
 import CTASection from '../components/CTASection';
 import FoundingClientsCallout from '../components/FoundingClientsCallout';
-import { isFoundingClientsActive } from '../content/foundingClients';
 import '../styles/home.css';
 import '../styles/button.css';
 
@@ -145,21 +144,6 @@ export default function Home() {
         </div>
       </div>
 
-      {/* FOUNDING CLIENTS — the stage the business is actually at, said
-          plainly, in its own panel between the two-service strip and the
-          service cards. It gets ahead of the objection instead of answering
-          it later, which is why it is here and not on either pricing page.
-          The band is skipped entirely when the offer has lapsed, so an
-          expired callout leaves no empty gap behind it (the component
-          itself returns null; this keeps the padding from rendering). */}
-      {isFoundingClientsActive() && (
-        <div className="founding-band">
-          <div className="container">
-            <FoundingClientsCallout />
-          </div>
-        </div>
-      )}
-
       {/* PATH SELECTOR — the two cards that hand the visitor into the
           gold career shell or the teal data shell. Adapted from the
           reference file's .path-card pattern. This is the one place the
@@ -176,10 +160,10 @@ export default function Home() {
                 same job as "Client results" and "Questions" further down. */}
             <span className="eyebrow" style={{ color: 'var(--ink-soft)' }}>Services</span>
             <h2 id="paths-heading">What we do</h2>
-            <p className="paths__subtext">
-              Data and careers often stall for the same reason: nobody translated
-              them into something decision-makers and employers can use.
-            </p>
+            {/* FOUNDING CLIENTS — the stage the business is actually at, said
+                plainly under the heading. Renders nothing once the offer has
+                lapsed. */}
+            <FoundingClientsCallout className="paths__founding" />
           </div>
 
           {/* Data ("For Businesses") sits first, ahead of the career card. */}

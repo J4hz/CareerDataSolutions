@@ -86,7 +86,6 @@ export default function AboutSection() {
               before the proof block says where Kabiru has already been. */}
           <FoundingClientsCallout
             tone="dark"
-            variant="discount"
             className="about-sec__founding"
           />
 

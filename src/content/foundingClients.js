@@ -7,10 +7,8 @@
 // hardcodes the dates or the numbers.
 //
 // Rendered by components/FoundingClientsCallout.jsx on exactly two
-// surfaces: the homepage (between the "One company, two services" strip
-// and the "What we do" cards) and the About page (above the proof quote).
-// The homepage takes foundingClientsCopy below; the About page takes
-// discountOfferCopy, which states the same offer as a plain percentage.
+// surfaces: the homepage (under the "What we do" heading) and the About
+// page (above the proof quote). Both take foundingClientsCopy below.
 // Deliberately NOT on either packages page or in any FAQ: there it reads
 // as an excuse attached to a price, rather than a position stated up front.
 //
@@ -39,10 +37,10 @@ export const foundingClientsConfig = {
 
   /* How long the offer stands, in days from startDate. The first 75-day
      window closed on 9 Oct 2026; it was reopened in Oct 2026 to run through
-     15 Jan 2027. 174 days from 26 Jul puts the end at 16 Jan 00:00 UTC, so
-     the whole of 15 Jan is included. The end date is deliberately NOT shown
-     anywhere in the copy. */
-  windowDays: 174,
+     21 Jan 2027. 180 days from 26 Jul puts the end at 22 Jan 00:00 UTC, so
+     the whole of 21 Jan is included. The copy below states that date, so
+     change both together. */
+  windowDays: 180,
 
   /* How many finished engagements it takes before "founding" stops being
      honest. 6 is the mid-point of the report's 5–8 range. */
@@ -84,23 +82,9 @@ export const foundingClientsCopy = {
      hand it could say 10% while the cards said something else. */
   body:
     'We’re onboarding our first CareerDataSolutions clients now. Founding clients ' +
-    `get ${foundingClientsConfig.discountPercent}% off every package, in exchange ` +
-    'for a testimonial and permission to feature the work as a case study.',
-};
-
-/* The same offer stated as a plain discount, for every surface that should
-   lead with the number. The
-   homepage card is the only one that keeps the Founding Clients wording;
-   the About page takes this. Both read the same constant above, so the two
-   can never quote different figures. */
-export const discountOfferCopy = {
-  /* The title runs straight into the body as one sentence-led paragraph, so
-     the body does not repeat the percentage. */
-  title: `${foundingClientsConfig.discountPercent}% off for founding clients`,
-  body:
-    'We’re onboarding our first CareerDataSolutions clients now. The discount ' +
-    'applies to every package, in exchange for a testimonial and permission to ' +
-    'feature the work as a case study.',
+    `get ${foundingClientsConfig.discountPercent}% off every package in exchange ` +
+    'for a testimonial and permission to feature the work as a case study. ' +
+    'Founding offer closes 21 Jan 2027 or when spots fill, whichever comes first.',
 };
 
 /** Last instant the offer is still true, as a Date. */
